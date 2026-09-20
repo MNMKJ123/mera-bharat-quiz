@@ -122,6 +122,30 @@
   .paperbtn .pmeta{ flex:1 1 auto; min-width:0; }
   .paperbtn .pgo{ flex:0 0 auto; font-size:19px; }
 
+  .clock{ flex:0 0 auto; display:flex; align-items:center; gap:3px;
+    font-family:"Baloo 2",sans-serif; font-weight:800; font-size:14px;
+    padding:5px 9px; border-radius:11px; background:var(--surface);
+    border:2px solid var(--line); }
+  .clock.low{ background:#FFE08A; color:#6B3A00; }
+  .clock.out{ background:#FF8A8A; color:#4A0000; }
+
+  .rvlist{ display:flex; flex-direction:column; gap:9px; }
+  .rvitem{ background:var(--surface); border:2px solid var(--line);
+    border-radius:16px; padding:11px 12px; text-align:left;
+    font-family:"Baloo 2",sans-serif; }
+  .rvitem .rvq{ font-weight:700; font-size:15px; line-height:1.25; margin:0 0 7px; }
+  .rvitem .rvsec{ display:inline-block; font-size:11px; font-weight:700;
+    color:var(--ink-soft); margin-bottom:4px; }
+  .rvrow{ display:flex; align-items:flex-start; gap:7px; font-size:13.5px;
+    font-weight:600; line-height:1.3; margin-top:3px; }
+  .rvrow .tag{ flex:0 0 auto; }
+  .rvyes{ color:#1E7A3C; }
+  .rvno{ color:#B3261E; }
+  :root:not([data-theme="light"]) .rvyes{ color:#7BE0A0; }
+  :root:not([data-theme="light"]) .rvno{ color:#FF9A92; }
+  .rvwhy{ margin-top:7px; font-size:13px; font-weight:600; line-height:1.35;
+    color:var(--ink-soft); border-top:2px dashed var(--line); padding-top:6px; }
+
   .cog{ flex:0 0 auto !important; width:46px; padding:11px 0 !important; }
   .voicenote{ width:100%; margin:2px 0 0; font-size:12.5px; line-height:1.35;
     font-weight:600; color:var(--ink-soft); text-align:center; }
@@ -310,6 +334,7 @@
     <div class="qhead">
       <button class="sticker iconbtn" id="btn-home" aria-label="Back to all subjects">🏠</button>
       <div class="title" id="q-setname">Our India</div>
+      <div class="clock" id="clock" hidden>⏱️<span id="clock-t">60:00</span></div>
       <div class="streak" id="streak" hidden>🔥<span id="streak-n">0</span></div>
       <div class="score">⭐<span id="q-score">0</span></div>
     </div>
@@ -358,7 +383,18 @@
     <p class="rnote" id="r-note"></p>
     <div class="rbtns">
       <button class="sticker bigbtn go" id="btn-again">🔁 Play 10 new ones</button>
+      <button class="sticker bigbtn alt" id="btn-review">🔍 See what I missed</button>
       <button class="sticker bigbtn alt" id="btn-back">🏠 Pick another subject</button>
+    </div>
+  </section>
+
+  <section class="screen review" id="scr-review" hidden>
+    <h2 class="picktitle">🔍 Let us look again</h2>
+    <p class="picksub" id="rv-sub">Here is every one you missed.</p>
+    <div class="rvlist" id="rvlist"></div>
+    <div class="lbar" style="margin-top:4px">
+      <button class="sticker" id="rv-back">↩️ Back to score</button>
+      <button class="sticker go" id="rv-home">🏠 Home</button>
     </div>
   </section>
 
@@ -372,7 +408,7 @@ window.MBQ_BANK = (window.MBQ_BANK || []).concat([{
 name:"Our India", deva:"हमारा भारत", emoji:"🇮🇳", color:"saffron", qs:[
 {e:"🇮🇳",q:"How many stripes does our flag have?",o:[["3️⃣","Three"],["2️⃣","Two"],["5️⃣","Five"],["7️⃣","Seven"]],h:"Orange, white, green. Count on your fingers!"},
 {e:"🎡",q:"What is in the middle of our flag?",o:[["🔵","A blue wheel"],["⭐","A star"],["🌙","A moon"],["☀️","A sun"]],h:"It is round and it rolls. Like a tiny cycle wheel!"},
-{e:"🇮🇳",q:"Which colour is at the TOP of our flag?",o:[["🟧","Orange"],["🟩","Green"],["⬜","White"],["🟦","Blue"]],h:"Same colour as a juicy orange."},
+{e:"🇮🇳",q:"Which colour is at the TOP of our flag?",o:[["🟧","Orange"],["🟩","Green"],["⬜","White"],["🟦","Blue"]],h:"It stands for courage, and it sits above the white."},
 {e:"❓",q:"Which colour is at the BOTTOM of our flag?",o:[["🟩","Green"],["🟧","Orange"],["⬜","White"],["🟥","Red"]],h:"Same colour as grass and leaves."},
 {e:"🔍",q:"Which colour is in the MIDDLE of our flag?",o:[["⬜","White"],["🟧","Orange"],["🟩","Green"],["🟦","Blue"]],h:"Same colour as milk and clouds."},
 {e:"🎡",q:"How many lines are in the blue wheel on our flag?",o:[["2️⃣4️⃣","24"],["1️⃣2️⃣","12"],["🔟","10"],["3️⃣0️⃣","30"]],h:"Same as the hours in one full day!"},
@@ -385,7 +421,7 @@ name:"Our India", deva:"हमारा भारत", emoji:"🇮🇳", color:"
 {e:"🇮🇳",q:"Which is our national tree?",o:[["🌳","Banyan tree"],["🍃","Neem tree"],["🥥","Coconut tree"],["🌴","Palm tree"]],h:"A huge tree with long hanging roots. Bargad!"},
 {e:"❓",q:"Which is our national water animal?",o:[["🐬","River dolphin"],["🦈","Shark"],["🐳","Whale"],["🐊","Crocodile"]],h:"A friendly jumper that lives in the Ganga."},
 {e:"🔍",q:"Which is our national heritage animal?",o:[["🐘","Elephant"],["🐅","Tiger"],["🐪","Camel"],["🐄","Cow"]],h:"Big ears, long trunk, very gentle."},
-{e:"📜",q:"Which is our national river?",o:[["🏞️","Ganga"],["💧","Yamuna"],["🌊","Godavari"],["🏔️","Narmada"]],h:"We call her Ganga Maiya."},
+{e:"📜",q:"Which is our national river?",o:[["🏞️","Ganga"],["💧","Yamuna"],["🌊","Godavari"],["🏔️","Narmada"]],h:"She comes down from the Himalayas, and people pray to her at Varanasi."},
 {e:"🌏",q:"What is the name of our country?",o:[["🇮🇳","India"],["🇯🇵","Japan"],["🏔️","Nepal"],["🐼","China"]],h:"Say it with your hand on your heart!"},
 {e:"🧐",q:"Which city is the capital of India?",o:[["🏛️","New Delhi"],["🌊","Mumbai"],["🏖️","Chennai"],["🌉","Kolkata"]],h:"It has India Gate and the Red Fort."},
 {e:"🎵",q:"What is our national anthem?",o:[["🇮🇳","Jana Gana Mana"],["⭐","Twinkle Twinkle"],["🎂","Happy Birthday"],["🐑","Baa Baa Black Sheep"]],h:"We stand up straight and still when we sing it."},
@@ -416,7 +452,7 @@ name:"Our India", deva:"हमारा भारत", emoji:"🇮🇳", color:"
 {e:"🇮🇳",q:"On Independence Day, what do we do with the flag?",o:[["⬆️","Hoist it up high"],["📦","Fold it away"],["🧺","Wash it"],["🙈","Hide it"]],h:"We pull the rope and it goes up!"},
 {e:"🚫",q:"What should our flag NEVER touch?",o:[["🌍","The ground"],["🌬️","The wind"],["🪧","A pole"],["☁️","The sky"]],h:"We always keep it high, never down low."},
 {e:"❓",q:"Which language do the most people speak in India?",o:[["🗣️","Hindi"],["🔤","French"],["🗾","Japanese"],["🇩🇪","German"]],h:"Namaste, dhanyavaad, kaise ho — that language!"},
-{e:"🧒",q:"What do we call a person who belongs to India?",o:[["🇮🇳","Indian"],["🇯🇵","Japanese"],["🐼","Chinese"],["🏔️","Nepali"]],h:"India... Indi... Indian!"},
+{e:"🧒",q:"What do we call a person who belongs to India?",o:[["🇮🇳","Indian"],["🇯🇵","Japanese"],["🐼","Chinese"],["🏔️","Nepali"]],h:"Take the country's name and add -n to the end."},
 {e:"🔍",q:"Which big ocean is below India?",o:[["🌏","Indian Ocean"],["🌊","Pacific Ocean"],["🧊","Arctic Ocean"],["🚢","Atlantic Ocean"]],h:"It has the same name as our country!"},
 {e:"🪶",q:"Whose feather does Lord Krishna wear on his head?",o:[["🦚","A peacock's"],["🐦‍⬛","A crow's"],["🐔","A hen's"],["🦆","A duck's"]],h:"Blue and green, from our national bird."},
 {e:"🎖️",q:"What do we do when the national anthem is playing?",o:[["🧍","Stand up straight and still"],["🏃","Keep running"],["💺","Stay sitting"],["🗣️","Talk loudly"]],h:"Feet together, hands down, no moving!"},
@@ -494,7 +530,7 @@ name:"Animals & Birds", deva:"जीव-जंतु", emoji:"🐘", color:"peac
 {e:"🔍",q:"Which animal is very very slow?",o:[["🐌","Snail"],["🐆","Cheetah"],["🐎","Horse"],["🐕","Dog"]],h:"It carries a tiny shell and leaves a shiny line."},
 {e:"🔊",q:"Which animal says “Moo”?",o:[["🐄","Cow"],["🐕","Dog"],["🐈","Cat"],["🐔","Hen"]],h:"She gives us milk."},
 {e:"🔊",q:"Which animal says “Meow”?",o:[["🐈","Cat"],["🐕","Dog"],["🐄","Cow"],["🐐","Goat"]],h:"Soft paws, whiskers, loves milk."},
-{e:"🌅",q:"Which bird wakes us up in the morning?",o:[["🐓","Cock"],["🐦‍⬛","Crow"],["🦉","Owl"],["🦆","Duck"]],h:"Cock-a-doodle-doo!"},
+{e:"🌅",q:"Which bird wakes us up in the morning?",o:[["🐓","Cock"],["🐦‍⬛","Crow"],["🦉","Owl"],["🦆","Duck"]],h:"It crows from the farmyard the moment the sun comes up."},
 {e:"🧐",q:"Which animal has a big mane around its neck?",o:[["🦁","Lion"],["🐅","Tiger"],["🦌","Deer"],["🐐","Goat"]],h:"The king! His hair is like a crown."},
 {e:"💭",q:"Which huge sea animal sprays water up high?",o:[["🐳","Whale"],["🐟","Fish"],["🦀","Crab"],["🐸","Frog"]],h:"The biggest animal in the whole sea."},
 {e:"🔎",q:"Which sea animal walks sideways with claws?",o:[["🦀","Crab"],["🐟","Fish"],["🐢","Turtle"],["🐸","Frog"]],h:"It has a hard shell and pinchy hands!"},
@@ -614,7 +650,7 @@ name:"Plants & Food", deva:"पेड़-पौधे और खाना", emoj
 {e:"📖",q:"Which part of the potato plant do we eat?",o:[["🪴","The part under the ground"],["🌸","The flower"],["🍃","The leaf"],["🌿","The stem above ground"]],h:"You dig it out of the soil."},
 {e:"🌿",q:"Which part of the spinach plant do we eat?",o:[["🍃","The leaves"],["🪴","The root"],["🌸","The flower"],["🌰","The seed"]],h:"Green and flat, we cook them in palak."},
 {e:"🔍",q:"Which part of the cauliflower do we eat?",o:[["🌸","The flower"],["🪴","The root"],["🍃","The leaf"],["🌿","The stem"]],h:"Gobi! The white bunchy part."},
-{e:"🧐",q:"Which food do we get from the sea?",o:[["🐟","Fish"],["🌾","Wheat"],["🥔","Potato"],["🥭","Mango"]],h:"Fishermen catch it in big nets."},
+{e:"🧐",q:"Which food do we get from the sea?",o:[["🐟","Fish"],["🌾","Wheat"],["🥔","Potato"],["🥭","Mango"]],h:"People go out in boats and catch it in big nets."},
 {e:"🎓",q:"How do we know a fruit is ripe and ready to eat?",o:[["🎨","It changes colour and smells sweet"],["🪨","It gets very hard"],["⚫","It turns black"],["❄️","It gets cold"]],h:"A green mango turns yellow when ready."},
 {e:"📖",q:"What happens to food if we leave it out for many days?",o:[["🦠","It spoils and grows fungus"],["✨","It becomes tastier"],["📈","It grows bigger"],["🍬","It turns sweet"]],h:"Germs get into it. Never eat it then!"},
 {e:"🌿",q:"Why do we keep milk in the fridge?",o:[["❄️","Cold stops it going sour"],["🎨","To change its colour"],["📈","To make more of it"],["🍬","To make it sweet"]],h:"Germs grow slowly when it is cold."},
@@ -629,7 +665,7 @@ name:"Plants & Food", deva:"पेड़-पौधे और खाना", emoj
 {e:"📖",q:"Which of these is a dry fruit?",o:[["🥜","Almond"],["🍉","Watermelon"],["🍊","Orange"],["🍇","Grapes"]],h:"Badam! We eat a few soaked every morning."},
 {e:"🌿",q:"Why should we chew our food slowly?",o:[["😋","It helps our tummy digest it"],["⏱️","To waste time"],["📣","To make noise"],["🤷","No reason"]],h:"Big lumps are hard for the tummy."},
 {e:"🔍",q:"Which food helps us see well in the dark?",o:[["🥕","Carrots"],["🍭","Toffees"],["🍟","Chips"],["🥤","Cold drinks"]],h:"Orange and crunchy, full of vitamin A."},
-{e:"🧐",q:"Which fruit is given to sick people because it is easy to digest?",o:[["🍎","Apple"],["🌶️","Chilli"],["🧅","Onion"],["🧄","Garlic"]],h:"An apple a day keeps the doctor away!"},
+{e:"🧐",q:"Which fruit is given to sick people because it is easy to digest?",o:[["🍎","Apple"],["🌶️","Chilli"],["🧅","Onion"],["🧄","Garlic"]],h:"One a day, and the doctor stays away."},
 {e:"🎓",q:"Where do we store grain in a village?",o:[["🏚️","In a granary"],["🏦","In a bank"],["🦁","In a zoo"],["📮","In a post office"]],h:"A big dry store, safe from rats and rain."},
 {e:"📖",q:"Which meal of the day should never be skipped?",o:[["🌅","Breakfast"],["🍪","Evening snack"],["🍬","Dessert"],["🥤","A cold drink"]],h:"It breaks your night-long fast and starts the day."},
 {e:"❓",q:"Which plants grow ALONG the ground without climbing?",o:[["🎃","Creepers"],["🌳","Trees"],["🌿","Herbs"],["🍇","Climbers"]],h:"Pumpkin and watermelon do this."},
@@ -720,8 +756,8 @@ name:"Festivals & Culture", deva:"त्योहार", emoji:"🪔", color:"m
 {e:"🔍",q:"Which musical instrument is played at weddings and temples in the south?",o:[["🎺","Nadaswaram"],["🎸","Guitar"],["🎹","Piano"],["🥁","Drum set"]],h:"A long wind instrument, very loud and joyful."},
 {e:"🧐",q:"Which stringed instrument does Goddess Saraswati hold?",o:[["🪕","The veena"],["🥁","A drum"],["🎺","A trumpet"],["🎹","A piano"]],h:"A big stringed instrument resting on her lap."},
 {e:"🎓",q:"Which dance from Odisha is performed in temples?",o:[["💃","Odissi"],["🥁","Bhangra"],["🪘","Garba"],["🎺","Bihu"]],h:"Its name sounds like the state it comes from."},
-{e:"📖",q:"What is a 'thali' in an Indian meal?",o:[["🍽️","A big plate with many small bowls"],["🥤","A drink"],["👗","A dress"],["🎵","A song"]],h:"Dal, sabzi, roti, rice and sweet, all together."},
-{e:"🎊",q:"Why do we not waste food at a festival feast?",o:[["🙏","Food is precious and many go hungry"],["💰","It costs nothing"],["🗑️","The bin is far"],["🤷","No reason"]],h:"Take a small helping first, then more if you want."},
+{e:"📖",q:"What is a 'thali' in an Indian meal?",o:[["🍽️","A big plate with many small bowls"],["🥤","A sweet drink served after the meal"],["👗","A dress worn at festivals"],["🎵","A song sung before eating"]],h:"Dal, sabzi, roti, rice and sweet, all together."},
+{e:"🎊",q:"Why do we not waste food at a festival feast?",o:[["🙏","Food is precious and many go hungry"],["💰","Food costs nothing at a festival"],["🗑️","The rubbish bin is too far away"],["🤷","There is no real reason at all"]],h:"Take a small helping first, then more if you want."},
 {e:"🔍",q:"What do we call the sweet prasad given at a temple?",o:[["🙏","Prasad"],["🍔","A burger"],["🥤","A cold drink"],["🍟","Chips"]],h:"We take it with both hands and eat it respectfully."},
 {e:"🧐",q:"Which hand do we traditionally use to give and receive things?",o:[["🤝","The right hand"],["🤲","The left hand"],["🦶","The foot"],["👘","The elbow"]],h:"It shows respect in Indian custom."},
 {e:"🎓",q:"Which festival is celebrated with a lamp floating on a river?",o:[["🪔","Dev Deepawali"],["🎨","Holi"],["🪁","Makar Sankranti"],["🔥","Lohri"]],h:"Thousands of diyas float on the Ganga at Varanasi."},
@@ -801,7 +837,7 @@ name:"Places & Monuments", deva:"जगह और इमारतें", emoji:
 {e:"🧐",q:"Which river is called the sorrow of Bihar because it floods?",o:[["🌊","Kosi"],["🏞️","Ganga"],["💧","Yamuna"],["🏔️","Narmada"]],h:"It changes its path and floods the fields."},
 {e:"🎓",q:"Which is the highest waterfall in India?",o:[["⛲","Kunchikal Falls"],["🌊","Sea Falls"],["🏔️","Snow Falls"],["🏜️","Sand Falls"]],h:"It is in Karnataka."},
 {e:"📖",q:"Which state is known as the Spice Garden of India?",o:[["🌶️","Kerala"],["🐪","Rajasthan"],["❄️","Ladakh"],["🌾","Punjab"]],h:"Pepper, cardamom and cloves grow there."},
-{e:"🗺️",q:"What is a 'stepwell' that we see in Rajasthan and Gujarat?",o:[["🪜","A well with steps going down to the water"],["🏔️","A mountain"],["🌉","A bridge"],["🏰","A fort"]],h:"Baoli! People walked down to fetch water."},
+{e:"🗺️",q:"What is a 'stepwell' that we see in Rajasthan and Gujarat?",o:[["🪜","A well with steps going down to the water"],["🏔️","A mountain path cut into the rock"],["🌉","A bridge built across a river"],["🏰","A fort with tall stone walls"]],h:"Baoli! People walked down to fetch water."},
 {e:"🔍",q:"Which desert animal fair happens at Pushkar?",o:[["🐪","Camels"],["🐟","Fish"],["🐧","Penguins"],["🐻","Bears"]],h:"Thousands come to buy and sell them."},
 {e:"🧐",q:"Which is the busiest kind of place in a city, full of shops?",o:[["🛒","A market"],["🏞️","A park"],["📚","A library"],["🏥","A hospital"]],h:"Bazaar! Noisy and crowded."},
 {e:"🎓",q:"Where would we go to see very old things from long ago?",o:[["🏛️","A museum"],["🏦","A bank"],["🏊","A swimming pool"],["🛒","A market"]],h:"Sangrahalaya! Coins, statues and fossils."},
@@ -868,11 +904,11 @@ name:"Earth & Nature", deva:"धरती और मौसम", emoji:"🌦️",
 {e:"🌦️",q:"Which month usually brings the monsoon to Kerala first?",o:[["🌧️","June"],["❄️","January"],["🎄","December"],["🌸","March"]],h:"The rains arrive in the south first, early summer's end."},
 {e:"🔍",q:"What do we call the long dry spell with no rain at all?",o:[["🏜️","A drought"],["🌊","A flood"],["🌈","A rainbow"],["❄️","Snow"]],h:"Sukha! Wells dry up and crops fail."},
 {e:"🧐",q:"What do we call it when rivers overflow and cover the land?",o:[["🌊","A flood"],["🏜️","A drought"],["🌈","A rainbow"],["🌪️","A tornado"]],h:"Baadh! Houses and fields go under water."},
-{e:"🎓",q:"Why should we save water even when it rains a lot?",o:[["💧","Clean water is limited and precious"],["💰","It is expensive"],["🎨","It is colourful"],["🤷","No reason"]],h:"Most of the Earth's water is salty and cannot be drunk."},
+{e:"🎓",q:"Why should we save water even when it rains a lot?",o:[["💧","Clean water is limited and precious"],["💰","Because water is expensive to buy"],["🎨","Because clean water is colourful"],["🤷","There is no real reason at all"]],h:"Most of the Earth's water is salty and cannot be drunk."},
 {e:"📖",q:"What do we call water that soaks into the ground?",o:[["🕳️","Groundwater"],["🌊","Sea water"],["🌧️","Rain water"],["♨️","Steam"]],h:"We pull it back up from wells and borewells."},
 {e:"🌦️",q:"Which gas do plants take IN from the air?",o:[["💨","Carbon dioxide"],["🌬️","Oxygen"],["💧","Water vapour"],["🔥","Smoke"]],h:"They take in what we breathe out."},
 {e:"🔍",q:"What do we call the air around our Earth?",o:[["🌍","The atmosphere"],["🌊","The ocean"],["🏔️","The mountain"],["🌳","The forest"]],h:"A big blanket of air holding us in."},
-{e:"🧐",q:"Which of these makes the air dirty?",o:[["🏭","Smoke from vehicles and factories"],["🌳","Trees"],["🌸","Flowers"],["💧","Rain"]],h:"Pollution! It makes us cough."},
+{e:"🧐",q:"Which of these makes the air dirty?",o:[["🏭","Smoke from vehicles and factories"],["🌳","Tall trees growing along the road"],["🌸","Flowers opening in the morning"],["💧","Rain falling on a summer day"]],h:"Pollution! It makes us cough."},
 {e:"🎓",q:"What can we do to make less rubbish?",o:[["♻️","Reuse and recycle things"],["🗑️","Throw more away"],["🔥","Burn it all"],["🕳️","Bury plastic"]],h:"Carry a cloth bag instead of taking plastic ones."},
 {e:"📖",q:"Which bag is better for the Earth?",o:[["👜","A cloth bag"],["🛍️","A plastic bag"],["🎈","A balloon"],["📄","A thin film wrapper"]],h:"You can wash it and use it hundreds of times."},
 {e:"🌦️",q:"How long does plastic take to rot away in the soil?",o:[["⏳","Hundreds of years"],["📆","One day"],["🗓️","One week"],["🌙","One night"]],h:"Almost forever. That is why we must not litter."},
@@ -901,7 +937,7 @@ name:"Earth & Nature", deva:"धरती और मौसम", emoji:"🌦️",
 {e:"🧐",q:"Tara's mother blew air towards a low fire. What happened?",o:[["🔥","The fire burnt brighter and stronger"],["💨","The fire turned to smoke"],["🛑","The fire stopped"],["🤷","Nothing changed"]],h:"Air helps things burn."},
 {e:"🤔",q:"I move smoothly on water but have no engine. I need something you can feel but cannot see. Who am I?",o:[["⛵","A sailboat"],["✈️","An aeroplane"],["🎈","A hot air balloon"],["🚗","A car"]],h:"The wind fills its sail."},
 {e:"💭",q:"Which of these shows that AIR gives shape to things?",o:[["🎈","A blown-up balloon"],["🪨","A stone"],["📕","A book"],["🥄","A spoon"]],h:"Let the air out and it goes floppy."},
-{e:"🎓",q:"Why do we pump air into a bicycle tyre?",o:[["🚲","Air gives the tyre its shape and firmness"],["🎨","To colour it"],["🔊","To make noise"],["⚖️","To make it heavy"]],h:"A flat tyre has no air in it."},
+{e:"🎓",q:"Why do we pump air into a bicycle tyre?",o:[["🚲","Air gives the tyre its shape and firmness"],["🎨","To give the tyre a brighter colour"],["🔊","To make the tyre hum as it rolls"],["⚖️","To make the bicycle much heavier"]],h:"A flat tyre has no air in it."},
 {e:"📝",q:"Air is all around us. Why can we not see it?",o:[["🌬️","It is colourless and invisible"],["🎨","It is painted white"],["🌑","It is too dark"],["🤏","It is too small"]],h:"You can feel it on your face, but never see it."},
 {e:"📝",q:"Can we SEE air?",o:[["🌬️","No, but we can feel it"],["✅","Yes, it is blue"],["✅","Yes, it is white"],["❌","No, and we cannot feel it"]],h:"A moving curtain proves it is there."}
 ]}]);
@@ -961,7 +997,7 @@ name:"Space", deva:"अंतरिक्ष", emoji:"🚀", color:"cosmos", qs:
 {e:"🌌",q:"Which Indian rocket is nicknamed the workhorse of ISRO?",o:[["🚀","PSLV"],["🚂","Train"],["✈️","Jet"],["⛵","Boat"]],h:"It has launched hundreds of satellites."},
 {e:"🔍",q:"In which year did Chandrayaan-3 land on the Moon?",o:[["2️⃣3️⃣","2023"],["1️⃣9️⃣","1999"],["2️⃣0️⃣","2005"],["1️⃣9️⃣","1969"]],h:"Quite recently. All of India watched it live."},
 {e:"🧐",q:"Near which part of the Moon did Chandrayaan-3 land?",o:[["⬇️","The south pole"],["🏙️","A city"],["🌊","A sea"],["🌴","A forest"]],h:"India was the first country ever to land there."},
-{e:"🎓",q:"What is the name of the little rover Chandrayaan-3 carried?",o:[["🤖","Pragyan"],["🚗","Maruti"],["🚂","Rail"],["🛵","Scooter"]],h:"Pragyan means wisdom."},
+{e:"🎓",q:"What is the name of the little rover Chandrayaan-3 carried?",o:[["🤖","Pragyan"],["🚗","Maruti"],["🚂","Rail"],["🛵","Scooter"]],h:"Its name is the Sanskrit word for wisdom."},
 {e:"📖",q:"Who is called the father of India's space programme?",o:[["🚀","Vikram Sarabhai"],["🧓","Gandhi ji"],["✍️","Tagore"],["🏏","Sachin"]],h:"ISRO's lander was named after him."},
 {e:"🌌",q:"What do we call the huge burning ball at the centre of our solar system?",o:[["☀️","The Sun"],["🌙","The Moon"],["🌍","The Earth"],["🪐","Saturn"]],h:"Everything goes around it."},
 {e:"🔍",q:"Why does the Moon shine at night?",o:[["☀️","It reflects the Sun's light"],["🔥","It is burning"],["💡","It has bulbs"],["⚡","It makes lightning"]],h:"It has no light of its own at all."},
@@ -981,12 +1017,12 @@ name:"Space", deva:"अंतरिक्ष", emoji:"🚀", color:"cosmos", qs:
 {e:"🌌",q:"Can we hear any sound in outer space?",o:[["🤫","No, it is completely silent"],["🔊","Yes, very loudly"],["🎵","Yes, like music"],["📣","Only shouting"]],h:"Sound needs air to travel. There is none out there."},
 {e:"🔍",q:"What do we wear on Earth that astronauts also need, to see in bright sunlight?",o:[["🕶️","A dark visor"],["🧤","Gloves"],["👟","Shoes"],["🧢","A cap"]],h:"The Sun is blinding with no air to soften it."},
 {e:"🧐",q:"Which direction do all the planets travel around the Sun?",o:[["🔄","All in the same direction"],["↔️","Each a different way"],["⬆️","Straight up"],["🛑","They do not move"]],h:"Like runners all going round the same track."},
-{e:"🎓",q:"Why can we not live on the Moon right now?",o:[["🚫","No air, no water, too hot and too cold"],["👻","It is haunted"],["🏙️","It is too crowded"],["💰","It costs too much"]],h:"Astronauts must carry everything with them."},
+{e:"🎓",q:"Why can we not live on the Moon right now?",o:[["🚫","No air, no water, too hot and too cold"],["👻","It is haunted and rather frightening"],["🏙️","It is far too crowded already"],["💰","The journey costs a lot of money"]],h:"Astronauts must carry everything with them."},
 {e:"📖",q:"What is the name of India's satellite navigation system?",o:[["🧭","NavIC"],["🗺️","Map"],["📍","Pin"],["🧲","Magnet"]],h:"It helps Indian phones and ships find their way."},
 {e:"🌌",q:"Which phase of the Moon is it when we cannot see the Moon at all?",o:[["🌑","New Moon"],["🌕","Full Moon"],["🌗","Half Moon"],["🌙","Crescent Moon"]],h:"The night sky has no moon in it."},
 {e:"🔍",q:"Which phase is it when the Moon is a complete bright circle?",o:[["🌕","Full Moon"],["🌑","New Moon"],["🌗","Half Moon"],["🌙","Crescent Moon"]],h:"Purnima!"},
 {e:"🧐",q:"Which phase is it when the Moon is a thin curved sliver?",o:[["🌙","Crescent Moon"],["🌕","Full Moon"],["🌑","New Moon"],["🌗","Half Moon"]],h:"The shape on the Eid greeting."},
-{e:"🤔",q:"Does the Moon really grow bigger and smaller each night?",o:[["🌗","No, we just see different amounts of it lit up"],["📈","Yes, it grows"],["📉","Yes, it shrinks"],["🎈","Yes, it inflates"]],h:"The Moon itself never changes size."},
+{e:"🤔",q:"Does the Moon really grow bigger and smaller each night?",o:[["🌗","No, we just see different amounts of it lit up"],["📈","Yes, it slowly grows bigger each night"],["📉","Yes, it shrinks a little every night"],["🎈","Yes, someone inflates it each night"]],h:"The Moon itself never changes size."},
 {e:"💭",q:"Why is it safe to look at the Moon but NOT at the Sun?",o:[["🌙","The Moon does not shine too brightly"],["📏","The Moon is bigger"],["🌈","The Moon is colourful"],["❄️","The Moon is cold"]],h:"The Sun's light can damage your eyes."},
 {e:"🎓",q:"What does the Moon move around?",o:[["🌍","The Earth"],["☀️","The Sun"],["🔴","Mars"],["⭐","A star"]],h:"It is our own companion, going round us."},
 {e:"📝",q:"Can the stars in the sky be counted easily?",o:[["❌","No, there are far too many"],["✅","Yes, there are only a hundred"],["🔟","Yes, there are ten"],["1️⃣","Yes, there is one"]],h:"Try it on a clear night and see how far you get."},
@@ -1012,7 +1048,7 @@ name:"Transport & Safety", deva:"सवारी और सुरक्षा", 
 {e:"🎨",q:"What is a zebra crossing made of?",o:[["⬜","White stripes"],["🔴","Red circles"],["🟢","Green dots"],["🟦","Blue squares"]],h:"It is striped, just like the animal!"},
 {e:"🧐",q:"Who helps us cross at a very busy crossing?",o:[["👮","A traffic policeman"],["🛒","A shopkeeper"],["👩‍🏫","A teacher"],["📮","A postman"]],h:"White uniform, and a whistle in the mouth."},
 {e:"👈",q:"On which side of the road do vehicles drive in India?",o:[["⬅️","The left side"],["➡️","The right side"],["↔️","The middle"],["🤷","Anywhere"]],h:"Left! Same side the driver's seat is not on."},
-{e:"💭",q:"What should we do before crossing a road?",o:[["👀","Look right, left, then right again"],["🙈","Close our eyes"],["🏃","Run fast"],["📱","Look at a phone"]],h:"Traffic comes from the right first in India."},
+{e:"💭",q:"What should we do before crossing a road?",o:[["👀","Look right, left, then right again"],["🙈","Close our eyes and walk straight on"],["🏃","Run across as fast as we can"],["📱","Look down at a phone while walking"]],h:"Traffic comes from the right first in India."},
 {e:"🛵",q:"What must we wear on a two-wheeler?",o:[["🪖","A helmet"],["🧢","A cap"],["👒","A hat"],["👑","A crown"]],h:"Hard and strong, to protect the head."},
 {e:"🚗",q:"What must we wear when sitting in a car?",o:[["🔗","A seat belt"],["👟","Only shoes"],["⌚","A watch"],["🕶️","Goggles"]],h:"Click! It holds you in your seat."},
 {e:"🙅",q:"Is it safe to put your hand out of a moving bus window?",o:[["❌","No, never"],["✅","Yes, always"],["🌙","Only at night"],["☀️","Only in the day"]],h:"Another vehicle could come very close!"},
@@ -1041,11 +1077,11 @@ name:"Transport & Safety", deva:"सवारी और सुरक्षा", 
 {e:"📖",q:"What must we buy before travelling on a train?",o:[["🎟️","A ticket"],["🧸","A toy"],["📕","A book"],["🖊️","A pen"]],h:"It shows your seat and your coach number."},
 {e:"❌",q:"What should we NOT do while crossing the road?",o:[["🏃","Run across"],["👀","Look both ways"],["🤝","Hold an adult's hand"],["🦓","Use the zebra crossing"]],h:"Walk, do not dash. Slow and steady!"},
 {e:"🚦",q:"Which vehicle carries many people on a fixed route?",o:[["🚌","A bus"],["🚲","A cycle"],["🛵","A scooter"],["⛵","A boat"]],h:"It stops at every stop to pick people up."},
-{e:"❓",q:"What should a car do at a red light?",o:[["🛑","Stop"],["💨","Go fast"],["↩️","Turn around"],["📣","Honk loudly"]],h:"Red always means stop, everywhere in the world."},
+{e:"❓",q:"What should a car do at a red light?",o:[["🛑","Stop"],["💨","Go fast"],["↩️","Turn around"],["📣","Honk loudly"]],h:"Red never means go. It means the opposite."},
 {e:"🔍",q:"What colour is a school bus usually in India?",o:[["🟨","Yellow"],["⚫","Black"],["🟣","Purple"],["🩷","Pink"]],h:"Bright, so everyone can see it from far!"},
 {e:"🧐",q:"What should a cycle have at night?",o:[["💡","A light"],["🎏","A flag"],["🧺","A basket"],["🪑","A cushion"]],h:"So cars can see you in the dark."},
 {e:"💭",q:"How should we go to school if it is very near?",o:[["🚶","We can walk"],["🚀","By rocket"],["🚢","By ship"],["✈️","By aeroplane"]],h:"Good for you AND good for the Earth!"},
-{e:"🤕",q:"What should we do if we see someone hurt on the road?",o:[["🧑","Tell a grown-up and call for help"],["🏃","Run away"],["😆","Laugh"],["🙈","Ignore it"]],h:"Call 112 and stay calm."},
+{e:"🤕",q:"What should we do if we see someone hurt on the road?",o:[["🧑","Tell a grown-up and call for help"],["🏃","Run away quickly before anyone sees"],["😆","Laugh and carry on walking past"],["🙈","Ignore it because it is not our problem"]],h:"Call 112 and stay calm."},
 {e:"📱",q:"Should the driver use a phone while driving?",o:[["❌","No, never"],["✅","Yes, always"],["🌙","Only at night"],["🛣️","Only on a highway"]],h:"Eyes must stay on the road!"},
 {e:"🚦",q:"What should we do if we see a fire in a building?",o:[["🚪","Go out calmly and call 101"],["🛗","Take the lift"],["🙈","Hide under a bed"],["📦","Collect our things first"]],h:"Never use the lift during a fire."},
 {e:"🔍",q:"Why should we never use a lift during a fire?",o:[["⚡","It can stop and trap you"],["🐌","It is slow"],["💰","It costs money"],["📣","It is noisy"]],h:"The power may cut off. Use the stairs."},
@@ -1055,13 +1091,13 @@ name:"Transport & Safety", deva:"सवारी और सुरक्षा", 
 {e:"🚦",q:"Which lane should slow vehicles use on a highway?",o:[["⬅️","The left lane"],["➡️","The right lane"],["↔️","The middle only"],["🤷","Any lane"]],h:"In India we keep left; faster traffic overtakes on the right."},
 {e:"🔍",q:"What does a zebra crossing signal to a driver?",o:[["🚶","Walkers may cross here"],["💨","Drive faster"],["🅿️","Park here"],["📣","Honk here"]],h:"Drivers must slow down and stop."},
 {e:"🧐",q:"What should we do when an ambulance sounds its siren behind us?",o:[["↔️","Move aside and let it pass"],["🛑","Stop right in front"],["💨","Race it"],["🙈","Ignore it"]],h:"Someone's life may depend on those seconds."},
-{e:"🎓",q:"Why is honking too much a bad thing?",o:[["🔊","It is noise pollution and startles people"],["💰","It is expensive"],["🎨","It is ugly"],["🐌","It is slow"]],h:"Hospitals and schools have silent zones."},
+{e:"🎓",q:"Why is honking too much a bad thing?",o:[["🔊","It is noise pollution and startles people"],["💰","It costs the driver a lot of money"],["🎨","It makes the car look rather ugly"],["🐌","It makes the car travel more slowly"]],h:"Hospitals and schools have silent zones."},
 {e:"📖",q:"What should we wear while cycling for safety?",o:[["🪖","A helmet"],["👑","A crown"],["🧣","A scarf over the eyes"],["🎧","Loud headphones"]],h:"And never wear headphones on the road."},
 {e:"🚦",q:"Why should we not wear earphones while crossing a road?",o:[["👂","We cannot hear horns or engines"],["💰","They cost money"],["🔋","The battery dies"],["🎵","Music is bad"]],h:"Your ears warn you before your eyes do."},
 {e:"🔍",q:"What is a speed breaker for?",o:[["🐌","To make vehicles slow down"],["💨","To make them faster"],["🅿️","For parking"],["🎨","For decoration"]],h:"Usually near schools and hospitals."},
 {e:"🧐",q:"Which vehicle has the right to go first at a crossing?",o:[["🚑","An ambulance or fire engine"],["🚗","The biggest car"],["🛵","The fastest bike"],["🚌","The bus"]],h:"Emergency vehicles always go first."},
 {e:"🎓",q:"What do we call the person walking on the road?",o:[["🚶","A pedestrian"],["🚗","A driver"],["👨‍✈️","A pilot"],["⚓","A sailor"]],h:"You are one every day."},
-{e:"📖",q:"What should we check before getting off a bus?",o:[["🛑","That the bus has fully stopped"],["🎵","The music"],["🪟","The window"],["⌚","The time"]],h:"Never jump off a moving bus."},
+{e:"📖",q:"What should we check before getting off a bus?",o:[["🛑","That the bus has fully stopped"],["🎵","That the music has been turned off"],["🪟","That the window is properly shut"],["⌚","That the clock shows the right time"]],h:"Never jump off a moving bus."},
 {e:"🚦",q:"Which is safer to cross by: a foot overbridge or running across?",o:[["🌉","The foot overbridge"],["🏃","Running across"],["🚗","Between cars"],["🤸","Jumping the divider"]],h:"It takes longer but you stay safe."},
 {e:"🔍",q:"What do we call the vehicle that carries many school children?",o:[["🚌","A school bus"],["🚑","An ambulance"],["🚒","A fire engine"],["🚚","A truck"]],h:"Bright yellow, with a helper inside."},
 {e:"🧐",q:"What should we do if we miss our school bus?",o:[["🏫","Go back and tell a grown-up"],["🏃","Run after it"],["🚗","Ask a stranger for a lift"],["🚶","Walk alone far away"]],h:"Never accept a lift from someone you do not know."},
@@ -1069,7 +1105,7 @@ name:"Transport & Safety", deva:"सवारी और सुरक्षा", 
 {e:"📖",q:"Which fuel do most cars in India run on?",o:[["⛽","Petrol or diesel"],["💧","Water"],["🥛","Milk"],["🧃","Juice"]],h:"We fill it at a petrol pump."},
 {e:"🚦",q:"Which vehicle is best for the environment?",o:[["🚲","A bicycle"],["🚚","A big truck"],["✈️","An aeroplane"],["🚗","A petrol car"]],h:"It makes no smoke at all, only healthy legs."},
 {e:"🔍",q:"What do electric vehicles use instead of petrol?",o:[["🔋","A battery"],["💧","Water"],["🏖️","Sand"],["🌬️","Wind"]],h:"You plug them in to charge, like a phone."},
-{e:"🧐",q:"Why is it safer to travel by train than by road?",o:[["🛤️","Trains have their own track with no crossing traffic"],["💨","They are faster"],["💰","They are cheaper"],["🎵","They are noisy"]],h:"Nothing else uses the railway line."},
+{e:"🧐",q:"Why is it safer to travel by train than by road?",o:[["🛤️","Trains have their own track with no crossing traffic"],["💨","Trains are always faster than cars"],["💰","Train tickets are cheaper to buy"],["🎵","Trains make a great deal of noise"]],h:"Nothing else uses the railway line."},
 {e:"🎓",q:"What is the yellow line on a railway platform for?",o:[["⚠️","Do not step past it"],["🎨","Decoration"],["🅿️","Parking"],["🏃","Running races"]],h:"Trains rush past very close to the edge."},
 {e:"📖",q:"Which number is written on every Indian vehicle to identify it?",o:[["🔢","The number plate"],["📞","A phone number"],["🏠","A house number"],["🎂","A birthday"]],h:"White and black letters on front and back."}
 ]}]);
@@ -1140,12 +1176,12 @@ name:"Body & Good Habits", deva:"शरीर और आदतें", emoji:"�
 {e:"🧒",q:"Which part of the body helps us balance while walking?",o:[["👂","The inner ear"],["💇","The hair"],["💅","The nails"],["👅","The tongue"]],h:"Something deep inside the ear keeps us steady."},
 {e:"🔍",q:"What happens to our heart when we run fast?",o:[["💓","It beats faster"],["🛑","It stops"],["🐌","It slows down"],["😴","It sleeps"]],h:"Put your hand on your chest after running."},
 {e:"🧐",q:"Why do we breathe faster after exercise?",o:[["🫁","Our body needs more oxygen"],["🎵","To make music"],["🥵","To feel hot"],["🤷","No reason"]],h:"Working muscles use up air quickly."},
-{e:"🎓",q:"Which drink is best right after playing in the sun?",o:[["💧","Water"],["🥤","Fizzy cold drink"],["☕","Hot coffee"],["🍦","Ice cream"]],h:"You lost water as sweat. Put it back."},
+{e:"🎓",q:"Which drink is best right after playing in the sun?",o:[["💧","Water"],["🥤","Fizzy cold drink"],["☕","Hot coffee"],["🍦","Ice cream"]],h:"You lost it as sweat. Put the same plain, clear thing back."},
 {e:"📖",q:"What should we put on before going out in strong sun?",o:[["🧢","A cap, and carry water"],["🧥","A thick woollen coat"],["🩱","A swimsuit"],["🧣","A muffler"]],h:"Shade your head and stay hydrated."},
 {e:"🧒",q:"How many hours of sleep does a Class 1 child need?",o:[["😴","About 10 hours"],["⏱️","2 hours"],["🕐","1 hour"],["0️⃣","None"]],h:"Little children need much more sleep than grown-ups."},
 {e:"🔍",q:"Why should we not look at screens just before bed?",o:[["😴","It makes it harder to fall asleep"],["🎨","It changes colours"],["💰","It costs money"],["🔊","It is loud"]],h:"Bright light tells the brain it is still daytime."},
 {e:"🧐",q:"How should we sit while writing or reading?",o:[["🪑","Straight, with the book at a distance"],["🛏️","Lying flat on the tummy"],["🙃","Upside down"],["🏃","While running"]],h:"Slouching hurts your back and your eyes."},
-{e:"🎓",q:"What should we do every 20 minutes of screen time?",o:[["👀","Look far away for a little while"],["🍬","Eat a sweet"],["🏃","Run outside"],["😴","Sleep"]],h:"It rests your eye muscles."},
+{e:"🎓",q:"What should we do every 20 minutes of screen time?",o:[["👀","Look far away for a little while"],["🍬","Eat a sweet to keep our energy up"],["🏃","Run outside for a long, fast game"],["😴","Go to sleep for a little while"]],h:"It rests your eye muscles."},
 {e:"📖",q:"Which of these is a good habit at the dining table?",o:[["🤐","Eating with our mouth closed"],["📣","Talking with a full mouth"],["🤾","Throwing food"],["🏃","Running around"]],h:"Quiet chewing is polite chewing."},
 {e:"🧒",q:"What should we say before leaving the table?",o:[["🙏","May I get up, please"],["🤐","Nothing"],["📣","I am done, bye"],["🏃","Just run off"]],h:"Ask politely, and carry your plate."},
 {e:"🔍",q:"What should we do with our shoes when we enter the house?",o:[["👟","Take them off and keep them in place"],["🛏️","Wear them to bed"],["🍽️","Put them on the table"],["🤾","Throw them"]],h:"Outside dirt stays outside."},
@@ -1155,8 +1191,8 @@ name:"Body & Good Habits", deva:"शरीर और आदतें", emoji:"�
 {e:"🧒",q:"Which sense organ helps us enjoy the taste of food?",o:[["👅","The tongue"],["👂","The ear"],["👃","The nose"],["💇","The hair"]],h:"It has tiny taste buds all over it."},
 {e:"🔍",q:"How many sense organs does our body have?",o:[["5️⃣","Five"],["2️⃣","Two"],["3️⃣","Three"],["🔟","Ten"]],h:"Eyes, ears, nose, tongue and skin."},
 {e:"🧐",q:"Which part of the body do we use to hold a cricket bat?",o:[["✋","Our hands"],["🦵","Our legs"],["👂","Our ears"],["👁️","Our eyes"]],h:"You grip with your fingers."},
-{e:"🤔",q:"Why do we wear cotton clothes in summer?",o:[["🌬️","Cotton lets air through and keeps us cool"],["🥶","It keeps us warm"],["💧","It keeps rain out"],["🎨","It looks bright"]],h:"Wool does the opposite job."},
-{e:"💭",q:"Why do we wear woollen clothes in winter?",o:[["🔥","Wool traps warm air and keeps us warm"],["🌬️","It keeps us cool"],["💧","It keeps rain out"],["🎨","It looks bright"]],h:"That is why sweaters are knitted from it."},
+{e:"🤔",q:"Why do we wear cotton clothes in summer?",o:[["🌬️","Cotton lets air through and keeps us cool"],["🥶","Cotton keeps the body warm and snug"],["💧","Cotton keeps the rain off our skin"],["🎨","Cotton comes in the brightest colours"]],h:"Wool does the opposite job."},
+{e:"💭",q:"Why do we wear woollen clothes in winter?",o:[["🔥","Wool traps warm air and keeps us warm"],["🌬️","Wool keeps the body cool and airy"],["💧","Wool keeps the rain off our skin"],["🎨","Wool comes in the brightest colours"]],h:"That is why sweaters are knitted from it."},
 {e:"🧒",q:"How many hours should a Class 1 child sleep each day, at least?",o:[["🔟","About 10 hours"],["5️⃣","5 hours"],["8️⃣","8 hours"],["6️⃣","6 hours"]],h:"Little children need more than grown-ups do."},
 {e:"🔍",q:"When should we wash our hands?",o:[["🧼","Both before and after eating"],["🍽️","Only after eating"],["🌅","Only in the morning"],["🚫","Never"]],h:"Before, so germs do not go in with the food."},
 {e:"🧐",q:"What does brushing teeth twice a day prevent?",o:[["🦷","Tooth decay"],["👀","Weak eyes"],["💇","Hair fall"],["🦵","Tired legs"]],h:"Sugar left on teeth causes holes."},
@@ -1174,7 +1210,7 @@ name:"Sports & Fun", deva:"खेल-कूद", emoji:"🏏", color:"brick", qs
 {e:"🔢",q:"How many players are there in a cricket team?",o:[["1️⃣1️⃣","Eleven"],["5️⃣","Five"],["7️⃣","Seven"],["9️⃣","Nine"]],h:"Ten plus one more."},
 {e:"🏑",q:"How many players are there in a football team?",o:[["1️⃣1️⃣","Eleven"],["5️⃣","Five"],["7️⃣","Seven"],["9️⃣","Nine"]],h:"The same number as a cricket team!"},
 {e:"🤸",q:"How many players are there in a kabaddi team on the mat?",o:[["7️⃣","Seven"],["1️⃣1️⃣","Eleven"],["5️⃣","Five"],["3️⃣","Three"]],h:"Same as the days in a week."},
-{e:"🪵",q:"How many stumps are there on one side in cricket?",o:[["3️⃣","Three"],["2️⃣","Two"],["4️⃣","Four"],["5️⃣","Five"]],h:"Three sticks with two bails on top."},
+{e:"🪵",q:"How many stumps are there on one side in cricket?",o:[["3️⃣","Three"],["2️⃣","Two"],["4️⃣","Four"],["5️⃣","Five"]],h:"Two bails rest across the top, and there is one more stump than bails."},
 {e:"❓",q:"Who says out or not out in cricket?",o:[["👨‍⚖️","The umpire"],["🧢","The captain"],["🏏","The bowler"],["🙌","The fielder"]],h:"He raises one finger for out!"},
 {e:"🔍",q:"Who leads a cricket team?",o:[["🧢","The captain"],["👨‍⚖️","The umpire"],["📋","The coach"],["📣","The fan"]],h:"He decides who bowls next."},
 {e:"🧐",q:"What do we call it when the ball flies over the boundary?",o:[["6️⃣","A sixer"],["4️⃣","A four"],["🦆","A duck"],["🎯","A wicket"]],h:"Chhakka! The biggest hit of all."},
@@ -1199,7 +1235,7 @@ name:"Sports & Fun", deva:"खेल-कूद", emoji:"🏏", color:"brick", qs
 {e:"🎽",q:"Which board game uses a striker and small round coins?",o:[["🎯","Carrom"],["♟️","Chess"],["🎲","Ludo"],["🏏","Cricket"]],h:"You flick the striker with your finger."},
 {e:"🎲",q:"How many people can play Ludo together?",o:[["4️⃣","Four"],["2️⃣","Two"],["6️⃣","Six"],["8️⃣","Eight"]],h:"Red, green, yellow and blue!"},
 {e:"❓",q:"In which game do you climb ladders and slide down snakes?",o:[["🐍","Snakes and Ladders"],["♟️","Chess"],["🎯","Carrom"],["🏏","Cricket"]],h:"Roll the dice and hope for no snake!"},
-{e:"🔍",q:"In which Indian game do you hold your breath and chant?",o:[["🤸","Kabaddi"],["🏏","Cricket"],["♟️","Chess"],["⚽","Football"]],h:"Kabaddi kabaddi kabaddi!"},
+{e:"🔍",q:"In which Indian game do you hold your breath and chant?",o:[["🤸","Kabaddi"],["🏏","Cricket"],["♟️","Chess"],["⚽","Football"]],h:"You chant the game's own name over and over while you raid."},
 {e:"🧐",q:"In which game does one child close their eyes and others hide?",o:[["🙈","Hide and seek"],["🏏","Cricket"],["♟️","Chess"],["🎲","Ludo"]],h:"Chhupan chhupai! Ready or not, here I come."},
 {e:"💭",q:"In which game do we hop on squares drawn on the ground?",o:[["🦵","Hopscotch"],["🏏","Cricket"],["♟️","Chess"],["🎯","Carrom"]],h:"Stapu! You throw a stone and hop."},
 {e:"📣",q:"Which game do we play by jumping over a rope?",o:[["🪢","Skipping"],["♟️","Chess"],["🎲","Ludo"],["🎯","Carrom"]],h:"The rope goes round and round under your feet."},
@@ -1269,7 +1305,7 @@ name:"Life Skills", deva:"अच्छी बातें", emoji:"💡", color:
 {e:"🐕",q:"What should you do before touching a street dog?",o:[["🧑","Ask a grown-up first"],["✋","Grab it"],["🏃","Chase it"],["🐾","Pull its tail"]],h:"Even friendly dogs can get frightened."},
 {e:"🎁",q:"Someone gives you a birthday gift. What should you say?",o:[["😊","Thank you"],["➕","Give me more"],["🤐","Nothing"],["👋","Go away"]],h:"Two magic words, with a big smile."},
 {e:"🧒",q:"A new child in class is sitting all alone. What should you do?",o:[["🤝","Talk to them and be friends"],["👀","Ignore them"],["😆","Laugh at them"],["🚫","Push them away"]],h:"Imagine being new and knowing nobody."},
-{e:"😢",q:"You see a classmate being teased. What should you do?",o:[["👩‍🏫","Tell the teacher and stand with them"],["😆","Join in"],["😂","Laugh"],["🚶","Walk away"]],h:"Being a silent watcher does not help them."},
+{e:"😢",q:"You see a classmate being teased. What should you do?",o:[["👩‍🏫","Tell the teacher and stand with them"],["😆","Join in with the teasing yourself"],["😂","Laugh along with the other children"],["🚶","Walk away and say nothing at all"]],h:"Being a silent watcher does not help them."},
 {e:"💡",q:"You want to speak while the teacher is talking. What should you do?",o:[["✋","Raise your hand and wait"],["📣","Shout it out"],["🧍","Stand up suddenly"],["🗣️","Talk loudly"]],h:"Wait for your turn, politely."},
 {e:"📝",q:"You got fewer marks than your friend. What should you do?",o:[["📚","Study harder next time"],["😭","Cry all day"],["😠","Get angry at your friend"],["📄","Tear up the paper"]],h:"Marks can be improved. Being upset cannot."},
 {e:"❓",q:"You do not understand something in class. What should you do?",o:[["🙋","Ask the teacher"],["🤐","Stay quiet forever"],["😭","Cry"],["📋","Copy without understanding"]],h:"There is no such thing as a silly question!"},
@@ -1302,28 +1338,28 @@ name:"Life Skills", deva:"अच्छी बातें", emoji:"💡", color:
 {e:"🎨",q:"Your friend's drawing is not as good as yours. What should you say?",o:[["🤗","Nice try, let's draw together"],["😠","Yours is ugly"],["😆","Laugh at it"],["🤐","Nothing"]],h:"Kind words help people get better."},
 {e:"🤝",q:"Which is the best way to make new friends?",o:[["🤗","Be kind and share"],["📣","Shout"],["👊","Fight"],["💎","Show off"]],h:"Be the kind of friend you would like to have."},
 {e:"🌟",q:"What should we do when someone else wins a prize?",o:[["👏","Clap and say well done"],["😠","Be jealous"],["😭","Cry"],["🙈","Walk out"]],h:"Being happy for others makes you happy too."},
-{e:"💭",q:"Your friend keeps telling lies. What should you do?",o:[["🗣️","Tell them kindly that truth is better"],["🤥","Lie with them"],["📣","Shout at them"],["😆","Laugh"]],h:"A real friend helps you do the right thing."},
+{e:"💭",q:"Your friend keeps telling lies. What should you do?",o:[["🗣️","Tell them kindly that truth is better"],["🤥","Tell a few lies along with them"],["📣","Shout at them in front of everyone"],["😆","Laugh, because the lies are funny"]],h:"A real friend helps you do the right thing."},
 {e:"🔍",q:"You see someone being unkind to a smaller child. What should you do?",o:[["🧑","Tell a grown-up at once"],["😆","Laugh"],["🚶","Walk away"],["👊","Hit them back"]],h:"Grown-ups can stop it safely."},
 {e:"🧐",q:"You broke your friend's toy by mistake. What should you do?",o:[["😔","Say sorry and offer to fix it"],["🙈","Hide it"],["🤥","Say it was already broken"],["🏃","Run away"]],h:"Honesty first, then help put it right."},
 {e:"🤷",q:"You are the last to leave a room. What should you do?",o:[["💡","Switch off the light and fan"],["🔊","Turn the TV up"],["🚪","Leave everything on"],["🪟","Open the fridge"]],h:"Saving power saves money and the planet."},
 {e:"💡",q:"You get a seat but an aunty is holding a baby. What should you do?",o:[["🪑","Offer her your seat"],["😴","Pretend to sleep"],["📱","Look at a phone"],["👀","Look away"]],h:"Her hands are full and yours are not."},
 {e:"🎓",q:"Someone compliments your drawing. What should you say?",o:[["😊","Thank you"],["🤷","It is nothing"],["😠","No it is not"],["🤐","Nothing at all"]],h:"Accept kind words gracefully."},
-{e:"📝",q:"You do not like the food served at a friend's house. What should you do?",o:[["🙏","Eat a little politely, or say no thank you"],["🤢","Say it is horrible"],["🗑️","Throw it away"],["😠","Get angry"]],h:"Someone worked hard to cook it."},
+{e:"📝",q:"You do not like the food served at a friend's house. What should you do?",o:[["🙏","Eat a little politely, or say no thank you"],["🤢","Say loudly that it tastes horrible"],["🗑️","Throw it away when nobody looks"],["😠","Get angry and refuse to sit down"]],h:"Someone worked hard to cook it."},
 {e:"💭",q:"You are at a wedding and feel bored. What should you do?",o:[["🧑","Tell your parents quietly"],["📣","Shout that it is boring"],["🏃","Run around the hall"],["😭","Cry loudly"]],h:"Use words, not noise."},
 {e:"🔍",q:"You find a lost puppy on the street. What should you do?",o:[["🧑","Tell a grown-up, do not pick it up"],["🏠","Take it home secretly"],["🏃","Chase it"],["🪨","Throw stones"]],h:"A frightened animal may bite, even a small one."},
 {e:"🧐",q:"Someone asks you to keep a secret that makes you feel uncomfortable. What should you do?",o:[["👨‍👩‍👧","Tell your parents anyway"],["🤐","Keep it forever"],["📣","Tell all your friends"],["🙈","Forget it"]],h:"Some secrets are not safe to keep. Always tell family."},
 {e:"🤷",q:"A grown-up you do not know offers you a ride home. What should you do?",o:[["🚫","Say no and go to a teacher or parent"],["🚗","Get in"],["🙏","Say thank you and get in"],["🤝","Shake hands first"]],h:"Only go with people your parents named."},
-{e:"💡",q:"You want a toy that your parents cannot afford. What should you do?",o:[["🙂","Understand, and wait for a special day"],["😭","Cry in the shop"],["😠","Get angry"],["🤾","Throw a tantrum"]],h:"Money is limited in every family."},
+{e:"💡",q:"You want a toy that your parents cannot afford. What should you do?",o:[["🙂","Understand, and wait for a special day"],["😭","Cry in the shop until they buy it"],["😠","Get angry and refuse to go home"],["🤾","Throw a tantrum in front of everyone"]],h:"Money is limited in every family."},
 {e:"🎓",q:"You finish your work early in class. What should you do?",o:[["📚","Read quietly or help a friend"],["📣","Shout that you are done"],["🏃","Run around"],["😴","Sleep on the desk"]],h:"Stay quiet so others can finish too."},
 {e:"📝",q:"You see a friend struggling with a sum. What should you do?",o:[["🤝","Help them understand it"],["📋","Give them the answer only"],["😆","Laugh at them"],["🏃","Walk away"]],h:"Teaching them is better than telling them."},
 {e:"💭",q:"You lose in a game your friend wins. What is the kind thing to do?",o:[["👏","Congratulate them"],["😠","Say the game was unfair"],["😭","Cry"],["🚫","Never play again"]],h:"There is always another game tomorrow."},
-{e:"🔍",q:"A classmate has a different religion from yours. How should you treat them?",o:[["🤝","Exactly the same as everyone else"],["🚫","Avoid them"],["😆","Tease them"],["👉","Point at them"]],h:"India's beauty is that we all live together."},
-{e:"🧐",q:"A classmate cannot walk and uses a wheelchair. What should you do?",o:[["🤝","Include them and ask if they want help"],["👀","Stare at them"],["🚫","Leave them out"],["😆","Laugh"]],h:"Ask first; do not just push their chair."},
+{e:"🔍",q:"A classmate has a different religion from yours. How should you treat them?",o:[["🤝","Exactly the same as everyone else"],["🚫","Avoid them and sit somewhere else"],["😆","Tease them about what they believe"],["👉","Point at them and tell the others"]],h:"India's beauty is that we all live together."},
+{e:"🧐",q:"A classmate cannot walk and uses a wheelchair. What should you do?",o:[["🤝","Include them and ask if they want help"],["👀","Stare at them whenever they pass"],["🚫","Leave them out of all the games"],["😆","Laugh at the way they move about"]],h:"Ask first; do not just push their chair."},
 {e:"🤷",q:"You spilled colours on the classroom floor. What should you do?",o:[["🧽","Clean it up yourself"],["👉","Blame someone else"],["🏃","Run away"],["🙈","Cover it with a bag"]],h:"Own your mess."},
 {e:"💡",q:"You want to watch TV but your sister is studying. What should you do?",o:[["🔉","Watch quietly or wait"],["🔊","Turn it up loud"],["📣","Argue"],["🚪","Slam the door"]],h:"Share the space kindly."},
-{e:"🎓",q:"You feel very angry. What is a good thing to do first?",o:[["🫁","Take deep breaths and count to ten"],["👊","Hit something"],["📣","Scream"],["🤾","Throw things"]],h:"Calm the body, then use words."},
+{e:"🎓",q:"You feel very angry. What is a good thing to do first?",o:[["🫁","Take deep breaths and count to ten"],["👊","Hit something hard to let it out"],["📣","Scream as loudly as you possibly can"],["🤾","Throw things around the room"]],h:"Calm the body, then use words."},
 {e:"📝",q:"What should you do if you see a tap or light left on in school?",o:[["🔌","Switch it off"],["🚶","Walk past"],["📣","Tell nobody"],["💦","Play with the water"]],h:"School resources belong to everyone."},
-{e:"💭",q:"What should you do before crossing to help someone?",o:[["👀","Make sure you are safe yourself first"],["🏃","Run into the road"],["🙈","Close your eyes"],["📣","Shout"]],h:"You cannot help anyone if you get hurt too."},
+{e:"💭",q:"What should you do before crossing to help someone?",o:[["👀","Make sure you are safe yourself first"],["🏃","Run straight into the road at once"],["🙈","Close your eyes and hope for the best"],["📣","Shout as loudly as you possibly can"]],h:"You cannot help anyone if you get hurt too."},
 {e:"🔍",q:"Your friend shares their lunch with you. What should you do next time?",o:[["🤝","Share yours with them"],["🙈","Forget about it"],["🍽️","Eat theirs again"],["😆","Laugh"]],h:"Kindness goes both ways."},
 {e:"🧐",q:"You are given pocket money. What is a wise thing to do with some of it?",o:[["🐷","Save a little in a piggy bank"],["🍬","Spend it all on sweets"],["🗑️","Throw it"],["🙈","Hide it and forget"]],h:"Saving a little each time adds up fast."},
 {e:"🤷",q:"What makes a person truly great?",o:[["❤️","Being kind and honest"],["💰","Having lots of money"],["📏","Being tall"],["🏆","Winning always"]],h:"Gandhi ji owned almost nothing."}
@@ -1380,7 +1416,7 @@ name:"Maths", deva:"गणित", emoji:"🔢", color:"chalk", qs:[
 {e:"🕐",q:"Which hand of the clock is LONGER?",o:[["⏱️","The minute hand"],["⏰","The hour hand"],["🟰","Both same"],["0️⃣","Neither"]],h:"The one that moves faster is the long one."},
 {e:"🕛",q:"What time is it when both clock hands point to 12?",o:[["1️⃣2️⃣","12 o'clock"],["6️⃣","6 o'clock"],["3️⃣","3 o'clock"],["9️⃣","9 o'clock"]],h:"Both hands together at the top."},
 {e:"🏁",q:"If you are 3rd in a line, how many children are in FRONT of you?",o:[["2️⃣","2"],["3️⃣","3"],["1️⃣","1"],["4️⃣","4"]],h:"First and second are ahead of you."},
-{e:"❓",q:"Which sign means ADD?",o:[["➕","+"],["➖","-"],["🟰","="],["✖️","x"]],h:"It looks like a little plus cross."},
+{e:"❓",q:"Which sign means ADD?",o:[["➕","+"],["➖","-"],["🟰","="],["✖️","x"]],h:"Two short lines crossing: one standing up, one lying down."},
 {e:"🤔",q:"Which sign means TAKE AWAY?",o:[["➖","-"],["➕","+"],["🟰","="],["✖️","x"]],h:"Just one straight line lying down."},
 {e:"📝",q:"Which sign means IS EQUAL TO?",o:[["🟰","="],["➕","+"],["➖","-"],["✖️","x"]],h:"Two little lines, exactly the same."},
 {e:"🔢",q:"What is the EXPANDED form of 16?",o:[["➕","10 + 6"],["➕","10 + 5"],["➕","1 + 6"],["➕","1 + 5"]],h:"One ten and six ones."},
@@ -1433,7 +1469,7 @@ name:"Science", deva:"विज्ञान", emoji:"🔬", color:"cyan", qs:[
 {e:"💨",q:"Which of these is a GAS?",o:[["🌬️","Air"],["💧","Water"],["🪨","Stone"],["🥛","Milk"]],h:"You cannot see it, but you can feel it."},
 {e:"🫁",q:"Do we need air to live?",o:[["✅","Yes"],["❌","No"],["🌙","Only at night"],["😴","Only when sleeping"]],h:"Hold your breath and count. Not for long!"},
 {e:"🍃",q:"What do we call moving air?",o:[["🌬️","Wind"],["🌧️","Rain"],["⚡","Lightning"],["🌈","A rainbow"]],h:"It makes the leaves and your hair move."},
-{e:"🌑",q:"What makes a shadow?",o:[["🚧","Something blocking the light"],["💧","Water"],["🌬️","Wind"],["🔊","Sound"]],h:"Stand in the sun and look at the ground."},
+{e:"🌑",q:"What makes a shadow?",o:[["🚧","Something blocking the light"],["💧","Water spilled across the floor"],["🌬️","Wind blowing hard against us"],["🔊","A loud sound somewhere nearby"]],h:"Stand in the sun and look at the ground."},
 {e:"🌚",q:"Can we see a shadow in a completely dark room?",o:[["❌","No"],["✅","Yes"],["🌙","Only at night"],["☀️","Only in summer"]],h:"No light means no shadow at all."},
 {e:"🤔",q:"Which of these gives us light at home at night?",o:[["💡","A bulb"],["🌑","A shadow"],["🚪","A cupboard"],["🪑","A table"]],h:"Flick the switch and it glows."},
 {e:"🚰",q:"Which of these is a source of water?",o:[["🏞️","A river"],["🪑","A chair"],["📕","A book"],["👟","A shoe"]],h:"It flows and flows and never stops."},
@@ -1488,9 +1524,9 @@ name:"Science", deva:"विज्ञान", emoji:"🔬", color:"cyan", qs:[
 {e:"🧪",q:"Which animal would you find in a nest, an egg and a beak?",o:[["🐦","A bird"],["🐄","A cow"],["🐟","A fish"],["🐍","A snake"]],h:"All three belong to the same creature."},
 {e:"🤔",q:"Odd one out: which does NOT come from a plant?",o:[["🥛","Milk"],["🍚","Rice"],["🍎","Apple"],["🌾","Wheat"]],h:"Three grow in fields or on trees."},
 {e:"🧐",q:"What should we do with waste water from washing vegetables?",o:[["🪴","Use it to water plants"],["🗑️","Throw it down the drain"],["🌊","Pour it on the road"],["🔥","Boil it away"]],h:"It is clean enough for the garden."},
-{e:"🔬",q:"Plants are living, but what can they NOT do?",o:[["🚶","Move from place to place on their own"],["🌱","Grow"],["🫁","Breathe"],["💧","Need water"]],h:"They are rooted to one spot, but they are still alive."},
+{e:"🔬",q:"Plants are living, but what can they NOT do?",o:[["🚶","Move from place to place on their own"],["🌱","Grow taller as the months pass"],["🫁","Breathe the air that is around them"],["💧","Need water to stay alive and well"]],h:"They are rooted to one spot, but they are still alive."},
 {e:"🧪",q:"The touch-me-not plant droops when touched. What does this show?",o:[["🌿","Plants can move their body parts"],["🚶","Plants can walk"],["🪨","Plants are non-living"],["😴","Plants are sleeping"]],h:"Chhui-mui! It moves a part of itself, not its whole self."},
-{e:"🤔",q:"A car can move. Why is it still NON-LIVING?",o:[["⛽","It cannot move on its own, it needs fuel and a driver"],["🏃","It moves too fast"],["🔊","It is noisy"],["🎨","It is colourful"]],h:"Living things move by themselves."},
+{e:"🤔",q:"A car can move. Why is it still NON-LIVING?",o:[["⛽","It cannot move on its own, it needs fuel and a driver"],["🏃","Because it moves far too fast for us"],["🔊","Because it makes a great deal of noise"],["🎨","Because it is painted bright colours"]],h:"Living things move by themselves."},
 {e:"🧐",q:"Gel beads swell up in water. Why are they still non-living?",o:[["⏳","The change is not permanent growth"],["💧","They like water"],["🎨","They are colourful"],["⚪","They are round"]],h:"Real growth does not undo itself when you take the water away."},
 {e:"💭",q:"Which of these can living things do that non-living things cannot?",o:[["👶","Reproduce, to make young ones"],["🎨","Be colourful"],["📏","Be big"],["⚖️","Be heavy"]],h:"Only living things make more of themselves."},
 {e:"🎓",q:"Are ALL living things natural?",o:[["✅","Yes, every living thing is natural"],["❌","No, some are man-made"],["🏭","Only some"],["🤷","Nobody knows"]],h:"People have never made a living thing from scratch."},
@@ -1579,9 +1615,9 @@ name:"Computer", deva:"कंप्यूटर", emoji:"💻", color:"chip", qs
 {e:"🎓",q:"What should we do if a strange window pops up asking for money?",o:[["🧑","Close it and tell a grown-up"],["💳","Give the card number"],["👆","Click on it"],["📞","Call the number"]],h:"These tricks are called scams."},
 {e:"📝",q:"How much screen time is healthy for a Class 1 child each day?",o:[["⏳","About an hour or less"],["🌞","All day"],["🌙","All night"],["📆","All weekend"]],h:"Play outside for much longer than you sit inside."},
 {e:"💻",q:"What should we do to our eyes during long computer use?",o:[["👀","Blink often and look away sometimes"],["🙈","Never blink"],["👓","Stare harder"],["💡","Turn off all lights"]],h:"Staring at a screen dries the eyes out."},
-{e:"🔌",q:"What does a UPS do during a power cut?",o:[["🔋","Keeps the computer on for a short time"],["🖨️","Prints"],["🔊","Plays music"],["🧹","Cleans"]],h:"Just long enough to save and shut down."},
+{e:"🔌",q:"What does a UPS do during a power cut?",o:[["🔋","Keeps the computer on for a short time"],["🖨️","It prints out all your unsaved work"],["🔊","It plays music until the power returns"],["🧹","It cleans the dust off the screen"]],h:"Just long enough to save and shut down."},
 {e:"🤔",q:"Which of these is a computer we use every day without noticing?",o:[["📱","A smartphone"],["🪑","A chair"],["🥄","A spoon"],["📕","A book"]],h:"It has a screen, memory and programs."},
-{e:"🧐",q:"Who should decide how long you use the computer?",o:[["👨‍👩‍👧","Your parents, together with you"],["🧒","Only you"],["🤖","The computer"],["🐕","The dog"]],h:"Agree a rule and stick to it."},
+{e:"🧐",q:"Who should decide how long you use the computer?",o:[["👨‍👩‍👧","Your parents, together with you"],["🧒","Only you, and nobody else at all"],["🤖","The computer decides this by itself"],["🐕","The family dog decides for everyone"]],h:"Agree a rule and stick to it."},
 {e:"💻",q:"Which kind of machine needs human power to work?",o:[["✋","A manual machine"],["⚡","An automatic machine"],["⛽","A fuel machine"],["🤖","A robot"]],h:"Like a bow and arrow, or a cart pulled by bullocks."},
 {e:"🔌",q:"Which kind of machine needs electricity to work?",o:[["⚡","An automatic machine"],["✋","A manual machine"],["🪓","A hand tool"],["🏹","A bow and arrow"]],h:"A fan and a fridge are both this kind."},
 {e:"⛽",q:"Which of these machines runs on FUEL, not electricity?",o:[["🚗","A car"],["🪭","A fan"],["🧊","A refrigerator"],["💻","A computer"]],h:"You fill it at a petrol pump."},
@@ -1603,12 +1639,12 @@ name:"Computer", deva:"कंप्यूटर", emoji:"💻", color:"chip", qs
 {e:"🔍",q:"Out of a keyboard, printer, mouse and speaker, which one makes SOUND?",o:[["🔊","The speaker"],["⌨️","The keyboard"],["🖨️","The printer"],["🖱️","The mouse"]],h:"The other three are silent."},
 {e:"🏦",q:"How do computers help at a BANK?",o:[["💰","They keep details of people's money"],["🍚","They cook food"],["👕","They wash clothes"],["🚗","They drive cars"]],h:"Every account and every transaction is stored."},
 {e:"🏫",q:"How do computers help at SCHOOL?",o:[["📅","They prepare the exam time table"],["🍳","They cook the mid-day meal"],["🧹","They sweep the floor"],["🚌","They drive the bus"]],h:"Also report cards and attendance."},
-{e:"📚",q:"How do computers help in a LIBRARY?",o:[["📖","They keep a list of books issued and returned"],["🍽️","They serve food"],["🧼","They clean books"],["✍️","They write the books"]],h:"Who borrowed what, and when it is due back."},
+{e:"📚",q:"How do computers help in a LIBRARY?",o:[["📖","They keep a list of books issued and returned"],["🍽️","They serve food to everyone reading"],["🧼","They clean the dust off the books"],["✍️","They write all the books themselves"]],h:"Who borrowed what, and when it is due back."},
 {e:"🏥",q:"How do computers help in a HOSPITAL?",o:[["🩺","They keep patients' records"],["🍲","They cook for patients"],["🧹","They clean the wards"],["🚑","They drive the ambulance"]],h:"Admission, discharge and test reports."},
 {e:"🛒",q:"How do computers help in a SHOPPING MALL?",o:[["🧾","They make the bill at the counter"],["👕","They stitch the clothes"],["🧹","They sweep the floor"],["🚗","They park the cars"]],h:"Beep! The price appears on the screen."},
 {e:"🏨",q:"How do computers help in a HOTEL?",o:[["🛏️","They keep the guest list and room numbers"],["🍳","They cook the food"],["🧺","They wash the sheets"],["🚗","They drive guests around"]],h:"Who is staying, and in which room."},
 {e:"🚉",q:"How do computers help us travel?",o:[["🎫","We can book train and plane tickets"],["🚶","They carry our bags"],["🍽️","They feed us"],["😴","They make us sleep"]],h:"IRCTC does exactly this."},
-{e:"💻",q:"How do computers help a PUBLICATION HOUSE?",o:[["📰","They help print newspapers and books"],["🌾","They grow crops"],["👕","They wash clothes"],["🚗","They drive"]],h:"Every page is designed on one first."},
+{e:"💻",q:"How do computers help a PUBLICATION HOUSE?",o:[["📰","They help print newspapers and books"],["🌾","They grow crops out in the fields"],["👕","They wash and dry all the clothes"],["🚗","They drive people around the city"]],h:"Every page is designed on one first."},
 {e:"❌",q:"Which of these can a computer NOT do for you?",o:[["🍽️","Eat your food"],["🎵","Play music"],["📧","Send a message"],["🎨","Draw a picture"]],h:"A computer has no mouth!"},
 {e:"✅",q:"Which of these tasks can a computer do?",o:[["🎯","All of these"],["🎵","Play music"],["🎨","Draw pictures"],["🧮","Do sums"]],h:"Look carefully. It can do every one of them."},
 {e:"🎓",q:"Unscramble the letters to find a place that uses computers: OOCHLS",o:[["🏫","SCHOOL"],["🏠","HOME"],["🛒","SHOP"],["🏢","OFFICE"]],h:"Six letters. You go there every morning."},
@@ -1641,13 +1677,13 @@ name:"Computer", deva:"कंप्यूटर", emoji:"💻", color:"chip", qs
 {e:"🔍",q:"In MS-Paint, where do you actually do your drawing?",o:[["🖼️","In the drawing area"],["📛","On the title bar"],["📊","On the status bar"],["🎀","On the ribbon"]],h:"The big white space in the middle."},
 {e:"🧐",q:"In MS-Paint, where do all the tools and colours live?",o:[["🎀","On the ribbon"],["🖼️","In the drawing area"],["📊","On the status bar"],["🗑️","In the Recycle Bin"]],h:"The strip across the top."},
 {e:"🤔",q:"Select the INCORRECT match for MS-Paint tools.",o:[["❌","Eraser tool is used to draw rectangles"],["✅","Fill tool adds colour to shapes"],["✅","Line tool draws straight lines"],["✅","Pencil tool is for free-hand drawing"]],h:"Three pairs are right. One is nonsense."},
-{e:"💭",q:"Which ready-made shapes can you find in the Shapes tool?",o:[["🔷","Oval, rectangle, triangle and more"],["🐕","Animals only"],["🔤","Letters only"],["🔢","Numbers only"]],h:"A whole row of outlines to pick from."},
+{e:"💭",q:"Which ready-made shapes can you find in the Shapes tool?",o:[["🔷","Oval, rectangle, triangle and more"],["🐕","Pictures of animals and nothing else"],["🔤","Letters of the alphabet and nothing else"],["🔢","Numbers and digits and nothing else"]],h:"A whole row of outlines to pick from."},
 {e:"🎓",q:"What do we call a machine that can be programmed to do a person's work?",o:[["🤖","A robot"],["🪑","A chair"],["📕","A book"],["🥄","A spoon"]],h:"Some of them even walk and talk."},
 {e:"🔍",q:"Which gadget can we wear that counts our steps?",o:[["⌚","A smartwatch"],["🖨️","A printer"],["🖥️","A desktop"],["📻","A radio"]],h:"It sits on your wrist."},
 {e:"🧐",q:"Which small computer fits in a pocket and can also make calls?",o:[["📱","A smartphone"],["🖥️","A desktop"],["🖨️","A printer"],["🔊","A speaker"]],h:"Almost everyone carries one."},
 {e:"🤔",q:"What do we call a small program on a phone that does one job?",o:[["📲","An app"],["🖨️","A printer"],["🔌","A wire"],["🧊","A fridge"]],h:"You tap its icon to open it."},
 {e:"💭",q:"Which of these is the newest way to pay in India?",o:[["📱","Scanning a code with a phone"],["🪙","Only coins"],["📜","Writing a letter"],["🤝","Shaking hands"]],h:"UPI. You see the code at every shop now."},
-{e:"💻",q:"What is the DESKTOP on a computer?",o:[["🖥️","The first screen you see after it starts"],["▶️","The Start menu"],["🔑","Logging in"],["🔌","Booting"]],h:"It is covered in icons you can click."},
+{e:"💻",q:"What is the DESKTOP on a computer?",o:[["🖥️","The first screen you see after it starts"],["▶️","The Start menu down in the corner"],["🔑","Logging in with your name and password"],["🔌","Booting up when you press the button"]],h:"It is covered in icons you can click."},
 {e:"🔍",q:"Which of these can you NOT do with a mouse?",o:[["🎵","Listen to music"],["↗️","Move the pointer"],["📜","Move a page up or down"],["👆","Click on an icon"]],h:"Sound needs a different device altogether."},
 {e:"🧐",q:"Which of these is NOT a number key on the keyboard?",o:[["🔠","F2"],["2️⃣","2"],["5️⃣","5"],["0️⃣","0"]],h:"Keys beginning with F are function keys."},
 {e:"🤔",q:"What do we call the keys marked F1, F2, F3 and so on?",o:[["🔠","Function keys"],["🔢","Number keys"],["🔤","Letter keys"],["➡️","Arrow keys"]],h:"They sit in a row right along the top."},
@@ -1688,11 +1724,11 @@ name:"Logical Reasoning", deva:"तर्क शक्ति", emoji:"🧩", col
 {e:"📊",q:"In the row S T U V W X Y Z, which letter is 7th from the LEFT?",o:[["🆈","Y"],["🅷","X"],["🆄","U"],["🆃","T"]],h:"S is 1st, T is 2nd... keep counting to seven."},
 {e:"📊",q:"In the numbers 1 2 3 4 5 6 7, which one is exactly in the MIDDLE?",o:[["4️⃣","4"],["3️⃣","3"],["5️⃣","5"],["6️⃣","6"]],h:"Three numbers on each side of it."},
 {e:"📊",q:"In the toys 🚗 🧸 🪁 🎈 ⚽, which is 4th from the LEFT?",o:[["🎈","The balloon"],["🪁","The kite"],["⚽","The ball"],["🧸","The teddy"]],h:"Car, teddy, kite, then..."},
-{e:"📊",q:"Sita is taller than Meena. Meena is taller than Rani. Who is the TALLEST?",o:[["🧍","Sita"],["🧍","Meena"],["🧍","Rani"],["🟰","All the same"]],h:"Sita is above Meena, and Meena is above Rani."},
+{e:"📊",q:"Sita is taller than Meena. Meena is taller than Rani. Who is the TALLEST?",o:[["🧍","Sita"],["🧍","Meena"],["🧍","Rani"],["🟰","All the same"]],h:"Stand all three in a line, tallest at the front. Who is first?"},
 {e:"📊",q:"Ravi is 2nd in a race. How many children are AHEAD of him?",o:[["1️⃣","1"],["2️⃣","2"],["3️⃣","3"],["0️⃣","None"]],h:"Only the winner is in front of him."},
 {e:"📊",q:"Five children stand in a line. Amit is FIRST. Where is he standing?",o:[["⬅️","Right at the front"],["➡️","Right at the back"],["↔️","In the middle"],["🤷","Nowhere"]],h:"First means nobody is before him."},
 {e:"🔁",q:"What comes next in this COLOUR pattern: 🔴 🔵 🔴 🔵 __ ?",o:[["🔴","Red"],["🔵","Blue"],["🟢","Green"],["🟡","Yellow"]],h:"The two keep taking turns."},
-{e:"🔁",q:"What comes next in this SHAPE pattern: 🔺 🔺 ⚪ 🔺 🔺 ⚪ __ ?",o:[["🔺","Triangle"],["⚪","Circle"],["🟥","Square"],["▭","Rectangle"]],h:"Two triangles, then a circle, again and again."},
+{e:"🔁",q:"What comes next in this SHAPE pattern: 🔺 🔺 ⚪ 🔺 🔺 ⚪ __ ?",o:[["🔺","Triangle"],["⚪","Circle"],["🟥","Square"],["▭","Rectangle"]],h:"The same little group keeps repeating, and you have just finished one."},
 {e:"🔁",q:"What comes next: A B C D __ ?",o:[["🅴","E"],["🅵","F"],["🅲","C"],["🅶","G"]],h:"Sing the alphabet song!"},
 {e:"🔁",q:"What comes next: 1, 3, 5, 7, __ ?",o:[["9️⃣","9"],["8️⃣","8"],["🔟","10"],["6️⃣","6"]],h:"We are skipping one number each time."},
 {e:"🔁",q:"What comes next: 10, 20, 30, __ ?",o:[["4️⃣0️⃣","40"],["3️⃣5️⃣","35"],["5️⃣0️⃣","50"],["3️⃣1️⃣","31"]],h:"Jumping ten each time."},
@@ -1731,7 +1767,7 @@ name:"Logical Reasoning", deva:"तर्क शक्ति", emoji:"🧩", col
 {e:"🎓",q:"In the row 5 6 7 8 9, which number is 2nd from the RIGHT?",o:[["8️⃣","8"],["9️⃣","9"],["6️⃣","6"],["7️⃣","7"]],h:"Start at 9 and count back two."},
 {e:"📝",q:"In the word MANGO, which letter is 3rd?",o:[["🅽","N"],["🅼","M"],["🅶","G"],["🅾️","O"]],h:"M is first, A is second..."},
 {e:"🔎",q:"In a queue of 6 children, Meena is LAST. What is her position?",o:[["6️⃣","6th"],["1️⃣","1st"],["3️⃣","3rd"],["5️⃣","5th"]],h:"Last means nobody is behind her."},
-{e:"🧩",q:"Amit is shorter than Ravi. Ravi is shorter than Sohan. Who is SHORTEST?",o:[["🧍","Amit"],["🧍","Ravi"],["🧍","Sohan"],["🟰","All same"]],h:"Amit is below Ravi, who is below Sohan."},
+{e:"🧩",q:"Amit is shorter than Ravi. Ravi is shorter than Sohan. Who is SHORTEST?",o:[["🧍","Amit"],["🧍","Ravi"],["🧍","Sohan"],["🟰","All same"]],h:"Stand all three in a line, shortest at the front. Who is first?"},
 {e:"❓",q:"Rani is heavier than Sita. Sita is heavier than Gita. Who is LIGHTEST?",o:[["🪶","Gita"],["⚖️","Rani"],["🧍","Sita"],["🟰","All same"]],h:"Work down the line from heaviest."},
 {e:"🤔",q:"What comes next in this NUMBER pattern: 1, 2, 4, 8, __ ?",o:[["1️⃣6️⃣","16"],["1️⃣0️⃣","10"],["1️⃣2️⃣","12"],["9️⃣","9"]],h:"Each number is double the one before."},
 {e:"🧐",q:"What comes next: Z, Y, X, W, __ ?",o:[["🆅","V"],["🆄","U"],["🅰️","A"],["🅱️","B"]],h:"The alphabet, but going backwards."},
@@ -1838,7 +1874,7 @@ name:"English Words", deva:"शब्द और व्याकरण", emoji:"�
 {e:"💭",q:"What does CEASE mean?",o:[["🛑","To stop"],["🚶","To walk"],["🏃","To move"],["🌱","To live"]],h:"The rain ceased means the rain stopped."},
 {e:"🎓",q:"What does EXHIBIT mean?",o:[["🖼️","To display or show"],["🙈","To hide"],["🤐","To conceal"],["🤔","To think"]],h:"A museum does this with old objects."},
 {e:"📝",q:"What does ANXIETY mean?",o:[["😟","Worry"],["😌","Ease"],["🙂","Content"],["☮️","Peace"]],h:"The feeling before a big test."},
-{e:"🔎",q:"What does RESTRICTED mean?",o:[["🚧","Limited, not allowed everywhere"],["🌍","General"],["🔢","Countless"],["📏","Major"]],h:"A restricted area is one you may not enter."},
+{e:"🔎",q:"What does RESTRICTED mean?",o:[["🚧","Limited, not allowed everywhere"],["🌍","General, and open to every single person"],["🔢","Countless, too many to ever count"],["📏","Major, the biggest and most important"]],h:"A restricted area is one you may not enter."},
 {e:"🔤",q:"What does SPLENDID mean?",o:[["✨","Glorious and wonderful"],["😐","Normal"],["🤷","Ordinary"],["📏","Usual"]],h:"A much stronger word than good."},
 {e:"↔️",q:"What does FAMILIAR mean?",o:[["🤝","Well known to you"],["🆕","New"],["💎","Rare"],["❓","Uncommon"]],h:"A familiar face is one you recognise."},
 {e:"🧐",q:"What does BRAVERY mean?",o:[["🦁","Courage"],["😨","Fright"],["🙈","Timidity"],["😰","Fearfulness"]],h:"What a soldier shows at the border."},
@@ -1871,13 +1907,13 @@ name:"English Words", deva:"शब्द और व्याकरण", emoji:"�
 {e:"↔️",q:"What is the plural of MAN?",o:[["👨","Men"],["👥","Mans"],["🧑","Manes"],["👤","Man"]],h:"One letter changes in the middle."},
 {e:"🧐",q:"What is the plural of LEAF?",o:[["🍃","Leaves"],["🍂","Leafs"],["🌿","Leafes"],["🍁","Leaf"]],h:"The f turns into a v."},
 {e:"🤔",q:"What is the plural of BUS?",o:[["🚌","Buses"],["🚐","Buss"],["🚍","Busies"],["🚎","Bus"]],h:"Words ending in s add es."},
-{e:"💭",q:"Choose the right word: I have ___ pencils in my bag.",o:[["🔢","many"],["🥛","much"],["🤏","a little"],["📏","some of"]],h:"Pencils can be counted, so we use many."},
+{e:"💭",q:"Choose the right word: I have ___ pencils in my bag.",o:[["🔢","many"],["🥛","much"],["🤏","a little"],["📏","some of"]],h:"Pencils can be counted one by one. Which word suits countable things?"},
 {e:"🎓",q:"Choose the right word: There is ___ milk in the jar.",o:[["🥛","some"],["🔢","many"],["📚","lots"],["🤏","a few of"]],h:"Milk cannot be counted one by one."},
 {e:"📝",q:"Choose the right word: There are ___ books on the shelf.",o:[["🔢","many"],["🥛","much"],["🤏","little"],["➕","a lot"]],h:"Books are countable."},
 {e:"🔎",q:"Choose the right word: Can I have some ___ coffee, please?",o:[["➕","more"],["🔢","many"],["📏","much"],["📚","lots"]],h:"You already have some and want another helping."},
-{e:"🔤",q:"Which word goes with things we CAN count?",o:[["🔢","Many"],["🥛","Much"],["🤏","A little"],["💧","A bit of"]],h:"Many apples, but not many milk."},
-{e:"↔️",q:"Which word goes with things we CANNOT count?",o:[["🥛","Much"],["🔢","Many"],["🔟","A few"],["📚","Several"]],h:"Much water, much sugar, much rice."},
-{e:"🧐",q:"Choose the right word: There are only ___ mangoes left on the tree.",o:[["🤏","a few"],["🥛","a little"],["📏","much"],["💧","some of"]],h:"A few is for countable things, a little for uncountable ones."},
+{e:"🔤",q:"Which word goes with things we CAN count?",o:[["🔢","Many"],["🥛","Much"],["🤏","A little"],["💧","A bit of"]],h:"Apples you can count. Milk you cannot."},
+{e:"↔️",q:"Which word goes with things we CANNOT count?",o:[["🥛","Much"],["🔢","Many"],["🔟","A few"],["📚","Several"]],h:"Water, sugar and rice come in amounts, not in ones and twos."},
+{e:"🧐",q:"Choose the right word: There are only ___ mangoes left on the tree.",o:[["🤏","a few"],["🥛","a little"],["📏","much"],["💧","some of"]],h:"A little is for things you cannot count. Mangoes you can."},
 {e:"🤔",q:"Choose the right word: She spilled ___ curry on the floor.",o:[["🍛","some"],["🔢","a few"],["🔟","few"],["📏","the little"]],h:"Curry is not counted one by one."},
 {e:"💭",q:"Find the noun: The cat is sleeping on the mat.",o:[["🐈","Cat"],["😴","Sleeping"],["📍","On"],["➕","Is"]],h:"Which word names an animal or a thing?"},
 {e:"🎓",q:"Find the noun: The sun is shining in the sky.",o:[["☀️","Both sun and sky"],["✨","Shining"],["➕","Is"],["📍","In"]],h:"There are two naming words in this one."},
@@ -1887,12 +1923,12 @@ name:"English Words", deva:"शब्द और व्याकरण", emoji:"�
 {e:"🔤",q:"Choose the right word: The clock is hanging ___ the wall.",o:[["📍","on"],["📍","in"],["📍","under"],["📍","of"]],h:"It is fixed to the surface of the wall."},
 {e:"🔤",q:"Choose the right word: The mouse is hiding ___ the sofa.",o:[["📍","under"],["📍","over"],["📍","at"],["📍","up"]],h:"Below it, out of sight."},
 {e:"↔️",q:"Choose the right word: The birds flew ___ the tree.",o:[["📍","over"],["📍","in"],["📍","on"],["📍","below"]],h:"Above it, and across."},
-{e:"🧐",q:"Choose the right word: Ratna sat ___ Sonu and Palak.",o:[["📍","between"],["📍","among"],["📍","besides"],["📍","over"]],h:"Between is for two. Among is for three or more."},
+{e:"🧐",q:"Choose the right word: Ratna sat ___ Sonu and Palak.",o:[["📍","between"],["📍","among"],["📍","besides"],["📍","over"]],h:"Among is for three or more. Here there are only two."},
 {e:"🤔",q:"Choose the right word: The bus stops ___ the school gate.",o:[["📍","near"],["📍","in"],["📍","far"],["📍","on"]],h:"Close by, but not inside it."},
 {e:"💭",q:"Choose the right word: Rajat and his friends are playing ___ the garden.",o:[["📍","in"],["📍","on"],["📍","of"],["📍","at"]],h:"They are inside it."},
 {e:"🎓",q:"Choose the right word: The sun is shining ___ the trees.",o:[["📍","above"],["📍","below"],["📍","among"],["📍","under"]],h:"Higher up than the treetops."},
 {e:"📝",q:"Choose the right word: The girl threw the ball ___ of the window.",o:[["📍","out"],["📍","near"],["📍","above"],["📍","in"]],h:"From inside to outside."},
-{e:"🔎",q:"Which word do we use for THREE or more people?",o:[["👥","Among"],["2️⃣","Between"],["📍","Over"],["📍","Under"]],h:"He shared the sweets among all the children."},
+{e:"🔎",q:"Which word do we use for THREE or more people?",o:[["👥","Among"],["2️⃣","Between"],["📍","Over"],["📍","Under"]],h:"Between is for two only. A whole group needs the other word."},
 {e:"❓",q:"Choose the right word: The cat is sitting ___ the box, inside it.",o:[["📦","in"],["📍","on"],["📍","under"],["📍","over"]],h:"Inside means in."},
 {e:"✏️",q:"Choose the joining word: Raj did not come to school ___ he was sick.",o:[["🔗","because"],["🔗","and"],["🔗","so"],["🔗","but"]],h:"It gives the reason."},
 {e:"🔤",q:"Choose the joining word: Are you coming, ___ shall I leave without you?",o:[["🔗","or"],["🔗","nor"],["🔗","but"],["🔗","and"]],h:"There are two choices here."},
@@ -1992,7 +2028,7 @@ name:"English Words", deva:"शब्द और व्याकरण", emoji:"�
 {e:"🧐",q:"Which tense is this? India will win the World Cup.",o:[["⏭️","Simple future"],["⏮️","Simple past"],["🔁","Simple present"],["▶️","Present continuous"]],h:"It has not happened yet."},
 {e:"🤔",q:"Which tense is this? We will finish our work in two hours.",o:[["⏭️","Simple future"],["🔁","Simple present"],["⏮️","Simple past"],["0️⃣","None of these"]],h:"Two hours from now."},
 {e:"💭",q:"Which tense is this? He finished his assignment before dinner.",o:[["⏮️","Simple past"],["🔁","Simple present"],["⏭️","Simple future"],["0️⃣","None of these"]],h:"It is already done."},
-{e:"🎓",q:"Which word usually tells us a sentence is about the FUTURE?",o:[["⏭️","will"],["⏮️","did"],["🤲","was"],["✅","had"]],h:"I will go, she will come."},
+{e:"🎓",q:"Which word usually tells us a sentence is about the FUTURE?",o:[["⏭️","will"],["⏮️","did"],["🤲","was"],["✅","had"]],h:"Three of these point backwards in time. Only one points ahead."},
 {e:"📝",q:"Which word usually tells us a sentence is about the PAST?",o:[["⏮️","yesterday"],["⏭️","tomorrow"],["🔁","every day"],["⏰","soon"]],h:"It has already happened."}
 ]}]);
 window.MBQ_BANK = (window.MBQ_BANK || []).concat([{
@@ -2117,7 +2153,7 @@ name:"Gadgets & Tech", deva:"गैजेट और तकनीक", emoji:"�
 {e:"🏥",q:"Which machine in a hospital takes a picture of our bones?",o:[["🦴","An X-ray machine"],["🖨️","A printer"],["📻","A radio"],["🧊","A fridge"]],h:"It shows what is under the skin."},
 {e:"🛒",q:"What does the machine at a shop counter do with a barcode?",o:[["🔍","It scans it to find the price"],["🍽️","It eats it"],["🎨","It colours it"],["🎵","It sings"]],h:"Beep! The price appears."},
 {e:"🎧",q:"Why should we not listen to headphones at full volume?",o:[["👂","It can damage our ears"],["🔋","It uses battery"],["💰","It costs money"],["🎨","It looks bad"]],h:"Loud sound hurts your hearing forever."},
-{e:"🌙",q:"Why should screens be switched off before bedtime?",o:[["😴","The bright light makes sleep harder"],["💰","It saves money"],["🎨","It is prettier"],["🔊","It is quieter"]],h:"Your brain thinks it is still daytime."},
+{e:"🌙",q:"Why should screens be switched off before bedtime?",o:[["😴","The bright light makes sleep harder"],["💰","Switching them off saves a lot of money"],["🎨","The room looks prettier without them"],["🔊","The room becomes a great deal quieter"]],h:"Your brain thinks it is still daytime."},
 {e:"📝",q:"What should we do with a broken phone or battery?",o:[["♻️","Give it for e-waste recycling"],["🗑️","Throw it in the normal bin"],["🌊","Throw it in water"],["🔥","Burn it"]],h:"They have chemicals that harm the soil."},
 {e:"💡",q:"What do we call machines that do work by themselves without a person?",o:[["🤖","Automatic machines"],["✋","Hand tools"],["🪑","Furniture"],["👕","Clothes"]],h:"Automation! Like a washing machine's cycle."},
 {e:"🔎",q:"Some phones answer when you talk to them. What is that called?",o:[["🗣️","A voice assistant"],["📖","A dictionary"],["🖨️","A printer"],["🧊","A fridge"]],h:"You say a wake word and ask a question."},
@@ -2241,7 +2277,7 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
 {e:"🧩",f:{"k":"row","items":["circle red","square blue","circle red","square blue","?"]},q:"Which shape comes NEXT in this pattern?",o:[[{"k":"one","item":"circle red"},"Red circle"],[{"k":"one","item":"square blue"},"Blue square"],[{"k":"one","item":"triangle green"},"Green triangle"],[{"k":"one","item":"star yellow"},"Yellow star"]],h:"Circle, square, circle, square... keep going!"},
 {e:"🧩",f:{"k":"row","items":["triangle green","triangle green","circle red","triangle green","triangle green","?"]},q:"Which shape comes NEXT?",o:[[{"k":"one","item":"circle red"},"Red circle"],[{"k":"one","item":"triangle green"},"Green triangle"],[{"k":"one","item":"square blue"},"Blue square"],[{"k":"one","item":"heart pink"},"Pink heart"]],h:"Two triangles, then a circle, again and again."},
 {e:"🧩",f:{"k":"row","items":["star yellow","heart pink","star yellow","heart pink","?"]},q:"Which shape completes the pattern?",o:[[{"k":"one","item":"star yellow"},"Yellow star"],[{"k":"one","item":"heart pink"},"Pink heart"],[{"k":"one","item":"circle blue"},"Blue circle"],[{"k":"one","item":"square green"},"Green square"]],h:"Star, heart, star, heart..."},
-{e:"🧩",f:{"k":"row","items":["square red","square blue","square green","square red","square blue","?"]},q:"Which colour comes NEXT?",o:[[{"k":"one","item":"square green"},"Green"],[{"k":"one","item":"square red"},"Red"],[{"k":"one","item":"square blue"},"Blue"],[{"k":"one","item":"square yellow"},"Yellow"]],h:"Red, blue, green, and then it repeats."},
+{e:"🧩",f:{"k":"row","items":["square red","square blue","square green","square red","square blue","?"]},q:"Which colour comes NEXT?",o:[[{"k":"one","item":"square green"},"Green"],[{"k":"one","item":"square red"},"Red"],[{"k":"one","item":"square blue"},"Blue"],[{"k":"one","item":"square yellow"},"Yellow"]],h:"The first three colours keep repeating. Count where you have reached."},
 {e:"🧩",f:{"k":"row","items":["circle purple","circle purple","circle purple","square orange","circle purple","circle purple","circle purple","?"]},q:"Which shape comes NEXT (puzzle 2)?",o:[[{"k":"one","item":"square orange"},"Orange square"],[{"k":"one","item":"circle purple"},"Purple circle"],[{"k":"one","item":"star yellow"},"Yellow star"],[{"k":"one","item":"triangle red"},"Red triangle"]],h:"Three circles, then a square. Count them."},
 {e:"🧩",f:{"k":"row","items":["diamond blue","oval green","diamond blue","oval green","?"]},q:"Which shape continues the pattern?",o:[[{"k":"one","item":"diamond blue"},"Blue diamond"],[{"k":"one","item":"oval green"},"Green oval"],[{"k":"one","item":"hexagon red"},"Red hexagon"],[{"k":"one","item":"star yellow"},"Yellow star"]],h:"Diamond, oval, diamond, oval..."},
 {e:"🔗",f:{"k":"row","items":["circle red",":","circle blue","::","square red",":","?"]},q:"Which shape completes this pair?",o:[[{"k":"one","item":"square blue"},"Blue square"],[{"k":"one","item":"circle blue"},"Blue circle"],[{"k":"one","item":"square red"},"Red square"],[{"k":"one","item":"triangle blue"},"Blue triangle"]],h:"Red became blue. The shape stayed the same."},
@@ -2277,7 +2313,7 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
 {e:"🧩",q:"How many triangles make up one diamond cut across the middle?",o:[["2️⃣","Two"],["3️⃣","Three"],["4️⃣","Four"],["1️⃣","One"]],h:"One cut makes two pieces."},
 {e:"⚖️",f:{"k":"grid","cols":3,"items":["circle red","circle red","circle red","circle blue","circle blue","blank"]},q:"Which row has MORE circles, the top or the bottom?",o:[["⬆️","The top row"],["⬇️","The bottom row"],["🟰","Both the same"],["0️⃣","Neither"]],h:"The dotted box is empty."},
 {e:"⚖️",f:{"k":"row","items":["circle blue","circle blue","circle blue","circle blue","circle blue","circle blue"]},q:"How many GROUPS OF 2 can you make from these circles?",o:[["3️⃣","Three"],["2️⃣","Two"],["4️⃣","Four"],["6️⃣","Six"]],h:"Put them in pairs and count the pairs."},
-{e:"⚖️",f:{"k":"row","items":["star green","star green","star green","star green","star green","star green","star green","star green","star green"]},q:"How many GROUPS OF 3 can you make?",o:[["3️⃣","Three"],["2️⃣","Two"],["4️⃣","Four"],["9️⃣","Nine"]],h:"Three and three and three."},
+{e:"⚖️",f:{"k":"row","items":["star green","star green","star green","star green","star green","star green","star green","star green","star green"]},q:"How many GROUPS OF 3 can you make?",o:[["3️⃣","Three"],["2️⃣","Two"],["4️⃣","Four"],["9️⃣","Nine"]],h:"Count all the stars, then share them into piles of 3."},
 {e:"⚖️",f:{"k":"grid","cols":5,"items":["square orange","square orange","square orange","square orange","square orange","square orange","square orange","square orange","square orange","square orange"]},q:"How many squares altogether?",o:[["🔟","Ten"],["8️⃣","Eight"],["9️⃣","Nine"],["1️⃣2️⃣","Twelve"]],h:"Five in each row, and there are two rows."},
 {e:"❓",f:{"k":"row","items":["circle red","blank","circle red","circle red"]},q:"The dotted box is empty. Which shape should go there?",o:[[{"k":"one","item":"circle red"},"Red circle"],[{"k":"one","item":"square blue"},"Blue square"],[{"k":"one","item":"star yellow"},"Yellow star"],[{"k":"one","item":"triangle green"},"Green triangle"]],h:"All the others are the same."},
 {e:"❓",f:{"k":"row","items":["square green","circle yellow","square green","blank"]},q:"Which shape should fill the empty box?",o:[[{"k":"one","item":"circle yellow"},"Yellow circle"],[{"k":"one","item":"square green"},"Green square"],[{"k":"one","item":"star red"},"Red star"],[{"k":"one","item":"heart pink"},"Pink heart"]],h:"Square, circle, square, then..."},
@@ -2320,13 +2356,13 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
 {e:"💭",q:"Who brings milk to our home each morning?",o:[["🥛","A milkman"],["📰","A newspaper boy"],["📮","A postman"],["🧹","A maid"]],h:"Doodhwala! Often before you wake up."},
 {e:"🎓",q:"Who sells us vegetables in the market?",o:[["🥕","A vegetable seller"],["🩺","A doctor"],["✂️","A tailor"],["👮","A policeman"]],h:"Sabziwala, with a cart or a stall."},
 {e:"📝",q:"How should we behave with community helpers?",o:[["🙏","With respect and thanks"],["😠","Rudely"],["👀","Ignore them"],["😆","Laugh at them"]],h:"Every kind of work deserves respect."},
-{e:"👨‍🚒",q:"What is a NUCLEAR family?",o:[["👨‍👩‍👧","Children living only with parents and brothers or sisters"],["👵","Children living with grandparents too"],["🏘️","A whole village"],["🏫","A class at school"]],h:"A small family. Just parents and children."},
-{e:"🔍",q:"What is a JOINT family?",o:[["👵","Parents, children, grandparents, uncles, aunts and cousins together"],["👨‍👩‍👧","Only parents and children"],["🧍","One person alone"],["🏫","A school class"]],h:"A big family, all under one roof."},
+{e:"👨‍🚒",q:"What is a NUCLEAR family?",o:[["👨‍👩‍👧","Children living only with parents and brothers or sisters"],["👵","Children living with grandparents too"],["🏘️","Everybody living in a whole village"],["🏫","All the children in one school class"]],h:"A small family. Just parents and children."},
+{e:"🔍",q:"What is a JOINT family?",o:[["👵","Parents, children, grandparents, uncles, aunts and cousins together"],["👨‍👩‍👧","Only the parents and their children"],["🧍","One person living entirely alone"],["🏫","All the children in one school class"]],h:"A big family, all under one roof."},
 {e:"🧐",q:"Who is your father's mother to you?",o:[["👵","Your grandmother"],["👩","Your aunt"],["👧","Your sister"],["👩‍🏫","Your teacher"]],h:"Dadi!"},
 {e:"🤔",q:"Who is your mother's brother to you?",o:[["👨","Your uncle"],["👴","Your grandfather"],["👦","Your brother"],["👨‍🏫","Your teacher"]],h:"Mama!"},
 {e:"💭",q:"What do we call your uncle's children?",o:[["🧒","Your cousins"],["👦","Your brothers"],["👧","Your sisters"],["👶","Your babies"]],h:"You play with them at family gatherings."},
-{e:"🎓",q:"How should we treat our grandparents?",o:[["❤️","With love and respect, and help them"],["😠","Rudely"],["👀","Ignore them"],["📣","Shout at them"]],h:"They have the most stories to tell."},
-{e:"🏠",q:"What does a house protect us from?",o:[["🌧️","Heat, cold, rain and strong wind"],["🎵","Music"],["🌈","Rainbows"],["📚","Books"]],h:"Shelter is one of our basic needs."},
+{e:"🎓",q:"How should we treat our grandparents?",o:[["❤️","With love and respect, and help them"],["😠","Rudely, and without listening to them"],["👀","Ignore them whenever they speak to us"],["📣","Shout at them when we want something"]],h:"They have the most stories to tell."},
+{e:"🏠",q:"What does a house protect us from?",o:[["🌧️","Heat, cold, rain and strong wind"],["🎵","Music playing somewhere down the street"],["🌈","Rainbows that appear after the rain"],["📚","Books left lying around the room"]],h:"Shelter is one of our basic needs."},
 {e:"🔍",q:"In which room of the house do we cook?",o:[["🍳","The kitchen"],["🛏️","The bedroom"],["🛁","The bathroom"],["🛋️","The living room"]],h:"Where the stove and the spices are."},
 {e:"🧐",q:"In which room do we sleep and rest?",o:[["🛏️","The bedroom"],["🍳","The kitchen"],["🛁","The bathroom"],["🚪","The verandah"]],h:"The bed lives there."},
 {e:"🤔",q:"In which room do we bathe and wash?",o:[["🛁","The bathroom"],["🍳","The kitchen"],["🛏️","The bedroom"],["🛋️","The drawing room"]],h:"Soap, bucket and tap."},
@@ -2436,7 +2472,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
   var PER_GAME = 10;
 
   var state = { view:"home", mode:"play", catIdx:0, qIdx:0, score:0, skipped:0, hints:0, total:10,
-                streak:0, bestStreak:0, marks:[], deck:[], order:[],
+                streak:0, bestStreak:0, marks:[], chose:[], deck:[], order:[],
                 lIdx:0, lDeck:[], lShown:false };
   var locked = false, timer = null;
   var muted = false, autoRead = true, voiceIdx = 0, resetArmed = false, paperLen = 10;
@@ -2813,6 +2849,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
     $("scr-quiz").hidden   = v!=="quiz";
     $("scr-learn").hidden  = v!=="learn";
     $("scr-result").hidden = v!=="result";
+    $("scr-review").hidden = v!=="review";
   }
 
   function card(o){
@@ -2921,31 +2958,72 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
   }
 
   /* ---------- QUIZ ---------- */
+  /* ---------- MOCK PAPER CLOCK ----------
+     A real SOF paper is one hour. The clock runs only during a mock paper;
+     at zero the paper is marked exactly as it stands. */
+  var PAPER_SECONDS = 60 * 60;
+  var clockLeft = 0, clockTick = null;
+
+  function fmtClock(sec){
+    if(sec < 0) sec = 0;
+    var m = Math.floor(sec / 60), s = sec % 60;
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+  function paintClock(){
+    var el = $("clock");
+    $("clock-t").textContent = fmtClock(clockLeft);
+    el.classList.toggle("low", clockLeft <= 300 && clockLeft > 60);
+    el.classList.toggle("out", clockLeft <= 60);
+  }
+  function stopClock(){
+    if(clockTick){ clearInterval(clockTick); clockTick = null; }
+    $("clock").hidden = true;
+  }
+  function startClock(){
+    stopClock();
+    clockLeft = PAPER_SECONDS;
+    $("clock").hidden = false;
+    paintClock();
+    clockTick = setInterval(function(){
+      clockLeft--;
+      paintClock();
+      if(clockLeft === 300){ praise("5 minutes left!"); if(tutor) say(["Five minutes left."]); }
+      if(clockLeft <= 0){
+        stopClock();
+        praise("Time up!");
+        say(["Time is up. Let us see how you did."]);
+        finish();
+      }
+    }, 1000);
+  }
+
   function startPaper(key){
     clearTimeout(timer); hush();
     var built = drawPaper(key);
     if(!built.deck.length) return;
     state.catIdx = -1; state.qIdx = 0; state.score = 0; state.skipped = 0; state.hints = 0;
-    state.streak = 0; state.bestStreak = 0; state.marks = [];
+    state.streak = 0; state.bestStreak = 0; state.marks = []; state.chose = [];
     state.deck = built.deck;
     state.total = built.deck.length;
     state.paper = key;
     state.secOf = built.marks;
     $("q-setname").textContent = "🏅 " + PAPERS[key].name + " paper";
     show("quiz"); renderQuestion();
+    startClock();
     say([line("start")]);
   }
 
   function startGame(i, len){
     clearTimeout(timer); hush();
     state.catIdx=i; state.qIdx=0; state.score=0; state.skipped=0; state.hints=0;
-    state.streak=0; state.bestStreak=0; state.marks=[]; state.paper=null; state.secOf=null;
+    state.streak=0; state.bestStreak=0; state.marks=[]; state.chose=[]; state.paper=null; state.secOf=null;
     var want = (i===-1) ? (len || (paperLen===35 ? 35 : gameLen)) : gameLen;
     state.total = want;
     state.deck = (i===-1) ? drawMixed(want) : drawFromTopic(i, want);
     state.total = state.deck.length;
     $("q-setname").textContent = (i===-1)
       ? ("🏅 Olympiad " + state.total) : BANK[i].name;
+    stopClock();
     show("quiz"); renderQuestion();
   }
 
@@ -3016,7 +3094,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
     if(locked) return;
     locked=true; hush();
     state.skipped++; state.streak=0;
-    state.marks[state.qIdx]="skip";
+    state.marks[state.qIdx]="skip"; state.chose[state.qIdx]=null;
     var all=$("opts").querySelectorAll(".opt");
     for(var i=0;i<all.length;i++){
       all[i].disabled=true;
@@ -3037,6 +3115,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
       state.score++; state.streak++;
       if(state.streak>state.bestStreak) state.bestStreak=state.streak;
       state.marks[state.qIdx]=true;
+      state.chose[state.qIdx]=btn.querySelector(".ot").textContent;
       btn.classList.add("right");
       $("q-score").textContent=state.score;
       sfxRight(state.streak);
@@ -3046,6 +3125,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
       if(tutor) say([line("right")]);
     } else {
       state.streak=0; state.marks[state.qIdx]=false;
+      state.chose[state.qIdx]=btn.querySelector(".ot").textContent;
       btn.classList.add("wrong"); sfxWrong();
       if(tutor){
         var right = null, all2 = $("opts").querySelectorAll(".opt");
@@ -3069,6 +3149,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
   }
 
   function finish(){
+    stopClock();
     var s=state.score, T=state.total;
     var key = String(state.catIdx) + (T===PER_GAME ? "" : "x" + T);
     if(best[key]==null || s>best[key]) best[key]=s;
@@ -3166,13 +3247,69 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
     state.lIdx=n; sfxTap(); renderLearn();
   }
 
-  function goHome(){ clearTimeout(timer); hush(); renderHome(); show("home"); }
+  /* ---------- REVIEW ----------
+     Goes back over the set just played: what was asked, what was chosen,
+     what was right, and the hint as the explanation. Wrong and skipped ones
+     come first, because those are the ones worth reading. */
+  function escHtml(t){
+    return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+  function renderReview(){
+    var list = $("rvlist"); list.innerHTML = "";
+    var missed = [], got = [], i;
+    for(i=0;i<state.total;i++){
+      var q = state.deck[i];
+      if(!q) continue;
+      (state.marks[i]===true ? got : missed).push({ q:q, i:i });
+    }
+
+    $("rv-sub").textContent = missed.length
+      ? ("Let us look at the " + missed.length + " you missed. The rest are below.")
+      : "You got every one right. Have another look anyway!";
+
+    function add(rec, wrong){
+      var q = rec.q, idx = rec.i;
+      var mine = state.chose[idx];
+      var right = (typeof q.o[0][1] === "object") ? "(the picture answer)" : q.o[0][1];
+      var sec = (state.secOf && state.secOf[idx]) ? state.secOf[idx] : "";
+      var d = document.createElement("div");
+      d.className = "rvitem";
+      var html = "";
+      if(sec) html += '<span class="rvsec">' + escHtml(sec) + '</span>';
+      html += '<p class="rvq">' + (q.e || "") + " " + escHtml(q.q) + '</p>';
+      if(wrong){
+        var skipped = state.marks[idx] === "skip";
+        html += '<div class="rvrow rvno"><span class="tag">' + (skipped ? "⏭️" : "❌") + '</span><span>' +
+                (skipped ? "You skipped this one"
+                         : "You said: " + escHtml(mine == null ? "—" : mine)) + '</span></div>';
+      }
+      html += '<div class="rvrow rvyes"><span class="tag">✅</span><span>' +
+              (wrong ? "Answer: " : "You said: ") + escHtml(right) + '</span></div>';
+      if(q.h) html += '<p class="rvwhy">💡 ' + escHtml(q.h) + '</p>';
+      d.innerHTML = html;
+      list.appendChild(d);
+    }
+
+    missed.forEach(function(r){ add(r, true); });
+    if(missed.length && got.length){
+      var lbl = document.createElement("div");
+      lbl.className = "sectionlabel";
+      lbl.textContent = "You got these right";
+      list.appendChild(lbl);
+    }
+    got.forEach(function(r){ add(r, false); });
+  }
+
+  function goHome(){ clearTimeout(timer); hush(); stopClock(); renderHome(); show("home"); }
 
   /* ---------- WIRING ---------- */
   $("btn-home").addEventListener("click", function(){ sfxTap(); goHome(); });
   $("btn-back").addEventListener("click", function(){ sfxTap(); goHome(); });
   $("l-home").addEventListener("click", function(){ sfxTap(); goHome(); });
   $("btn-again").addEventListener("click", function(){ sfxTap(); startGame(state.catIdx); });
+  $("btn-review").addEventListener("click", function(){ sfxTap(); renderReview(); show("review"); });
+  $("rv-back").addEventListener("click", function(){ sfxTap(); show("result"); });
+  $("rv-home").addEventListener("click", function(){ sfxTap(); goHome(); });
   $("btn-speak").addEventListener("click", readEverything);
   $("btn-hint").addEventListener("click", useHint);
   $("btn-skip").addEventListener("click", skipQuestion);

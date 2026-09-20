@@ -16,7 +16,7 @@ BANK.forEach(c=>{
       if(new Set(q.o.map(o=>o[1].toLowerCase())).size!==4) bad.push('DUP OPTION: '+w+' '+q.q);
       if(q.o.map(o=>o[0]).includes(q.e)){ leak++; console.log('LEAK '+w+' '+q.e+' '+q.q); }
     }
-    const k=q.q.toLowerCase().replace(/[sp{P}]/gu,'');
+    const k=q.q.replace(/+/g,' plus ').replace(/-/g,' minus ').toLowerCase().replace(/[sp{P}p{S}]/gu,'');
     if(seen.has(k)) bad.push('DUP Q: '+w+' == '+seen.get(k)); else seen.set(k,w);
   });
 });
