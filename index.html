@@ -481,7 +481,7 @@
   <section class="screen count" id="scr-count" hidden>
     <div class="qhead">
       <button class="sticker iconbtn" id="c-home" aria-label="Back">🏠</button>
-      <div class="title">🔢 Count It</div>
+      <div class="title" id="c-title">🔢 Count It</div>
       <div class="score">⭐<span id="c-score">0</span></div>
     </div>
     <div class="pips" id="c-pips" aria-hidden="true"></div>
@@ -3979,7 +3979,15 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
     { emoji:"🧠", color:"logic", name:"Follow Me",
       sub:"Watch the colours, then copy them", go:function(){ startFollow(); } },
     { emoji:"🔢", color:"chalk", name:"Count It",
-      sub:"How many shapes? · 10 rounds", go:function(){ startCount(); } }
+      sub:"How many shapes? · 10 rounds", go:function(){ startMini("count"); } },
+    { emoji:"🔤", color:"coral", name:"Missing Letter",
+      sub:"Which letter fell out? · 10 rounds", go:function(){ startMini("letter"); } },
+    { emoji:"🧮", color:"leaf", name:"Quick Maths",
+      sub:"Sums and take-aways · 10 rounds", go:function(){ startMini("maths"); } },
+    { emoji:"🎯", color:"wine", name:"Odd One Out",
+      sub:"Three belong, one does not · 10 rounds", go:function(){ startMini("odd"); } },
+    { emoji:"🔷", color:"globe", name:"Shape Match",
+      sub:"Find the matching shape · 10 rounds", go:function(){ startMini("shape"); } }
   ];
   function renderGames(){
     var list = $("gamelist"); list.innerHTML = "";
@@ -4138,71 +4146,69 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
   $("f-home").addEventListener("click", function(){ sfxTap(); goHome(); });
   $("f-back").addEventListener("click", function(){ sfxTap(); renderGames(); show("games"); paintModeBar("games"); });
 
-  /* ---------- COUNT IT ----------
-     Draws a random number of shapes with the same engine the picture
-     questions use, and asks how many. Ten rounds. */
-  var COUNT_SHAPES = ["circle","square","triangle","star","heart","hexagon","diamond"];
-  var COUNT_COLS = ["red","blue","green","yellow","purple","orange","pink"];
-  var countN = 0, countScore = 0, countRound = 0, countLock = false;
-  var COUNT_TOTAL = 10;
+  /* ---------- MINI GAMES ----------
+     Five little games that all have the same shape: ten rounds, a picture
+     or a line of text, four answers, a score. Each game only has to say
+     what one round looks like; everything else is shared. */
+  var MINI = {}, mini = null, miniScore = 0, miniRound = 0, miniLock = false, miniAnswer = null;
+  var MINI_TOTAL = 10;
 
-  function renderCountPips(){
+  function miniPips(){
     var p = $("c-pips"); p.innerHTML = "";
-    for(var i=0;i<COUNT_TOTAL;i++){
+    for(var i=0;i<MINI_TOTAL;i++){
       var el = document.createElement("i");
-      if(i < countRound) el.className = "hit";
+      if(i < miniRound) el.className = "hit";
       p.appendChild(el);
     }
   }
-  function countRoundStart(){
-    countLock = false;
-    if(countRound >= COUNT_TOTAL){
-      $("c-q").textContent = "All done! You got " + countScore + " out of " + COUNT_TOTAL + ".";
+  function startMini(key){
+    mini = MINI[key];
+    if(!mini) return;
+    miniScore = 0; miniRound = 0;
+    $("c-title").textContent = mini.icon + " " + mini.name;
+    $("c-score").textContent = "0";
+    show("count"); paintModeBar("games");
+    miniNext();
+  }
+  function miniNext(){
+    miniLock = false;
+    if(miniRound >= MINI_TOTAL){
+      $("c-q").textContent = "All done! You got " + miniScore + " out of " + MINI_TOTAL + ".";
       $("c-fig").innerHTML = "";
       $("c-opts").innerHTML = "";
       sfxTada(); burst(120, window.innerHeight * 0.3);
-      say(["All done! You got " + countScore + " out of " + COUNT_TOTAL + "."]);
+      say(["All done! You got " + miniScore + " out of " + MINI_TOTAL + "."]);
       var again = document.createElement("button");
       again.className = "sticker bigbtn go";
       again.textContent = "🔁 Play again";
-      again.addEventListener("click", function(){ sfxTap(); startCount(); });
+      again.addEventListener("click", function(){ sfxTap(); startMini(mini.key); });
       $("c-opts").appendChild(again);
       return;
     }
-    countN = 3 + Math.floor(Math.random() * 10);            /* 3 to 12 */
-    var shape = COUNT_SHAPES[Math.floor(Math.random()*COUNT_SHAPES.length)];
-    var col   = COUNT_COLS[Math.floor(Math.random()*COUNT_COLS.length)];
-    var items = [];
-    for(var i=0;i<countN;i++) items.push(shape + " " + col);
-    $("c-fig").innerHTML = svgFor({ k:"grid", items:items, cols: countN > 6 ? 4 : 3 });
-    $("c-q").textContent = "How many can you count?";
-    renderCountPips();
-
-    /* three near misses, never below one */
-    var opts = [countN], guard = 0;
-    while(opts.length < 4 && guard++ < 50){
-      var d = countN + (Math.floor(Math.random()*5) - 2);
-      if(d >= 1 && opts.indexOf(d) < 0) opts.push(d);
-    }
-    while(opts.length < 4) opts.push(countN + opts.length);
-    opts = shuffle(opts);
+    var r = mini.round();
+    miniAnswer = r.answer;
+    $("c-fig").innerHTML = r.fig || "";
+    $("c-q").textContent = r.q;
+    miniPips();
 
     var box = $("c-opts"); box.innerHTML = "";
-    opts.forEach(function(v){
-      var b = document.createElement("button");
-      b.className = "sticker opt";
-      b.innerHTML = '<span class="ot">' + v + '</span>';
-      b.setAttribute("aria-label", String(v));
-      b.addEventListener("click", function(){ countAnswer(b, v); });
-      box.appendChild(b);
+    shuffle(r.options).forEach(function(v){
+      var btn = document.createElement("button");
+      btn.className = "sticker opt";
+      btn.innerHTML = (v.pic ? '<span class="oe" aria-hidden="true">' + v.pic + '</span>' : "") +
+                      '<span class="ot">' + v.label + '</span>';
+      btn.setAttribute("aria-label", v.say || v.label);
+      btn.addEventListener("click", function(){ miniPick(btn, v); });
+      box.appendChild(btn);
     });
-    if(autoRead) say(["How many can you count?"]);
+    if(autoRead && r.speak !== false) say([r.q]);
   }
-  function countAnswer(btn, v){
-    if(countLock) return;
-    countLock = true;
-    if(v === countN){
-      countScore++; $("c-score").textContent = countScore;
+  function miniPick(btn, v){
+    if(miniLock) return;
+    miniLock = true;
+    var right = (v.label === miniAnswer.label);
+    if(right){
+      miniScore++; $("c-score").textContent = miniScore;
       btn.classList.add("right");
       sfxRight(1); burst(30, window.innerHeight * 0.55);
       if(tutor) say([line("right")]);
@@ -4210,20 +4216,114 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
       btn.classList.add("wrong"); sfxWrong();
       var all = $("c-opts").querySelectorAll(".opt");
       for(var i=0;i<all.length;i++){
-        if(all[i].querySelector(".ot").textContent === String(countN)) all[i].classList.add("right");
+        if(all[i].querySelector(".ot").textContent === String(miniAnswer.label)) all[i].classList.add("right");
       }
-      if(tutor) say([line("wrong"), String(countN) + "."]);
+      if(tutor) say([line("wrong"), (miniAnswer.say || miniAnswer.label) + "."]);
     }
-    countRound++;
-    renderCountPips();
-    setTimeout(countRoundStart, 1500);
+    miniRound++;
+    miniPips();
+    setTimeout(miniNext, 1500);
   }
-  function startCount(){
-    countScore = 0; countRound = 0;
-    $("c-score").textContent = "0";
-    show("count"); paintModeBar("games");
-    countRoundStart();
+  function pick1(a){ return a[Math.floor(Math.random() * a.length)]; }
+  function opt(label, extra){
+    var o = { label: String(label) };
+    if(extra) { if(extra.pic) o.pic = extra.pic; if(extra.say) o.say = extra.say; }
+    return o;
   }
+
+  /* --- Count It: how many shapes are there? --- */
+  var COUNT_SHAPES = ["circle","square","triangle","star","heart","hexagon","diamond"];
+  var COUNT_COLS = ["red","blue","green","yellow","purple","orange","pink"];
+  MINI.count = { key:"count", icon:"🔢", name:"Count It", round:function(){
+    var n = 3 + Math.floor(Math.random() * 10);
+    var shape = pick1(COUNT_SHAPES), col = pick1(COUNT_COLS), items = [];
+    for(var i=0;i<n;i++) items.push(shape + " " + col);
+    var nums = [n], guard = 0;
+    while(nums.length < 4 && guard++ < 60){
+      var d = n + (Math.floor(Math.random()*5) - 2);
+      if(d >= 1 && nums.indexOf(d) < 0) nums.push(d);
+    }
+    while(nums.length < 4) nums.push(n + nums.length);
+    return { fig: svgFor({ k:"grid", items:items, cols: n > 6 ? 4 : 3 }),
+             q: "How many can you count?",
+             answer: opt(n), options: nums.map(function(v){ return opt(v); }) };
+  }};
+
+  /* --- Missing Letter: one letter has fallen out of the word --- */
+  var MW = ["ELEPHANT","MONKEY","BANANA","SCHOOL","FLOWER","WINTER","PENCIL","BRIDGE",
+            "CRICKET","FAMILY","TIGER","MANGO","RIVER","GARDEN","CANDLE","ROCKET",
+            "DOCTOR","BASKET","ORANGE","PARROT","TEMPLE","MARKET","SUMMER","PEACOCK"];
+  MINI.letter = { key:"letter", icon:"🔤", name:"Missing Letter", round:function(){
+    var w = pick1(MW), i = 1 + Math.floor(Math.random() * (w.length - 2));
+    var miss = w[i], shown = w.slice(0, i) + "_" + w.slice(i + 1);
+    var letters = [miss], A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ", guard = 0;
+    while(letters.length < 4 && guard++ < 80){
+      var c = A[Math.floor(Math.random() * 26)];
+      if(letters.indexOf(c) < 0) letters.push(c);
+    }
+    return { fig: '<div style="font-size:30px;font-weight:800;letter-spacing:3px">' + shown + "</div>",
+             q: "Which letter is missing?",
+             answer: opt(miss), options: letters.map(function(c){ return opt(c); }) };
+  }};
+
+  /* --- Quick Maths: a sum or a take-away, answers within twenty --- */
+  MINI.maths = { key:"maths", icon:"🧮", name:"Quick Maths", round:function(){
+    var plus = Math.random() < 0.55, a, b, ans, text;
+    if(plus){
+      a = 1 + Math.floor(Math.random()*10); b = 1 + Math.floor(Math.random()*10);
+      ans = a + b; text = a + " + " + b + " = ?";
+    } else {
+      a = 3 + Math.floor(Math.random()*15); b = 1 + Math.floor(Math.random()*a);
+      ans = a - b; text = a + " - " + b + " = ?";
+    }
+    var nums = [ans], guard = 0;
+    while(nums.length < 4 && guard++ < 60){
+      var d = ans + (Math.floor(Math.random()*7) - 3);
+      if(d >= 0 && nums.indexOf(d) < 0) nums.push(d);
+    }
+    while(nums.length < 4) nums.push(ans + nums.length + 1);
+    return { fig: '<div style="font-size:32px;font-weight:800">' + text + "</div>",
+             q: plus ? "What do they add up to?" : "What is left?",
+             answer: opt(ans), options: nums.map(function(v){ return opt(v); }) };
+  }};
+
+  /* --- Odd One Out: three belong together and one does not --- */
+  var ODD = [
+    { n:"animals",    it:[["🐶","Dog"],["🐱","Cat"],["🐘","Elephant"],["🦁","Lion"],["🐯","Tiger"],["🐮","Cow"],["🐷","Pig"],["🐵","Monkey"]] },
+    { n:"fruits",     it:[["🍎","Apple"],["🍌","Banana"],["🍇","Grapes"],["🍊","Orange"],["🥭","Mango"],["🍓","Strawberry"],["🍍","Pineapple"],["🍉","Watermelon"]] },
+    { n:"vehicles",   it:[["🚗","Car"],["🚌","Bus"],["🚂","Train"],["✈️","Aeroplane"],["🚲","Bicycle"],["🚤","Boat"],["🚚","Lorry"],["🛵","Scooter"]] },
+    { n:"birds",      it:[["🦜","Parrot"],["🦅","Eagle"],["🦉","Owl"],["🕊️","Dove"],["🐦","Sparrow"],["🦆","Duck"],["🦢","Swan"],["🐧","Penguin"]] },
+    { n:"vegetables", it:[["🥕","Carrot"],["🥔","Potato"],["🧅","Onion"],["🍅","Tomato"],["🌽","Corn"],["🥦","Broccoli"],["🫑","Capsicum"],["🥒","Cucumber"]] },
+    { n:"clothes",    it:[["👕","Shirt"],["👖","Trousers"],["👗","Frock"],["🧥","Coat"],["🧦","Socks"],["🧣","Scarf"],["👒","Hat"],["👟","Shoes"]] },
+    { n:"body parts", it:[["👁️","Eye"],["👂","Ear"],["👃","Nose"],["👄","Mouth"],["✋","Hand"],["🦶","Foot"],["🦵","Leg"],["🦷","Tooth"]] },
+    { n:"weather",    it:[["☀️","Sun"],["🌧️","Rain"],["⛈️","Storm"],["❄️","Snow"],["🌈","Rainbow"],["☁️","Cloud"],["🌪️","Whirlwind"],["🌫️","Fog"]] }
+  ];
+  MINI.odd = { key:"odd", icon:"🎯", name:"Odd One Out", round:function(){
+    var i = Math.floor(Math.random()*ODD.length), j = i;
+    while(j === i) j = Math.floor(Math.random()*ODD.length);
+    var same = shuffle(ODD[i].it).slice(0, 3), other = pick1(ODD[j].it);
+    var picks = same.map(function(p){ return opt(p[1], { pic:p[0] }); });
+    picks.push(opt(other[1], { pic:other[0] }));
+    return { fig:"", q:"Which one does NOT belong?",
+             answer: opt(other[1]), options: picks };
+  }};
+
+  /* --- Shape Match: find the one that matches the picture above --- */
+  MINI.shape = { key:"shape", icon:"🔷", name:"Shape Match", round:function(){
+    var shape = pick1(COUNT_SHAPES), col = pick1(COUNT_COLS);
+    var names = { circle:"Circle", square:"Square", triangle:"Triangle", star:"Star",
+                  heart:"Heart", hexagon:"Hexagon", diamond:"Diamond" };
+    var others = COUNT_SHAPES.filter(function(x){ return x !== shape; });
+    var three = shuffle(others).slice(0, 3);
+    var picks = [opt(names[shape], { pic: svgFor({ k:"one", item: shape + " " + col }) })];
+    three.forEach(function(x){
+      picks.push(opt(names[x], { pic: svgFor({ k:"one", item: x + " " + col }) }));
+    });
+    return { fig: svgFor({ k:"one", item: shape + " " + col }),
+             q: "Which one is the same shape?",
+             answer: opt(names[shape]), options: picks };
+  }};
+
   $("c-home").addEventListener("click", function(){ sfxTap(); goHome(); });
   $("c-back").addEventListener("click", function(){ sfxTap(); renderGames(); show("games"); paintModeBar("games"); });
 
