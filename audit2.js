@@ -32,6 +32,59 @@ const optKey = (s) => {
 /* looser: also drop emoji/pictographs so wording dups surface */
 const words = (s) => ops(s).toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
 
+/* Emoji that mean the same thing to a child, even though the codepoints
+   differ. A question emoji from the same family as the answer's emoji gives
+   the answer away just as surely as an identical one. */
+const FAMILIES = [
+  ["horse", "🐴🐎🏇🦄"],
+  ["cow",   "🐄🐮🐂🐃"],
+  ["cat",   "🐈🐱🐅🐆🦁"],
+  ["dog",   "🐕🐶🦮🐩🐺"],
+  ["pig",   "🐖🐷🐗"],
+  ["sheep", "🐑🐏🐐"],
+  ["bird",  "🐦🐤🐣🐥🕊️"],
+  ["chicken","🐓🐔"],
+  ["duck",  "🦆🦢"],
+  ["fish",  "🐟🐠🐡🎣"],
+  ["frog",  "🐸"],
+  ["snake", "🐍"],
+  ["elephant","🐘🦣"],
+  ["monkey","🐒🐵🦍"],
+  ["bear",  "🐻🐨🐼"],
+  ["rabbit","🐇🐰"],
+  ["mouse", "🐁🐭🐀"],
+  ["bee",   "🐝"],
+  ["ant",   "🐜"],
+  ["butterfly","🦋🐛🐛"],
+  ["tree",  "🌳🌲🌴🎄"],
+  ["flower","🌸🌺🌻🌷🌹💐"],
+  ["sun",   "☀️🌞🌅🌄"],
+  ["moon",  "🌙🌕🌛🌜"],
+  ["star",  "⭐🌟✨💫"],
+  ["rain",  "🌧️☔🌦️💧"],
+  ["fire",  "🔥"],
+  ["water", "💧🚰🌊"],
+  ["car",   "🚗🚙🏎️"],
+  ["bus",   "🚌🚐"],
+  ["train", "🚂🚆🚊🚉"],
+  ["plane", "✈️🛩️🛫🛬"],
+  ["boat",  "⛵🚢🛶🚤"],
+  ["cycle", "🚲🚴"],
+  ["book",  "📖📚📕📗"],
+  ["clock", "🕐⏰⏲️🕰️"],
+  ["computer","💻🖥️"],
+  ["phone", "📱☎️📞"],
+  ["apple", "🍎🍏"],
+  ["flag",  "🇮🇳🏳️🏁"],
+];
+const FAM = {};
+FAMILIES.forEach(([name, chars]) => {
+  /* split on codepoints so multi-byte emoji stay whole */
+  Array.from(chars).forEach((ch) => { if (ch.trim()) FAM[ch] = name; });
+});
+/* strip variation selectors so "🕊️" and "🕊" match */
+const famOf = (e) => (e ? FAM[String(e).replace(/️/g, "")] || FAM[e] : null);
+
 let total = 0;
 const seenQ = new Map();
 const seenWords = new Map();
@@ -86,6 +139,10 @@ BANK.forEach((cat) => {
 
     /* emoji leak: question emoji equals any option emoji */
     if (emo.indexOf(q.e) >= 0) prob("EMOJI LEAK", w, q.e + " :: " + q.q);
+    /* softer leak: the question emoji MEANS the same as the answer's emoji,
+       e.g. a horse-riding emoji above a question whose answer is Horse */
+    else if (q.e && famOf(q.e) && famOf(q.e) === famOf(emo[0]))
+      prob("EMOJI FAMILY LEAK", w, q.e + " ~ " + emo[0] + " :: " + q.q);
     /* correct option's emoji duplicated elsewhere is fine; all four identical is not */
     if (new Set(emo).size === 1) warn("ALL OPTION EMOJI SAME", w, q.q);
 
