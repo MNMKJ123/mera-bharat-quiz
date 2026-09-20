@@ -146,6 +146,13 @@ BANK.forEach((cat) => {
     /* correct option's emoji duplicated elsewhere is fine; all four identical is not */
     if (new Set(emo).size === 1) warn("ALL OPTION EMOJI SAME", w, q.q);
 
+    /* The icon must never single the answer out. If the correct option wears
+       an emoji none of the others wear, while those three share one between
+       them, the picture has given the game away. */
+    const otherEmo = [emo[1], emo[2], emo[3]];
+    if (emo[0] !== undefined && otherEmo.indexOf(emo[0]) < 0 && new Set(otherEmo).size === 1)
+      prob("OPTION EMOJI MARKS ANSWER", w, emo.join(" ") + " :: " + q.q);
+
     /* the correct answer is o[0]; if it is much the longest, that is a tell */
     const lens = labels.map((l) => String(l).length);
     const maxOther = Math.max(lens[1], lens[2], lens[3]);
