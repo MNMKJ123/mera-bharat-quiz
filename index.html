@@ -2834,8 +2834,29 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
 
   /* Builds one utterance. withVoice=false leaves .voice unset, which is the
      fallback that still speaks when a stale voice object silently fails. */
+  /* What is on screen is not always what should be said. A run of
+     underscores is read out as "underscore underscore underscore"; emoji in
+     the question text get read as their names, which can hand over the
+     answer outright. This fixes the spoken copy only, never the display. */
+  function speakable(t){
+    return String(t)
+      .replace(/_{2,}/g, " blank ")          /* ___ is a gap, not punctuation */
+      /* say the operators, before the pictograph sweep below eats U+2212 */
+      .replace(/−/g, " minus ")
+      .replace(/×/g, " times ")
+      .replace(/÷/g, " divided by ")
+      .replace(/—|–/g, ", ")       /* em and en dash: a pause */
+      .replace(/\(([a-dA-D])\)/g, "$1.")     /* "(a)" -> "a." */
+      .replace(/&/g, " and ")
+      .replace(/\//g, " or ")
+      /* drop pictographs, so the voice never names a shape or animal */
+      .replace(/[\u{1F300}-\u{1FAFF}\u{1F000}-\u{1F0FF}\u{2190}-\u{2BFF}\u{FE0F}\u{200D}]/gu, " ")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+  }
+
   function utter(p, withVoice){
-    var u = new SpeechSynthesisUtterance(p);
+    var u = new SpeechSynthesisUtterance(speakable(p));
     /* Devanagari in the line means it wants the Hindi voice */
     var hindi = /[\u0900-\u097F]/.test(p);
     var use = withVoice ? (hindi ? (voiceForHindi() || currentVoice()) : currentVoice()) : null;
@@ -2858,7 +2879,8 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
         try{
           var started = false, first = true;
           parts.forEach(function(p){
-            if(!p) return;
+            /* an option that is only a picture leaves nothing to say */
+            if(!p || !speakable(p)) return;
             var u = utter(p, true);
             if(first){
               first = false;
@@ -2951,17 +2973,57 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
   var CHEERS=["Shabaash!","Wah wah!","Zabardast!","Kya baat!","Superb!","Bahut badhiya!","Ekdum sahi!","Brilliant!","Mast!","Perfect!"];
   /* spoken lines, one set per language */
   var LINES = {
-    english:  { right:"That is correct. Well done!", wrong:"Not quite. Here is the right answer.",
-                hint:"Here is a clue.", start:"Let us begin. Listen carefully.",
-                done:"Well done. You have finished." },
-    hinglish: { right:"Bilkul sahi! Well done!", wrong:"Arre, thoda galat. Yeh dekho sahi answer.",
-                hint:"Ek clue suno.", start:"Chalo shuru karte hain. Dhyan se suno.",
-                done:"Shabaash! Ho gaya." },
-    hindi:    { right:"बिलकुल सही! शाबाश!", wrong:"थोड़ा ग़लत। यह देखो सही उत्तर।",
-                hint:"एक संकेत सुनो।", start:"चलो शुरू करते हैं। ध्यान से सुनो।",
-                done:"शाबाश! पूरा हो गया।" }
+    english: {
+      right: ["That's right!", "Very good!", "Yes, well done!", "Perfect!",
+              "That's the one!", "Lovely. You got it.", "Correct! Nicely done.",
+              "Yes! Clever girl."],
+      wrong: ["Not quite. The right answer is",
+              "Almost! It is really",
+              "Good try. The answer is",
+              "Nearly. The correct one is",
+              "Oh, so close. It is"],
+      hint:  ["Here is a little clue.", "Let me help you a bit.",
+              "Think about this one.", "Here is something that might help."],
+      start: ["Let us begin!", "Here we go!", "Ready? Let us start.",
+              "All right, first question."],
+      done:  ["All finished. Well done!", "That is the end. Good work!",
+              "We are done. Lovely effort!"]
+    },
+    hinglish: {
+      right: ["Bilkul sahi!", "Shabaash! Ekdum theek.", "Waah, very good!",
+              "Haan ji, correct!", "Perfect! Bahut badhiya.",
+              "Ekdum sahi jawaab!", "Sahi pakde hain!"],
+      wrong: ["Arre, thoda sa galat. Sahi jawaab hai",
+              "Koi baat nahi. Yeh dekho, sahi hai",
+              "Almost! Sahi jawaab hai",
+              "Thoda miss ho gaya. Sahi hai",
+              "Nahi beta, sahi jawaab hai"],
+      hint:  ["Chalo, ek chhota sa clue deti hoon.", "Main thodi help karti hoon.",
+              "Yeh zara socho.", "Ek ishaara deti hoon."],
+      start: ["Chalo, shuru karte hain!", "Ready? Chalein!",
+              "Theek hai, pehla sawaal."],
+      done:  ["Ho gaya! Bahut achha kiya.", "Khatam! Shabaash.",
+              "Poora ho gaya. Very good!"]
+    },
+    hindi: {
+      right: ["बिलकुल सही!", "शाबाश! एकदम ठीक।", "वाह, बहुत बढ़िया!",
+              "हाँ, सही जवाब!", "एकदम सही!"],
+      wrong: ["अरे, थोड़ा ग़लत। सही जवाब है",
+              "कोई बात नहीं। सही जवाब है",
+              "थोड़े से रह गए। सही है",
+              "नहीं बेटा, सही जवाब है"],
+      hint:  ["चलो, एक छोटा सा इशारा।", "मैं थोड़ी मदद करती हूँ।",
+              "ज़रा यह सोचो।"],
+      start: ["चलो, शुरू करते हैं!", "तैयार? चलें!", "ठीक है, पहला सवाल।"],
+      done:  ["हो गया! बहुत अच्छा।", "शाबाश! पूरा हो गया।"]
+    }
   };
-  function line(k){ return (LINES[talk] || LINES.english)[k]; }
+  /* one of several, at random: saying the identical sentence every single
+     time is most of what made her sound like a machine */
+  function line(k){
+    var set = (LINES[talk] || LINES.english)[k] || LINES.english[k];
+    return set[Math.floor(Math.random() * set.length)];
+  }
   var STREAKS=["On fire!","Hat-trick!","Unstoppable!","Chauka!","Chhakka!"];
   function praise(t,high){
     var el=$("praise"); el.textContent=t; el.classList.remove("go");
