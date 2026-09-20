@@ -237,6 +237,7 @@
       <button class="sticker chip" id="btn-mute">🔊 Sound</button>
       <button class="sticker chip" id="btn-auto">🗣️ Auto-read</button>
       <button class="sticker chip" id="btn-voice">🎙️ Voice</button>
+      <button class="sticker chip" id="btn-len">🔢 10 per game</button>
       <button class="sticker chip" id="btn-reset">♻️ Reset stars</button>
     </div>
 
@@ -1539,6 +1540,7 @@ name:"Logical Reasoning", deva:"तर्क शक्ति", emoji:"🧩", col
                 lIdx:0, lDeck:[], lShown:false };
   var locked = false, timer = null;
   var muted = false, autoRead = true, voiceIdx = 0, resetArmed = false, paperLen = 10;
+  var GAME_LENGTHS = [10,15,20,25,30], gameLen = 10;
   var best = {}, picked = [];
 
   function totalQuestions(){ var n=0; for(var i=0;i<BANK.length;i++) n+=BANK[i].qs.length; return n; }
@@ -1550,6 +1552,8 @@ name:"Logical Reasoning", deva:"तर्क शक्ति", emoji:"🧩", col
       autoRead = localStorage.getItem("mbq.auto")  !== "0";
       voiceIdx = parseInt(localStorage.getItem("mbq.voice") || "0", 10) || 0;
       paperLen = parseInt(localStorage.getItem("mbq.len") || "10", 10) === 35 ? 35 : 10;
+      var gl = parseInt(localStorage.getItem("mbq.gamelen") || "10", 10);
+      gameLen = GAME_LENGTHS.indexOf(gl) >= 0 ? gl : 10;
       var p = localStorage.getItem("mbq.picked");
       picked = p ? JSON.parse(p) : null;
     }catch(e){ best = {}; picked = null; }
@@ -1564,6 +1568,7 @@ name:"Logical Reasoning", deva:"तर्क शक्ति", emoji:"🧩", col
       localStorage.setItem("mbq.auto", autoRead ? "1" : "0");
       localStorage.setItem("mbq.voice", String(voiceIdx));
       localStorage.setItem("mbq.len", String(paperLen));
+      localStorage.setItem("mbq.gamelen", String(gameLen));
       localStorage.setItem("mbq.picked", JSON.stringify(picked));
     }catch(e){}
   }
@@ -1574,7 +1579,9 @@ name:"Logical Reasoning", deva:"तर्क शक्ति", emoji:"🧩", col
     return a;
   }
 
-  function drawFromTopic(i){ return shuffle(BANK[i].qs).slice(0, PER_GAME); }
+  function drawFromTopic(i, n){
+    return shuffle(BANK[i].qs).slice(0, Math.min(n || PER_GAME, BANK[i].qs.length));
+  }
 
   /* Olympiad paper: spread across the chosen subjects, one each in turn. */
   function drawMixed(n){
@@ -1809,7 +1816,7 @@ name:"Logical Reasoning", deva:"तर्क शक्ति", emoji:"🧩", col
     if(!learning){
       var n=0; picked.forEach(function(p){ if(p) n++; });
       list.appendChild(card({ olympiad:true, emoji:"🏅", name:"Olympiad Practice",
-        sub:"Mixed paper · "+paperLen+" questions · "+n+" of "+BANK.length+" subjects",
+        sub:"Mixed paper · "+(paperLen===35?35:gameLen)+" questions · "+n+" of "+BANK.length+" subjects",
         go:function(){ renderPicker(); paintLen(); show("pick"); } }));
       var lbl=document.createElement("div");
       lbl.className="sectionlabel"; lbl.textContent="Pick a subject";
@@ -1857,8 +1864,9 @@ name:"Logical Reasoning", deva:"तर्क शक्ति", emoji:"🧩", col
     clearTimeout(timer); hush();
     state.catIdx=i; state.qIdx=0; state.score=0; state.skipped=0; state.hints=0;
     state.streak=0; state.bestStreak=0; state.marks=[];
-    state.total = (i===-1) ? (len || paperLen) : PER_GAME;
-    state.deck = (i===-1) ? drawMixed(state.total) : drawFromTopic(i);
+    var want = (i===-1) ? (len || (paperLen===35 ? 35 : gameLen)) : gameLen;
+    state.total = want;
+    state.deck = (i===-1) ? drawMixed(want) : drawFromTopic(i, want);
     state.total = state.deck.length;
     $("q-setname").textContent = (i===-1)
       ? ("🏅 Olympiad " + state.total) : BANK[i].name;
@@ -2078,6 +2086,7 @@ name:"Logical Reasoning", deva:"तर्क शक्ति", emoji:"🧩", col
     picked=BANK.map(function(){ return false; }); savePrefs(); sfxTap(); renderPicker();
   });
   function paintLen(){
+    $("len-10").textContent = "⚡ Quick " + gameLen;
     $("len-10").classList.toggle("off", paperLen !== 10);
     $("len-35").classList.toggle("off", paperLen !== 35);
   }
@@ -2101,6 +2110,15 @@ name:"Logical Reasoning", deva:"तर्क शक्ति", emoji:"🧩", col
 
   function paintMute(){ var b=$("btn-mute"); b.textContent=muted?"🔇 Sound":"🔊 Sound"; b.classList.toggle("off",muted); }
   function paintAuto(){ var b=$("btn-auto"); b.textContent=autoRead?"🗣️ Auto-read":"🤫 Auto-read"; b.classList.toggle("off",!autoRead); }
+  function paintGameLen(){
+    $("btn-len").textContent = "🔢 " + gameLen + " per game";
+  }
+  $("btn-len").addEventListener("click", function(){
+    var i = GAME_LENGTHS.indexOf(gameLen);
+    gameLen = GAME_LENGTHS[(i + 1) % GAME_LENGTHS.length];
+    savePrefs(); paintGameLen(); renderHome(); sfxTap();
+  });
+
   function paintReset(){
     var b=$("btn-reset");
     b.textContent = resetArmed ? "⚠️ Tap again!" : "♻️ Reset stars";
@@ -2146,7 +2164,7 @@ name:"Logical Reasoning", deva:"तर्क शक्ति", emoji:"🧩", col
 
   /* ---------- BOOT ---------- */
   function boot(data){
-    loadPrefs(); paintMute(); paintAuto(); paintVoice(); paintReset(); setMode("play");
+    loadPrefs(); paintMute(); paintAuto(); paintVoice(); paintReset(); paintGameLen(); setMode("play");
     if(data && data.view==="quiz" && data.deck && data.deck.length){
       state.catIdx=data.catIdx;
       state.total=data.total||data.deck.length;
