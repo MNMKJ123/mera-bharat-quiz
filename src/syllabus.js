@@ -78,6 +78,29 @@ const SOF = {
     ],
   },
 
+  /* Chapter structure of the SOF ICSO Class 1 workbook, from its contents
+     page. Page numbers show how much room each chapter gets: every teaching
+     chapter is 6 pages, Logical Reasoning gets 8, then a full past paper and
+     worked explanations. The course mirrors this order so a chapter in the
+     app lines up with the same chapter in the book she is holding. */
+  ICSO_BOOK: {
+    title: "Computers and Information Technology, based on Windows 11",
+    chapters: [
+      { n:1, name:"Introduction to Computers",            page:4  },
+      { n:2, name:"Parts of a Computer",                  page:10 },
+      { n:3, name:"Uses of a Computer",                   page:16 },
+      { n:4, name:"Keyboard and its Keys",                page:22 },
+      { n:5, name:"Computer Mouse",                       page:28 },
+      { n:6, name:"Starting and Shutting Down a Computer",page:34 },
+      { n:7, name:"Introduction to MS-Paint",             page:40 },
+      { n:8, name:"Latest Developments in the Field of IT",page:46 },
+    ],
+    extras: [
+      { name:"Logical Reasoning",           page:51 },
+      { name:"Full past paper, ICSO 2025",  page:59 },
+      { name:"Hints and Explanations",      page:66 },
+    ],
+  },
   ICSO: {
     name: "ICSO",
     full: "International Cyber Olympiad (formerly NCO)",
