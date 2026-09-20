@@ -5,6 +5,7 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
+const zlib = require("zlib");
 
 const PORT = Number(process.argv[2]) || 8080;
 const ROOT = __dirname;
@@ -38,11 +39,17 @@ const server = http.createServer((req, res) => {
       res.end("Not found: " + rel);
       return;
     }
-    res.writeHead(200, {
-      "Content-Type": TYPES[path.extname(file).toLowerCase()] || "application/octet-stream",
-      "Cache-Control": "no-cache",
-      "Service-Worker-Allowed": "/",
-    });
+    const type = TYPES[path.extname(file).toLowerCase()] || "application/octet-stream";
+    const head = { "Content-Type": type, "Cache-Control": "no-cache", "Service-Worker-Allowed": "/" };
+    /* text compresses about four times over, so send it gzipped */
+    const wants = String(req.headers["accept-encoding"] || "");
+    if (/text|javascript|json|manifest/.test(type) && wants.indexOf("gzip") >= 0) {
+      head["Content-Encoding"] = "gzip";
+      res.writeHead(200, head);
+      res.end(zlib.gzipSync(data));
+      return;
+    }
+    res.writeHead(200, head);
     res.end(data);
   });
 });
