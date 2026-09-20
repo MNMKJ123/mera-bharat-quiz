@@ -101,9 +101,12 @@
   .bankline{ margin-top:5px; font-size:12.5px; font-weight:700; color:var(--ink-soft); }
   .bankline b{ color:var(--ink); }
 
-  .modeswitch{ display:flex; gap:8px; }
-  .modeswitch button{ flex:1 1 0; padding:11px 8px; font-size:16px;
+  .modeswitch{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .modeswitch button{ display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:2px; padding:9px 4px; line-height:1.1;
     font-family:"Baloo 2",sans-serif; background:var(--surface); }
+  .modeswitch button b{ font-size:21px; font-weight:400; }
+  .modeswitch button span{ font-size:12.5px; font-weight:700; }
   .modeswitch button.on{ background:var(--mango); color:#2A1B4D; }
 
   .settings{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px; }
@@ -172,6 +175,19 @@
   :root:not([data-theme="light"]) .rvno{ color:#FF9A92; }
   .rvwhy{ margin-top:7px; font-size:13px; font-weight:600; line-height:1.35;
     color:var(--ink-soft); border-top:2px dashed var(--line); padding-top:6px; }
+
+  .qsettings{ margin-top:8px; padding-top:8px; border-top:2px dashed var(--line); }
+  .tool.stop{ background:#FF8A8A; color:#4A0000; }
+
+  .memgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+  .memcard{ aspect-ratio:1/1; display:grid; place-items:center;
+    font-size:27px; border-radius:15px; border:3px solid var(--line);
+    background:var(--mango); cursor:pointer; padding:0;
+    -webkit-tap-highlight-color:transparent; }
+  .memcard .face{ opacity:0; transition:opacity .12s; }
+  .memcard.up .face, .memcard.done .face{ opacity:1; }
+  .memcard.up{ background:var(--surface); }
+  .memcard.done{ background:var(--surface); border-style:dashed; opacity:.55; }
 
   .cog{ flex:0 0 auto !important; width:46px; padding:11px 0 !important; }
   .voicenote{ width:100%; margin:2px 0 0; font-size:12.5px; line-height:1.35;
@@ -307,9 +323,12 @@
     </div>
 
     <div class="modeswitch">
-      <button class="sticker on" id="mode-play">🎮 Play</button>
-      <button class="sticker" id="mode-learn">📖 Learn</button>
-      <button class="sticker cog" id="mode-set" aria-expanded="false" aria-controls="settings-row" aria-label="Settings">⚙️</button>
+      <button class="sticker on" id="mode-play"><b>🎮</b><span>Play</span></button>
+      <button class="sticker" id="mode-learn"><b>📖</b><span>Learn</span></button>
+      <button class="sticker" id="mode-oly"><b>🏅</b><span>Olympiad</span></button>
+      <button class="sticker" id="mode-tutor"><b>👩‍🏫</b><span>Tutor</span></button>
+      <button class="sticker" id="mode-games"><b>🎲</b><span>Games</span></button>
+      <button class="sticker" id="mode-set" aria-expanded="false" aria-controls="settings-row"><b>⚙️</b><span>Settings</span></button>
     </div>
 
     <div class="settings" id="settings-row" hidden>
@@ -340,8 +359,9 @@
     <div id="mix-part">
       <p class="picksub" id="mix-lead">Pick the subjects you want:</p>
       <div class="settings">
-        <button class="sticker chip" id="len-10">⚡ Quick 10</button>
-        <button class="sticker chip" id="len-35">📝 Full paper 35</button>
+        <button class="sticker chip" id="len-10">⚡ 10</button>
+        <button class="sticker chip" id="len-20">💪 20</button>
+        <button class="sticker chip" id="len-35">📝 35 (full paper)</button>
       </div>
       <div class="settings">
         <button class="sticker chip" id="pick-all">✅ Select all</button>
@@ -373,8 +393,17 @@
       <div class="hintbox" id="hintbox" hidden></div>
       <div class="qtools">
         <button class="sticker tool" id="btn-speak">🔊 Read it</button>
+        <button class="sticker tool stop" id="btn-stop" hidden>⏹️ Stop</button>
         <button class="sticker tool hint" id="btn-hint">💡 Hint</button>
         <button class="sticker tool" id="btn-skip">⏭️ Skip</button>
+        <button class="sticker tool" id="btn-qset" aria-label="Settings">⚙️</button>
+      </div>
+      <div class="settings qsettings" id="qsettings" hidden>
+        <button class="sticker chip" id="q-mute">🔊 Sound</button>
+        <button class="sticker chip" id="q-auto">🗣️ Auto-read</button>
+        <button class="sticker chip" id="q-rate">🐢 Speed</button>
+        <button class="sticker chip" id="q-talk">🗨️ Hinglish</button>
+        <button class="sticker chip" id="q-tutor">👩‍🏫 Tutor on</button>
       </div>
     </div>
     <div class="opts" id="opts"></div>
@@ -413,6 +442,44 @@
       <button class="sticker bigbtn go" id="btn-again">🔁 Play 10 new ones</button>
       <button class="sticker bigbtn alt" id="btn-review">🔍 See what I missed</button>
       <button class="sticker bigbtn alt" id="btn-back">🏠 Pick another subject</button>
+    </div>
+  </section>
+
+  <section class="screen games" id="scr-games" hidden>
+    <h2 class="picktitle">🎲 Games</h2>
+    <p class="picksub">Quick ones, just for fun.</p>
+    <div class="setlist" id="gamelist"></div>
+    <div class="lbar" style="margin-top:4px">
+      <button class="sticker go" id="g-home">🏠 Home</button>
+    </div>
+  </section>
+
+  <section class="screen memory" id="scr-memory" hidden>
+    <div class="qhead">
+      <button class="sticker iconbtn" id="m-home" aria-label="Back">🏠</button>
+      <div class="title">🃏 Memory Match</div>
+      <div class="score">👏<span id="m-moves">0</span></div>
+    </div>
+    <p class="picksub" id="m-msg">Find the matching pairs!</p>
+    <div class="memgrid" id="memgrid"></div>
+    <div class="lbar" style="margin-top:4px">
+      <button class="sticker" id="m-again">🔁 New game</button>
+      <button class="sticker go" id="m-back">🎲 Games</button>
+    </div>
+  </section>
+
+  <section class="screen tutor" id="scr-tutor" hidden>
+    <h2 class="picktitle">👩‍🏫 Tutor</h2>
+    <p class="picksub">I will read it out, help you, then explain the answer.</p>
+    <div class="settings">
+      <button class="sticker chip" id="t-talk">🗨️ Hinglish</button>
+      <button class="sticker chip" id="t-rate">🐢 Speed</button>
+      <button class="sticker chip" id="t-test">▶️ Test voice</button>
+    </div>
+    <p class="picksub" style="margin-top:6px">Pick a subject and we will begin:</p>
+    <div class="setlist" id="tutorlist"></div>
+    <div class="lbar" style="margin-top:4px">
+      <button class="sticker go" id="t-home">🏠 Home</button>
     </div>
   </section>
 
@@ -2588,7 +2655,8 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
       muted    = localStorage.getItem("mbq.muted") === "1";
       autoRead = localStorage.getItem("mbq.auto")  !== "0";
       voiceIdx = parseInt(localStorage.getItem("mbq.voice") || "0", 10) || 0;
-      paperLen = parseInt(localStorage.getItem("mbq.len") || "10", 10) === 35 ? 35 : 10;
+      var pl = parseInt(localStorage.getItem("mbq.len") || "10", 10);
+      paperLen = (pl === 35 || pl === 20) ? pl : 10;
       var gl = parseInt(localStorage.getItem("mbq.gamelen") || "10", 10);
       gameLen = GAME_LENGTHS.indexOf(gl) >= 0 ? gl : 10;
       var tk = localStorage.getItem("mbq.talk");
@@ -2946,6 +3014,9 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
     $("scr-learn").hidden  = v!=="learn";
     $("scr-result").hidden = v!=="result";
     $("scr-review").hidden = v!=="review";
+    $("scr-games").hidden  = v!=="games";
+    $("scr-memory").hidden = v!=="memory";
+    $("scr-tutor").hidden  = v!=="tutor";
   }
 
   function card(o){
@@ -2973,7 +3044,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
         sub:"Sit a real SOF paper · IGKO, IMO, ISO, ICSO, IEO · 35 questions",
         go:function(){ openPick("mock"); } }));
       list.appendChild(card({ olympiad:true, emoji:"🎯", name:"Practice Mix",
-        sub:"Your own mix · "+(paperLen===35?35:gameLen)+" questions · "+n+" of "+BANK.length+" subjects",
+        sub:"Your own mix · "+paperLen+" questions · "+n+" of "+BANK.length+" subjects",
         go:function(){ openPick("mix"); } }));
       var lbl=document.createElement("div");
       lbl.className="sectionlabel"; lbl.textContent="Pick a subject";
@@ -3005,7 +3076,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
   function openPick(mode){
     pickMode = mode;
     renderPicker(); renderPaperButtons(); paintLen(); paintPickMode();
-    show("pick");
+    show("pick"); paintModeBar("pick");
   }
   function paintPickMode(){
     var mock = pickMode === "mock";
@@ -3058,7 +3129,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
      A real SOF paper is one hour. The clock runs only during a mock paper;
      at zero the paper is marked exactly as it stands. */
   var PAPER_SECONDS = 60 * 60;
-  var clockLeft = 0, clockTick = null;
+  var clockLeft = 0, clockTick = null, clockTotal = 1;
 
   function fmtClock(sec){
     if(sec < 0) sec = 0;
@@ -3068,8 +3139,9 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
   function paintClock(){
     var el = $("clock");
     $("clock-t").textContent = fmtClock(clockLeft);
-    el.classList.toggle("low", clockLeft <= 300 && clockLeft > 60);
-    el.classList.toggle("out", clockLeft <= 60);
+    var amber = clockTotal / 4, red = clockTotal / 12;
+    el.classList.toggle("low", clockLeft <= amber && clockLeft > red);
+    el.classList.toggle("out", clockLeft <= red);
   }
   function stopClock(){
     if(clockTick){ clearInterval(clockTick); clockTick = null; }
@@ -3077,7 +3149,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
   }
   function startClock(){
     stopClock();
-    clockLeft = PAPER_SECONDS;
+    clockLeft = PAPER_SECONDS; clockTotal = PAPER_SECONDS;
     $("clock").hidden = false;
     paintClock();
     clockTick = setInterval(function(){
@@ -3113,7 +3185,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
     clearTimeout(timer); hush();
     state.catIdx=i; state.qIdx=0; state.score=0; state.skipped=0; state.hints=0;
     state.streak=0; state.bestStreak=0; state.marks=[]; state.chose=[]; state.paper=null; state.secOf=null;
-    var want = (i===-1) ? (len || (paperLen===35 ? 35 : gameLen)) : gameLen;
+    var want = (i===-1) ? (len || paperLen) : gameLen;
     state.total = want;
     state.deck = (i===-1) ? drawMixed(want) : drawFromTopic(i, want);
     state.total = state.deck.length;
@@ -3396,7 +3468,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
     got.forEach(function(r){ add(r, false); });
   }
 
-  function goHome(){ clearTimeout(timer); hush(); stopClock(); renderHome(); show("home"); }
+  function goHome(){ clearTimeout(timer); hush(); stopClock(); renderHome(); show("home"); paintModeBar("home"); }
 
   /* ---------- WIRING ---------- */
   $("btn-home").addEventListener("click", function(){ sfxTap(); goHome(); });
@@ -3426,12 +3498,14 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
     picked=BANK.map(function(){ return false; }); savePrefs(); sfxTap(); renderPicker();
   });
   function paintLen(){
-    $("len-10").textContent = "⚡ Quick " + gameLen;
     $("len-10").classList.toggle("off", paperLen !== 10);
+    $("len-20").classList.toggle("off", paperLen !== 20);
     $("len-35").classList.toggle("off", paperLen !== 35);
   }
-  $("len-10").addEventListener("click", function(){ paperLen=10; savePrefs(); paintLen(); sfxTap(); });
-  $("len-35").addEventListener("click", function(){ paperLen=35; savePrefs(); paintLen(); sfxTap(); });
+  function setLen(n){ paperLen = n; savePrefs(); paintLen(); sfxTap(); renderHome(); }
+  $("len-10").addEventListener("click", function(){ setLen(10); });
+  $("len-20").addEventListener("click", function(){ setLen(20); });
+  $("len-35").addEventListener("click", function(){ setLen(35); });
 
   $("pick-start").addEventListener("click", function(){
     var any=false; picked.forEach(function(p){ if(p) any=true; });
@@ -3439,14 +3513,179 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
     sfxTap(); startGame(-1);
   });
 
+  /* Play and Learn change the home list. Olympiad, Tutor and Games are
+     screens of their own, so those buttons take you there instead. */
   function setMode(m){
     state.mode=m;
     $("mode-play").classList.toggle("on", m==="play");
     $("mode-learn").classList.toggle("on", m==="learn");
     renderHome();
   }
-  $("mode-play").addEventListener("click", function(){ sfxTap(); setMode("play"); });
-  $("mode-learn").addEventListener("click", function(){ sfxTap(); setMode("learn"); });
+  function paintModeBar(v){
+    var home = (v === "home");
+    $("mode-oly").classList.toggle("on", v==="pick");
+    $("mode-tutor").classList.toggle("on", v==="tutor");
+    $("mode-games").classList.toggle("on", v==="games" || v==="memory");
+    /* Play and Learn describe the home list, so they light up only there */
+    $("mode-play").classList.toggle("on", home && state.mode==="play");
+    $("mode-learn").classList.toggle("on", home && state.mode==="learn");
+  }
+  $("mode-play").addEventListener("click", function(){ sfxTap(); setMode("play"); paintModeBar("home"); });
+  $("mode-learn").addEventListener("click", function(){ sfxTap(); setMode("learn"); paintModeBar("home"); });
+  $("mode-oly").addEventListener("click", function(){ sfxTap(); openPick(pickMode); paintModeBar("pick"); });
+  $("mode-tutor").addEventListener("click", function(){
+    sfxTap(); renderTutorList(); paintTutorChips(); show("tutor"); paintModeBar("tutor");
+  });
+  $("mode-games").addEventListener("click", function(){
+    sfxTap(); renderGames(); show("games"); paintModeBar("games");
+  });
+
+  /* ---------- TUTOR ----------
+     The same questions, but read aloud, with the answer always explained. */
+  function renderTutorList(){
+    var list = $("tutorlist"); list.innerHTML = "";
+    BANK.forEach(function(cat, i){
+      list.appendChild(card({
+        emoji:cat.emoji, color:cat.color, name:cat.name, best:null,
+        sub:cat.deva + " · " + cat.qs.length + " questions",
+        go:function(){ startTutor(i); }
+      }));
+    });
+  }
+  function paintTutorChips(){
+    $("t-talk").textContent = $("btn-talk").textContent;
+    $("t-rate").textContent = $("btn-rate").textContent;
+  }
+  function startTutor(i){
+    tutor = true; autoRead = true; savePrefs();
+    paintTutor(); paintAuto(); paintQSettings();
+    startGame(i);
+    say([ talk === "hindi"
+            ? "चलो, साथ में सीखते हैं।"
+            : "Let us learn together. I will read each one out." ]);
+  }
+  $("t-home").addEventListener("click", function(){ sfxTap(); goHome(); });
+  $("t-talk").addEventListener("click", function(){ $("btn-talk").click(); paintTutorChips(); });
+  $("t-rate").addEventListener("click", function(){ $("btn-rate").click(); paintTutorChips(); });
+  $("t-test").addEventListener("click", function(){ $("btn-testvoice").click(); });
+
+  /* ---------- GAMES ---------- */
+  var GAMES = [
+    { emoji:"⚡", color:"mango", name:"Speed Round",
+      sub:"60 seconds · how many can you get?", go:function(){ startSpeed(); } },
+    { emoji:"🃏", color:"cyan", name:"Memory Match",
+      sub:"Find the pairs · 8 pairs", go:function(){ startMemory(); } }
+  ];
+  function renderGames(){
+    var list = $("gamelist"); list.innerHTML = "";
+    GAMES.forEach(function(g){
+      list.appendChild(card({ emoji:g.emoji, color:g.color, name:g.name, sub:g.sub, best:null, go:g.go }));
+    });
+  }
+  $("g-home").addEventListener("click", function(){ sfxTap(); goHome(); });
+
+  /* Speed Round: an ordinary mixed set, but against a 60-second clock. */
+  function startSpeed(){
+    startGame(-1, 30);
+    clockLeft = 60; clockTotal = 60;
+    $("clock").hidden = false;
+    paintClock();
+    if(clockTick) clearInterval(clockTick);
+    clockTick = setInterval(function(){
+      clockLeft--;
+      paintClock();
+      if(clockLeft <= 0){ stopClock(); praise("Time!"); finish(); }
+    }, 1000);
+    $("q-setname").textContent = "⚡ Speed Round";
+    say(["Sixty seconds. Ready, go!"]);
+  }
+
+  /* Memory Match: eight pairs of emoji, taken from the subject icons. */
+  var memUp = [], memMoves = 0, memLock = false, memLeft = 0;
+  function startMemory(){
+    var eight = shuffle(BANK.map(function(c){ return c.emoji; })).slice(0, 8);
+    var cards = shuffle(eight.concat(eight));
+    memUp = []; memMoves = 0; memLock = false; memLeft = 8;
+    $("m-moves").textContent = "0";
+    $("m-msg").textContent = "Find the matching pairs!";
+    var g = $("memgrid"); g.innerHTML = "";
+    cards.forEach(function(em, i){
+      var b = document.createElement("button");
+      b.className = "memcard";
+      b.setAttribute("aria-label", "Card " + (i + 1));
+      b.innerHTML = '<span class="face">' + em + '</span>';
+      b.dataset.em = em;
+      b.addEventListener("click", function(){ flipCard(b); });
+      g.appendChild(b);
+    });
+    show("memory"); paintModeBar("memory");
+    say(["Find the matching pairs!"]);
+  }
+  function flipCard(b){
+    if(memLock || b.classList.contains("up") || b.classList.contains("done")) return;
+    b.classList.add("up"); sfxTap();
+    memUp.push(b);
+    if(memUp.length < 2) return;
+
+    memMoves++; $("m-moves").textContent = memMoves;
+    var a = memUp[0], c = memUp[1];
+    if(a.dataset.em === c.dataset.em){
+      a.classList.add("done"); c.classList.add("done");
+      memUp = []; memLeft--;
+      sfxRight(1); burst(24, window.innerHeight * 0.5);
+      if(memLeft === 0){
+        $("m-msg").textContent = "All done in " + memMoves + " tries!";
+        sfxTada(); burst(120, window.innerHeight * 0.3); praise("You did it!");
+        say(["You found them all!"]);
+      }
+    } else {
+      memLock = true;
+      setTimeout(function(){
+        a.classList.remove("up"); c.classList.remove("up");
+        memUp = []; memLock = false;
+      }, 700);
+    }
+  }
+  $("m-home").addEventListener("click", function(){ sfxTap(); goHome(); });
+  $("m-again").addEventListener("click", function(){ sfxTap(); startMemory(); });
+  $("m-back").addEventListener("click", function(){ sfxTap(); renderGames(); show("games"); paintModeBar("games"); });
+
+  /* ---------- SETTINGS ON THE QUESTION ITSELF ----------
+     The same five switches that matter mid-question, without losing your
+     place. They mirror the chips on the home screen, both ways. */
+  function paintQSettings(){
+    $("q-mute").textContent  = $("btn-mute").textContent;
+    $("q-mute").classList.toggle("off", muted);
+    $("q-auto").textContent  = $("btn-auto").textContent;
+    $("q-auto").classList.toggle("off", !autoRead);
+    $("q-rate").textContent  = $("btn-rate").textContent;
+    $("q-talk").textContent  = $("btn-talk").textContent;
+    $("q-tutor").textContent = $("btn-tutor").textContent;
+    $("q-tutor").classList.toggle("off", !tutor);
+  }
+  /* each in-quiz chip drives the real one, then re-syncs both rows */
+  [["q-mute","btn-mute"],["q-auto","btn-auto"],["q-rate","btn-rate"],
+   ["q-talk","btn-talk"],["q-tutor","btn-tutor"]].forEach(function(pair){
+    $(pair[0]).addEventListener("click", function(){ $(pair[1]).click(); paintQSettings(); });
+  });
+  $("btn-qset").addEventListener("click", function(){
+    sfxTap();
+    var row = $("qsettings"), openNow = row.hidden;
+    row.hidden = !openNow;
+    paintQSettings();
+  });
+
+  /* Stop reading. Shown only while there is something to stop. */
+  $("btn-stop").addEventListener("click", function(){ hush(); paintStop(false); sfxTap(); });
+  function paintStop(on){ $("btn-stop").hidden = !on; }
+  /* poll, because speechSynthesis gives no reliable "finished everything" event */
+  setInterval(function(){
+    try{
+      var busy = ("speechSynthesis" in window) &&
+                 (window.speechSynthesis.speaking || window.speechSynthesis.pending);
+      paintStop(!!busy && !$("scr-quiz").hidden);
+    }catch(e){}
+  }, 350);
 
   $("pick-swap").addEventListener("click", function(){
     sfxTap(); pickMode = (pickMode === "mock") ? "mix" : "mock"; paintPickMode();
@@ -3460,7 +3699,8 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
     $("mode-set").classList.toggle("on", openNow);
   });
 
-  function paintMute(){ var b=$("btn-mute"); b.textContent=muted?"🔇 Sound":"🔊 Sound"; b.classList.toggle("off",muted); }
+  function paintMute(){ var b=$("btn-mute"); b.textContent=muted?"🔇 Sound":"🔊 Sound"; b.classList.toggle("off",muted);
+    if($("q-mute")) paintQSettings(); }
   function paintAuto(){ var b=$("btn-auto"); b.textContent=autoRead?"🗣️ Auto-read":"🤫 Auto-read"; b.classList.toggle("off",!autoRead); }
   function paintGameLen(){
     $("btn-len").textContent = "🔢 " + gameLen + " per game";
@@ -3550,7 +3790,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
 
   /* ---------- BOOT ---------- */
   function boot(data){
-    loadPrefs(); paintMute(); paintAuto(); paintVoice(); paintRate(); paintReset(); paintGameLen(); paintTalk(); paintTutor(); setMode("play");
+    loadPrefs(); paintMute(); paintAuto(); paintVoice(); paintRate(); paintReset(); paintGameLen(); paintTalk(); paintTutor(); paintQSettings(); setMode("play");
     if(data && data.view==="quiz" && data.deck && data.deck.length){
       state.catIdx=data.catIdx;
       state.total=data.total||data.deck.length;
