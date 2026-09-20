@@ -55,8 +55,9 @@ while (true) {
   if (s < 0) break;
 
   // the dictionary is the text just before "stream"
-  const dictStart = buf.lastIndexOf("<<", s);
-  const dict = dictStart >= 0 ? buf.slice(dictStart, s).toString("latin1") : "";
+  var objStart = buf.lastIndexOf(" obj", s);
+  if (objStart < 0) objStart = Math.max(0, s - 1200);
+  const dict = buf.slice(objStart, s).toString("latin1");
 
   let st = s + 6;
   if (buf[st] === 13) st++;
@@ -73,10 +74,15 @@ while (true) {
   const w = num(dict, "Width"), h = num(dict, "Height");
 
   if (/DCTDecode/.test(dict)) {
+    var jpg = data, kind = "jpeg";
+    if (/FlateDecode/.test(dict)) {
+      try { jpg = zlib.inflateSync(data); kind = "flate+jpeg"; }
+      catch (err) { other++; continue; }
+    }
     found++;
     const f = path.join(outDir, "page-" + String(found).padStart(3, "0") + ".jpg");
-    fs.writeFileSync(f, data);
-    report.push({ file: f, w, h, kb: Math.round(data.length / 1024), type: "jpeg" });
+    fs.writeFileSync(f, jpg);
+    report.push({ file: f, w, h, kb: Math.round(jpg.length / 1024), type: kind });
   } else if (/FlateDecode/.test(dict) && w && h) {
     try {
       const raw = zlib.inflateSync(data);
