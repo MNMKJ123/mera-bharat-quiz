@@ -17,6 +17,9 @@ const key = (s) => s.toLowerCase().replace(/[\s\p{P}]/gu, "");
 const byName = {};
 BANK.forEach((c) => { byName[c.name] = c; });
 
+const globalSeen = new Map();
+BANK.forEach((c) => c.qs.forEach((q) => globalSeen.set(key(q.q), c.name)));
+
 const files = fs.readdirSync("src").filter((f) => /^more-.*\.js$/.test(f)).sort();
 let added = 0, skipped = 0;
 
@@ -28,6 +31,9 @@ for (const f of files) {
     const have = new Set(cat.qs.map((q) => key(q.q)));
     for (const q of add[name]) {
       if (have.has(key(q.q))) { skipped++; continue; }
+      const owner = globalSeen.get(key(q.q));
+      if (owner && owner !== name) { console.log("  cross-subject duplicate skipped: already in " + owner + " - " + q.q.slice(0,50)); skipped++; continue; }
+      globalSeen.set(key(q.q), name);
       have.add(key(q.q));
       cat.qs.push(q);
       added++;
