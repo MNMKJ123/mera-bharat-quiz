@@ -103,7 +103,7 @@ const SOF = {
   },
   ICSO: {
     name: "ICSO",
-    full: "International Cyber Olympiad (formerly NCO)",
+    full: "International Computer Science Olympiad (formerly NCO)",
     total: 35, marks: 40, mins: 60,
     note: "SOF states questions are based on Windows 11.",
     sections: [
