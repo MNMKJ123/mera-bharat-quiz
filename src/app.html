@@ -11,7 +11,7 @@
     --mango:#FFB423; --saffron:#FF6B1A; --rani:#E2136E; --peacock:#0F9B8E;
     --sky:#2E7DD1; --cosmos:#5B4BC9; --leaf:#4A9D2F; --plum:#8E2C74;
     --brick:#C0392B; --clay:#B45309; --night:#3B3A8F; --chalk:#3A4A5C; --cyan:#0AA2C0; --chip:#65A30D; --logic:#7E22CE;
-    --coral:#E85D4A; --wine:#9D174D; --steel:#475569; --globe:#0369A1; --story:#7C3AED;
+    --coral:#E85D4A; --wine:#9D174D; --steel:#475569; --globe:#0369A1; --story:#7C3AED; --picture:#0E7490;
     --good:#12A150; --on-good:#FFFFFF; --bad:#E0344A; --on-bad:#FFFFFF;
     --pip:#E6D4B4; --skip:#A99BC4;
   }
@@ -21,7 +21,7 @@
     --mango:#FFC453; --saffron:#FF8A47; --rani:#FF4D96; --peacock:#2ED3C0;
     --sky:#6BA9F0; --cosmos:#9D8BF5; --leaf:#8FD46A; --plum:#E07BC8;
     --brick:#FF8A70; --clay:#E3A04A; --night:#8F8DF0; --chalk:#8FB3CC; --cyan:#4DD8F0; --chip:#A3E635; --logic:#C084FC;
-    --coral:#FF9B8A; --wine:#FB7185; --steel:#94A3B8; --globe:#7DD3FC; --story:#C4B5FD;
+    --coral:#FF9B8A; --wine:#FB7185; --steel:#94A3B8; --globe:#7DD3FC; --story:#C4B5FD; --picture:#5EEAD4;
     --good:#2BD07A; --on-good:#06240F; --bad:#FF6B7D; --on-bad:#2A0710;
     --pip:#3B2A6B; --skip:#6A5B94;
   }}
@@ -144,6 +144,9 @@
     background:var(--surface); border:3px solid var(--line); border-radius:24px;
     box-shadow:0 5px 0 var(--line); padding:14px 13px; }
   .qemoji{ font-size:clamp(38px,11vw,54px); line-height:1; }
+  .qemoji svg, .lemoji svg{ width:100%; max-width:290px; height:auto; display:block; margin:0 auto; }
+  .opt .oe svg{ width:100%; max-width:72px; height:auto; display:block; margin:0 auto; }
+  .lans .big svg{ width:100%; max-width:120px; height:auto; display:block; margin:0 auto; }
   .qtext{ font-family:"Baloo 2",sans-serif; font-weight:700;
     font-size:clamp(18px,5vw,23px); line-height:1.25; margin:0; text-wrap:balance; }
   .qtools{ display:flex; gap:7px; flex-wrap:wrap; justify-content:center; margin-top:2px; }
@@ -1809,6 +1812,61 @@ name:"Stories & Rhymes", deva:"कहानी और कविता", emoji:"�
 {e:"📚",q:"Why is reading storybooks good for us?",o:[["🧠","It grows our words and imagination"],["😴","It makes us sleepy"],["💰","It makes us rich"],["📏","It makes us taller"]],h:"Every new story teaches new words."},
 {e:"🔍",q:"What do we call a person in a story who does bad things?",o:[["😈","The villain"],["🦸","The hero"],["✍️","The author"],["📖","The reader"]],h:"Ravana and Kansa are examples."}
 ]}]);
+window.MBQ_BANK = (window.MBQ_BANK || []).concat([{
+name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️", color:"picture", qs:[
+{e:"🧩",f:{"k":"row","items":["circle red","square blue","circle red","square blue","?"]},q:"Which shape comes NEXT in this pattern?",o:[[{"k":"one","item":"circle red"},"Red circle"],[{"k":"one","item":"square blue"},"Blue square"],[{"k":"one","item":"triangle green"},"Green triangle"],[{"k":"one","item":"star yellow"},"Yellow star"]],h:"Circle, square, circle, square... keep going!"},
+{e:"🧩",f:{"k":"row","items":["triangle green","triangle green","circle red","triangle green","triangle green","?"]},q:"Which shape comes NEXT?",o:[[{"k":"one","item":"circle red"},"Red circle"],[{"k":"one","item":"triangle green"},"Green triangle"],[{"k":"one","item":"square blue"},"Blue square"],[{"k":"one","item":"heart pink"},"Pink heart"]],h:"Two triangles, then a circle, again and again."},
+{e:"🧩",f:{"k":"row","items":["star yellow","heart pink","star yellow","heart pink","?"]},q:"Which shape completes the pattern?",o:[[{"k":"one","item":"star yellow"},"Yellow star"],[{"k":"one","item":"heart pink"},"Pink heart"],[{"k":"one","item":"circle blue"},"Blue circle"],[{"k":"one","item":"square green"},"Green square"]],h:"Star, heart, star, heart..."},
+{e:"🧩",f:{"k":"row","items":["square red","square blue","square green","square red","square blue","?"]},q:"Which colour comes NEXT?",o:[[{"k":"one","item":"square green"},"Green"],[{"k":"one","item":"square red"},"Red"],[{"k":"one","item":"square blue"},"Blue"],[{"k":"one","item":"square yellow"},"Yellow"]],h:"Red, blue, green, and then it repeats."},
+{e:"🧩",f:{"k":"row","items":["circle purple","circle purple","circle purple","square orange","circle purple","circle purple","circle purple","?"]},q:"Which shape comes NEXT (puzzle 2)?",o:[[{"k":"one","item":"square orange"},"Orange square"],[{"k":"one","item":"circle purple"},"Purple circle"],[{"k":"one","item":"star yellow"},"Yellow star"],[{"k":"one","item":"triangle red"},"Red triangle"]],h:"Three circles, then a square. Count them."},
+{e:"🧩",f:{"k":"row","items":["diamond blue","oval green","diamond blue","oval green","?"]},q:"Which shape continues the pattern?",o:[[{"k":"one","item":"diamond blue"},"Blue diamond"],[{"k":"one","item":"oval green"},"Green oval"],[{"k":"one","item":"hexagon red"},"Red hexagon"],[{"k":"one","item":"star yellow"},"Yellow star"]],h:"Diamond, oval, diamond, oval..."},
+{e:"🔗",f:{"k":"row","items":["circle red",":","circle blue","::","square red",":","?"]},q:"Which shape completes this pair?",o:[[{"k":"one","item":"square blue"},"Blue square"],[{"k":"one","item":"circle blue"},"Blue circle"],[{"k":"one","item":"square red"},"Red square"],[{"k":"one","item":"triangle blue"},"Blue triangle"]],h:"Red became blue. The shape stayed the same."},
+{e:"🔗",f:{"k":"row","items":["triangle green",":","triangle yellow","::","star green",":","?"]},q:"Which shape completes this pair (puzzle 2)?",o:[[{"k":"one","item":"star yellow"},"Yellow star"],[{"k":"one","item":"star green"},"Green star"],[{"k":"one","item":"triangle yellow"},"Yellow triangle"],[{"k":"one","item":"circle yellow"},"Yellow circle"]],h:"Only the colour changed from green to yellow."},
+{e:"🔗",f:{"k":"row","items":["square blue",":","circle blue","::","square pink",":","?"]},q:"Which shape completes this pair (puzzle 3)?",o:[[{"k":"one","item":"circle pink"},"Pink circle"],[{"k":"one","item":"square pink"},"Pink square"],[{"k":"one","item":"circle blue"},"Blue circle"],[{"k":"one","item":"triangle pink"},"Pink triangle"]],h:"Square became circle. The colour stayed."},
+{e:"🔍",q:"Which shape is the ODD ONE OUT by colour?",o:[[{"k":"one","item":"square red"},"Shape A"],[{"k":"one","item":"circle blue"},"Shape B"],[{"k":"one","item":"triangle blue"},"Shape C"],[{"k":"one","item":"star blue"},"Shape D"]],h:"Three are blue. One is not."},
+{e:"🔍",q:"Which shape is the ODD ONE OUT by shape?",o:[[{"k":"one","item":"circle green"},"Shape A"],[{"k":"one","item":"square green"},"Shape B"],[{"k":"one","item":"square red"},"Shape C"],[{"k":"one","item":"square blue"},"Shape D"]],h:"Three are squares. One is round."},
+{e:"🔍",q:"Which one is the ODD ONE OUT? Look at the number of corners.",o:[[{"k":"one","item":"circle purple"},"Shape A"],[{"k":"one","item":"triangle purple"},"Shape B"],[{"k":"one","item":"square purple"},"Shape C"],[{"k":"one","item":"diamond purple"},"Shape D"]],h:"Three have corners. One has none at all."},
+{e:"🔍",q:"Which shape does NOT belong with the others?",o:[[{"k":"one","item":"heart pink"},"Shape A"],[{"k":"one","item":"square orange"},"Shape B"],[{"k":"one","item":"rect orange"},"Shape C"],[{"k":"one","item":"diamond orange"},"Shape D"]],h:"Three have straight sides and one colour. One is different in both ways."},
+{e:"🔢",f:{"k":"grid","cols":4,"items":["circle red","circle red","circle red","circle red","circle red","circle red"]},q:"How many circles are there?",o:[["6️⃣","Six"],["4️⃣","Four"],["5️⃣","Five"],["7️⃣","Seven"]],h:"Count the top row, then the bottom row."},
+{e:"🔢",f:{"k":"grid","cols":5,"items":["star yellow","star yellow","star yellow","star yellow","star yellow","star yellow","star yellow","star yellow"]},q:"How many stars are there?",o:[["8️⃣","Eight"],["7️⃣","Seven"],["9️⃣","Nine"],["🔟","Ten"]],h:"Five on top, and three below."},
+{e:"🔢",f:{"k":"grid","cols":4,"items":["square blue","circle red","square blue","circle red","square blue","circle red","square blue","circle red"]},q:"How many SQUARES are there?",o:[["4️⃣","Four"],["8️⃣","Eight"],["3️⃣","Three"],["5️⃣","Five"]],h:"Count only the ones with corners."},
+{e:"🔢",f:{"k":"grid","cols":4,"items":["triangle green","circle red","triangle green","circle red","circle red","triangle green","circle red","circle red"]},q:"How many CIRCLES can you count here?",o:[["5️⃣","Five"],["3️⃣","Three"],["4️⃣","Four"],["6️⃣","Six"]],h:"Ignore the triangles and count the round ones."},
+{e:"🔢",f:{"k":"grid","cols":4,"items":["heart pink","heart pink","star yellow","heart pink","star yellow","heart pink","heart pink","star yellow"]},q:"Are there MORE hearts or MORE stars?",o:[["💗","More hearts"],["⭐","More stars"],["🟰","The same number"],["0️⃣","Neither"]],h:"Count each kind, then compare."},
+{e:"🔢",f:{"k":"grid","cols":3,"items":["circle blue","circle blue","circle blue","square green","square green","square green"]},q:"Are there more circles or more squares?",o:[["🟰","The same number"],["🔵","More circles"],["🟩","More squares"],["0️⃣","Neither"]],h:"Count both rows carefully."},
+{e:"🔢",f:{"k":"row","items":["circle red","circle red","circle red","circle red","circle red","circle red","circle red"]},q:"How many circles? Count them all.",o:[["7️⃣","Seven"],["6️⃣","Six"],["8️⃣","Eight"],["5️⃣","Five"]],h:"Touch each one as you count."},
+{e:"📐",f:{"k":"one","item":"triangle red"},q:"How many CORNERS does this shape have?",o:[["3️⃣","Three"],["4️⃣","Four"],["0️⃣","None"],["5️⃣","Five"]],h:"Count the pointy bits."},
+{e:"📐",f:{"k":"one","item":"square blue"},q:"How many SIDES does this shape have?",o:[["4️⃣","Four"],["3️⃣","Three"],["5️⃣","Five"],["0️⃣","None"]],h:"Count the straight edges."},
+{e:"📐",f:{"k":"one","item":"hexagon green"},q:"Count the sides of this shape. How many are there?",o:[["6️⃣","Six"],["5️⃣","Five"],["4️⃣","Four"],["8️⃣","Eight"]],h:"A hexagon. Hex means six!"},
+{e:"📐",f:{"k":"one","item":"circle purple"},q:"What is the name of this shape?",o:[["⚪","Circle"],["🟥","Square"],["🔺","Triangle"],["▭","Rectangle"]],h:"Round, with no corners at all."},
+{e:"📐",f:{"k":"one","item":"diamond orange"},q:"Which shape is shown here?",o:[["🔷","Diamond"],["⚪","Circle"],["🔺","Triangle"],["⬡","Hexagon"]],h:"A square standing on one corner."},
+{e:"📐",f:{"k":"one","item":"rect blue"},q:"Name this shape.",o:[["▭","Rectangle"],["🟥","Square"],["⚪","Circle"],["🔺","Triangle"]],h:"Two long sides and two short sides."},
+{e:"📐",f:{"k":"one","item":"star yellow"},q:"How many points does this star have?",o:[["5️⃣","Five"],["4️⃣","Four"],["6️⃣","Six"],["8️⃣","Eight"]],h:"Count the sharp tips going outwards."},
+{e:"🧭",f:{"k":"row","items":["circle red","square blue","triangle green","star yellow","heart pink"]},q:"Which shape is FIRST from the left?",o:[[{"k":"one","item":"circle red"},"Red circle"],[{"k":"one","item":"heart pink"},"Pink heart"],[{"k":"one","item":"triangle green"},"Green triangle"],[{"k":"one","item":"star yellow"},"Yellow star"]],h:"Start at the left-hand end."},
+{e:"🧭",f:{"k":"row","items":["circle red","square blue","triangle green","star yellow","heart pink"]},q:"Which shape is in the MIDDLE?",o:[[{"k":"one","item":"triangle green"},"Green triangle"],[{"k":"one","item":"square blue"},"Blue square"],[{"k":"one","item":"star yellow"},"Yellow star"],[{"k":"one","item":"circle red"},"Red circle"]],h:"Two shapes on each side of it."},
+{e:"🧭",f:{"k":"row","items":["circle red","square blue","triangle green","star yellow","heart pink"]},q:"Which shape is LAST from the left?",o:[[{"k":"one","item":"heart pink"},"Pink heart"],[{"k":"one","item":"circle red"},"Red circle"],[{"k":"one","item":"star yellow"},"Yellow star"],[{"k":"one","item":"square blue"},"Blue square"]],h:"Go all the way to the right-hand end."},
+{e:"🧭",f:{"k":"row","items":["star yellow","circle blue","square red","triangle green"]},q:"Which shape is 2nd from the LEFT?",o:[[{"k":"one","item":"circle blue"},"Blue circle"],[{"k":"one","item":"star yellow"},"Yellow star"],[{"k":"one","item":"square red"},"Red square"],[{"k":"one","item":"triangle green"},"Green triangle"]],h:"Star is first, then comes..."},
+{e:"🧭",f:{"k":"row","items":["star yellow","circle blue","square red","triangle green"]},q:"Which shape is 2nd from the RIGHT?",o:[[{"k":"one","item":"square red"},"Red square"],[{"k":"one","item":"triangle green"},"Green triangle"],[{"k":"one","item":"circle blue"},"Blue circle"],[{"k":"one","item":"star yellow"},"Yellow star"]],h:"Start at the right end and count back two."},
+{e:"🧭",f:{"k":"row","items":["circle red","square blue","triangle green"]},q:"Which shape is BETWEEN the circle and the triangle?",o:[[{"k":"one","item":"square blue"},"Blue square"],[{"k":"one","item":"circle red"},"Red circle"],[{"k":"one","item":"triangle green"},"Green triangle"],[{"k":"one","item":"star yellow"},"Yellow star"]],h:"The one in the middle of those two."},
+{e:"🧩",q:"Which TWO shapes can join to make a bigger SQUARE?",o:[["🔺","Two triangles"],["⚪","Two circles"],["⭐","Two stars"],["💗","Two hearts"]],h:"Cut a square corner to corner and see what you get."},
+{e:"🧩",q:"Which TWO shapes can join to make a RECTANGLE?",o:[["🟥","Two squares side by side"],["⚪","Two circles"],["⭐","Two stars"],["🔷","Two diamonds"]],h:"Put them next to each other in a row."},
+{e:"🧩",q:"If you fold a square exactly in half, what do you get?",o:[["▭","Two rectangles"],["⚪","Two circles"],["⭐","Two stars"],["⬡","Two hexagons"]],h:"Fold it straight across the middle."},
+{e:"🧩",q:"How many triangles make up one diamond cut across the middle?",o:[["2️⃣","Two"],["3️⃣","Three"],["4️⃣","Four"],["1️⃣","One"]],h:"One cut makes two pieces."},
+{e:"⚖️",f:{"k":"grid","cols":3,"items":["circle red","circle red","circle red","circle blue","circle blue","blank"]},q:"Which row has MORE circles, the top or the bottom?",o:[["⬆️","The top row"],["⬇️","The bottom row"],["🟰","Both the same"],["0️⃣","Neither"]],h:"The dotted box is empty."},
+{e:"⚖️",f:{"k":"row","items":["circle blue","circle blue","circle blue","circle blue","circle blue","circle blue"]},q:"How many GROUPS OF 2 can you make from these circles?",o:[["3️⃣","Three"],["2️⃣","Two"],["4️⃣","Four"],["6️⃣","Six"]],h:"Put them in pairs and count the pairs."},
+{e:"⚖️",f:{"k":"row","items":["star green","star green","star green","star green","star green","star green","star green","star green","star green"]},q:"How many GROUPS OF 3 can you make?",o:[["3️⃣","Three"],["2️⃣","Two"],["4️⃣","Four"],["9️⃣","Nine"]],h:"Three and three and three."},
+{e:"⚖️",f:{"k":"grid","cols":5,"items":["square orange","square orange","square orange","square orange","square orange","square orange","square orange","square orange","square orange","square orange"]},q:"How many squares altogether?",o:[["🔟","Ten"],["8️⃣","Eight"],["9️⃣","Nine"],["1️⃣2️⃣","Twelve"]],h:"Five in each row, and there are two rows."},
+{e:"❓",f:{"k":"row","items":["circle red","blank","circle red","circle red"]},q:"The dotted box is empty. Which shape should go there?",o:[[{"k":"one","item":"circle red"},"Red circle"],[{"k":"one","item":"square blue"},"Blue square"],[{"k":"one","item":"star yellow"},"Yellow star"],[{"k":"one","item":"triangle green"},"Green triangle"]],h:"All the others are the same."},
+{e:"❓",f:{"k":"row","items":["square green","circle yellow","square green","blank"]},q:"Which shape should fill the empty box?",o:[[{"k":"one","item":"circle yellow"},"Yellow circle"],[{"k":"one","item":"square green"},"Green square"],[{"k":"one","item":"star red"},"Red star"],[{"k":"one","item":"heart pink"},"Pink heart"]],h:"Square, circle, square, then..."},
+{e:"❓",f:{"k":"grid","cols":3,"items":["star blue","star blue","star blue","star blue","blank","star blue"]},q:"What is missing from the empty box?",o:[[{"k":"one","item":"star blue"},"Blue star"],[{"k":"one","item":"circle red"},"Red circle"],[{"k":"one","item":"square green"},"Green square"],[{"k":"one","item":"heart pink"},"Pink heart"]],h:"Every other box has the same thing."},
+{e:"📏",q:"Which is HEAVIER: a bag of stones or a bag of feathers, both the same size?",o:[["🪨","The stones"],["🪶","The feathers"],["🟰","Both the same"],["❓","Cannot be determined"]],h:"Stones are packed much more tightly."},
+{e:"📏",q:"A box of books and a box of cotton are the same size. Which is LIGHTER?",o:[["☁️","The cotton"],["📚","The books"],["🟰","Both the same"],["❓","Cannot be determined"]],h:"Which one could you lift more easily?"},
+{e:"📏",q:"Amit is taller than Bina. Bina is taller than Chitra. Who is the SHORTEST?",o:[["🧍","Chitra"],["🧍","Amit"],["🧍","Bina"],["❓","Cannot be determined"]],h:"Put them in a line from tallest to shortest."},
+{e:"📏",q:"Ravi is heavier than Sita. We do not know about Meena. Who is the heaviest?",o:[["❓","Cannot be determined"],["🧍","Ravi"],["🧍","Sita"],["🧍","Meena"]],h:"Careful! We were not told anything about Meena."},
+{e:"🪞",f:{"k":"one","item":"circle red"},q:"If you hold this shape to a mirror, what will you see?",o:[[{"k":"one","item":"circle red"},"The same circle"],[{"k":"one","item":"square red"},"A square"],[{"k":"one","item":"triangle red"},"A triangle"],[{"k":"one","item":"star red"},"A star"]],h:"A circle looks the same from every side."},
+{e:"🪞",q:"Which of these shapes looks EXACTLY the same in a mirror?",o:[["⚪","A circle"],["🔤","The letter P"],["🔤","The letter R"],["🔤","The letter F"]],h:"Letters flip, but a round shape does not."},
+{e:"🔄",f:{"k":"one","item":"square blue"},q:"If you turn this shape around, what shape is it still?",o:[["🟥","A square"],["⚪","A circle"],["🔺","A triangle"],["⭐","A star"]],h:"Turning does not change what a shape is."}
+]}]);
+
 
 
 
@@ -1818,6 +1876,74 @@ name:"Stories & Rhymes", deva:"कहानी और कविता", emoji:"�
   "use strict";
   var BANK = window.MBQ_BANK || [];
   var $ = function(id){ return document.getElementById(id); };
+
+  /* ---------- SVG figure engine ----------
+     Draws the shape figures the real SOF papers use. Colours are fixed so
+     they read on both themes; outlines use the theme's own line colour. */
+  var FIG_C = { red:"#E03131", blue:"#1C7ED6", green:"#2F9E44", yellow:"#E8A700",
+                purple:"#7048E8", orange:"#F76707", pink:"#E64980", grey:"#868E96" };
+
+  function poly(pts, fill){
+    return '<polygon points="' + pts + '" fill="' + fill +
+           '" stroke="var(--line)" stroke-width="2" stroke-linejoin="round"/>';
+  }
+  function drawShape(kind, colour, cx, cy, r){
+    var f = FIG_C[colour] || FIG_C.grey, p = [];
+    var st = ' fill="' + f + '" stroke="var(--line)" stroke-width="2"';
+    switch(kind){
+      case "circle":  return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'"'+st+'/>';
+      case "oval":    return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(r*1.25)+'" ry="'+(r*0.78)+'"'+st+'/>';
+      case "square":  return '<rect x="'+(cx-r)+'" y="'+(cy-r)+'" width="'+(2*r)+'" height="'+(2*r)+'" rx="3"'+st+'/>';
+      case "rect":    return '<rect x="'+(cx-r*1.35)+'" y="'+(cy-r*0.72)+'" width="'+(2.7*r)+'" height="'+(1.44*r)+'" rx="3"'+st+'/>';
+      case "triangle":return poly((cx)+','+(cy-r)+' '+(cx+r)+','+(cy+r*0.86)+' '+(cx-r)+','+(cy+r*0.86), f);
+      case "diamond": return poly((cx)+','+(cy-r)+' '+(cx+r)+','+(cy)+' '+(cx)+','+(cy+r)+' '+(cx-r)+','+(cy), f);
+      case "hexagon":
+        for(var h=0;h<6;h++){ var a=Math.PI/180*(60*h-30); p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1)); }
+        return poly(p.join(' '), f);
+      case "star":
+        for(var i=0;i<10;i++){
+          var rr = i%2 ? r*0.45 : r, an = Math.PI/180*(36*i-90);
+          p.push((cx+rr*Math.cos(an)).toFixed(1)+','+(cy+rr*Math.sin(an)).toFixed(1));
+        }
+        return poly(p.join(' '), f);
+      case "heart":
+        return '<path d="M '+cx+' '+(cy+r*0.85)+' C '+(cx-r*1.5)+' '+(cy-r*0.25)+', '+(cx-r*0.5)+' '+(cy-r*1.25)+', '+cx+' '+(cy-r*0.35)+
+               ' C '+(cx+r*0.5)+' '+(cy-r*1.25)+', '+(cx+r*1.5)+' '+(cy-r*0.25)+', '+cx+' '+(cy+r*0.85)+' Z"'+st+'/>';
+      default:        return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'"'+st+'/>';
+    }
+  }
+  function token(t, cx, cy, r){
+    return '<text x="'+cx+'" y="'+(cy+r*0.55)+'" text-anchor="middle" font-size="'+(r*1.6)+
+           '" font-weight="800" fill="var(--ink)" font-family="Baloo 2, sans-serif">'+t+'</text>';
+  }
+  function drawItem(item, cx, cy, r){
+    if(item === "?" || item === ":" || item === "::") return token(item, cx, cy, r);
+    if(item === "blank") return '<rect x="'+(cx-r)+'" y="'+(cy-r)+'" width="'+(2*r)+'" height="'+(2*r)+
+      '" rx="4" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="5 4"/>';
+    var bits = String(item).split(" ");
+    return drawShape(bits[0], bits[1], cx, cy, r);
+  }
+  function svgFor(f){
+    if(!f) return "";
+    var items = f.items || [], cell = 46, r = 15, out = [], i;
+    if(f.k === "one"){
+      return '<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">' +
+             drawItem(f.item, 20, 20, 15) + '</svg>';
+    }
+    if(f.k === "grid" || f.k === "count"){
+      var cols = f.cols || Math.ceil(Math.sqrt(items.length)),
+          rows = Math.ceil(items.length / cols);
+      for(i=0;i<items.length;i++){
+        out.push(drawItem(items[i], (i%cols)*cell + cell/2, Math.floor(i/cols)*cell + cell/2, r));
+      }
+      return '<svg viewBox="0 0 '+(cols*cell)+' '+(rows*cell)+'" xmlns="http://www.w3.org/2000/svg">'+out.join("")+'</svg>';
+    }
+    /* default: a single row */
+    for(i=0;i<items.length;i++) out.push(drawItem(items[i], i*cell + cell/2, cell/2, r));
+    return '<svg viewBox="0 0 '+(items.length*cell)+' '+cell+'" xmlns="http://www.w3.org/2000/svg">'+out.join("")+'</svg>';
+  }
+  /* an option's picture is either an emoji string or a figure spec */
+  function optPic(v){ return (v && typeof v === "object") ? svgFor(v) : v; }
   var PER_GAME = 10;
 
   var state = { view:"home", mode:"play", catIdx:0, qIdx:0, score:0, skipped:0, hints:0, total:10,
@@ -2181,7 +2307,7 @@ name:"Stories & Rhymes", deva:"कहानी और कविता", emoji:"�
     var q=state.deck[state.qIdx];
     if(!q){ finish(); return; }
     $("q-score").textContent=state.score;
-    $("q-emoji").textContent=q.e;
+    if(q.f){ $("q-emoji").innerHTML = svgFor(q.f); } else { $("q-emoji").textContent = q.e; }
     $("q-text").textContent=q.q;
     $("hintbox").hidden=true;
     $("btn-hint").disabled=false;
@@ -2194,7 +2320,7 @@ name:"Stories & Rhymes", deva:"कहानी और कविता", emoji:"�
       var o=q.o[oi];
       var btn=document.createElement("button");
       btn.className="sticker opt";
-      btn.innerHTML='<span class="oe" aria-hidden="true">'+o[0]+'</span><span class="ot">'+o[1]+'</span>';
+      btn.innerHTML='<span class="oe" aria-hidden="true">'+optPic(o[0])+'</span><span class="ot">'+o[1]+'</span>';
       btn.setAttribute("aria-label", o[1]);
       btn.dataset.correct = (oi===0) ? "1" : "0";
       btn.addEventListener("click", function(){ answer(btn); });
@@ -2315,7 +2441,7 @@ name:"Stories & Rhymes", deva:"कहानी और कविता", emoji:"�
     var q=state.lDeck[state.lIdx]; if(!q) return;
     state.lShown=false;
     $("l-pos").textContent=state.lIdx+1;
-    $("l-emoji").textContent=q.e;
+    if(q.f){ $("l-emoji").innerHTML = svgFor(q.f); } else { $("l-emoji").textContent = q.e; }
     $("l-q").textContent=q.q;
     $("l-ans").hidden=true;
     $("l-fun").hidden=true;
@@ -2326,7 +2452,9 @@ name:"Stories & Rhymes", deva:"कहानी और कविता", emoji:"�
   function revealLearn(){
     var q=state.lDeck[state.lIdx]; if(!q || state.lShown) return;
     state.lShown=true;
-    $("l-ansemoji").textContent=q.o[0][0];
+    var ap = q.o[0][0];
+    if(ap && typeof ap === "object"){ $("l-ansemoji").innerHTML = svgFor(ap); }
+    else { $("l-ansemoji").textContent = ap; }
     $("l-answord").textContent=q.o[0][1];
     $("l-ans").hidden=false;
     $("l-fun").textContent="💡 "+q.h;

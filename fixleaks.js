@@ -20,6 +20,7 @@ const POOL = {
   "Gadgets & Tech":["📱","❓","🔌","🧐","💭","🎓","📝","🔎"],
   "World Around Us":["🌍","❓","🗺️","🧐","💭","🎓","📝","🔎"],
   "Stories & Rhymes":["📚","❓","📖","🧐","💭","🎓","📝","🔎"],
+  "Picture Puzzles":["🖼️","❓","🧩","🧐","💭","🎓","📐","🔎"],
   "Maths":["🔢","🧮","❓","🤔","📝","🧐","💭","🎓"],
   "Computer":["💻","❓","🔌","🤔","🧐","💭","🎓","📝"],
   "Science":["🔬","❓","🧪","🤔","🧐","💭","🎓","📝"],
@@ -56,7 +57,7 @@ const blocks = BANK.map((c) =>
   "window.MBQ_BANK = (window.MBQ_BANK || []).concat([{\n" +
   "name:" + S(c.name) + ", deva:" + S(c.deva) + ", emoji:" + S(c.emoji) + ", color:" + S(c.color) + ", qs:[\n" +
   c.qs.map((q) =>
-    "{e:" + S(q.e) + ",q:" + S(q.q) + ",o:[" +
+    "{e:" + S(q.e) + (q.f ? ",f:" + S(q.f) : "") + ",q:" + S(q.q) + ",o:[" +
     q.o.map((o) => "[" + S(o[0]) + "," + S(o[1]) + "]").join(",") +
     "],h:" + S(q.h) + "}").join(",\n") +
   "\n]}]);"
