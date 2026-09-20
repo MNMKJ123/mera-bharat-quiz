@@ -339,17 +339,26 @@
     </div>
 
     <div id="mix-part">
-      <p class="picksub" id="mix-lead">Pick the subjects you want:</p>
+      <p class="picksub" id="mix-lead">How many questions?</p>
       <div class="settings">
         <button class="sticker chip" id="len-10">⚡ 10</button>
         <button class="sticker chip" id="len-20">💪 20</button>
         <button class="sticker chip" id="len-35">📝 35 (full paper)</button>
       </div>
-      <div class="settings">
-        <button class="sticker chip" id="pick-all">✅ Select all</button>
-        <button class="sticker chip" id="pick-none">⬜ Clear all</button>
+
+      <p class="picksub" style="margin-top:8px">Which syllabus?</p>
+      <div class="settings" id="syllabus-row"></div>
+
+      <p class="picksub" id="mix-count" style="margin-top:8px">All subjects</p>
+      <button class="sticker swapmode" id="mix-toggle" aria-expanded="false">🔧 Choose subjects myself</button>
+
+      <div id="mix-detail" hidden>
+        <div class="settings">
+          <button class="sticker chip" id="pick-all">✅ Select all</button>
+          <button class="sticker chip" id="pick-none">⬜ Clear all</button>
+        </div>
+        <div class="pickgrid" id="pickgrid"></div>
       </div>
-      <div class="pickgrid" id="pickgrid"></div>
     </div>
 
     <button class="sticker swapmode" id="pick-swap">🎯 …or build your own mix</button>
@@ -2579,14 +2588,14 @@ window.MBQ_BANK = (window.MBQ_BANK || []).concat([{
 name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fame", qs:[
 {g:"Space",e:"🧐",q:"Who was the FIRST Indian to travel into space?",o:[["👨‍🚀","Rakesh Sharma"],["👩‍🚀","Kalpana Chawla"],["🧑‍🔬","Vikram Sarabhai"],["👨‍🏫","Homi Bhabha"]],h:"He flew in 1984, and told the Prime Minister India looked 'saare jahan se achha'."},
 {g:"Space",e:"🤔",q:"Who was the FIRST woman of Indian origin to go to space?",o:[["👩‍🚀","Kalpana Chawla"],["👩","Sunita Williams"],["👩‍🔬","Tessy Thomas"],["👩‍✈️","Ritu Karidhal"]],h:"She was born in Karnal, Haryana."},
-{g:"Space",e:"💭",q:"Which Indian mission helped prove there is water on the Moon?",o:[["🌑","Chandrayaan-1"],["🔴","Mangalyaan"],["☀️","Aditya-L1"],["🛰️","Gaganyaan"]],h:"India's very first mission to the Moon, back in 2008."},
+{g:"Space",e:"🤔",q:"Who was the SECOND person to walk on the Moon?",o:[["👨‍🚀","Buzz Aldrin"],["🌕","Neil Armstrong"],["🛰️","Michael Collins"],["🚀","Yuri Gagarin"]],h:"He stepped out just after Armstrong."},
 {g:"Space",e:"🎓",q:"Who was the FIRST human ever to go into space?",o:[["🚀","Yuri Gagarin"],["🌕","Neil Armstrong"],["👨‍🚀","Rakesh Sharma"],["👩‍🚀","Valentina Tereshkova"]],h:"A Russian, and he went up in 1961."},
 {g:"Space",e:"📝",q:"Which Indian scientist is called the Father of the Indian Space Programme?",o:[["🛰️","Vikram Sarabhai"],["⚛️","Homi Bhabha"],["🚀","APJ Abdul Kalam"],["🔬","CV Raman"]],h:"India's spaceport at Thumba is named after him."},
 {g:"Space",e:"🔎",q:"Which President of India was known as the Missile Man?",o:[["🚀","APJ Abdul Kalam"],["🕊️","Jawaharlal Nehru"],["📘","Dr Rajendra Prasad"],["🎓","S Radhakrishnan"]],h:"He was a rocket scientist long before he was President."},
 {g:"Space",e:"🧐",q:"Which Indian woman astronaut has spent a very long time on the Space Station?",o:[["👩‍🚀","Sunita Williams"],["👩","Kalpana Chawla"],["👩‍🔬","Ritu Karidhal"],["👩‍✈️","Mary Kom"]],h:"She even ran a marathon while in orbit."},
 {g:"Space",e:"🤔",q:"Who was the FIRST woman in the world to go to space?",o:[["👩‍🚀","Valentina Tereshkova"],["👩","Sally Ride"],["👩‍🔬","Kalpana Chawla"],["👩‍✈️","Sunita Williams"]],h:"A Russian, and she flew in 1963."},
-{g:"Space",e:"💭",q:"What is the name of India's space agency?",o:[["🛰️","ISRO"],["🚀","NASA"],["🌌","ESA"],["🔭","DRDO"]],h:"Four letters, and it launched Chandrayaan."},
-{g:"Space",e:"🎓",q:"Which Indian mission landed near the Moon's south pole in 2023?",o:[["🌙","Chandrayaan-3"],["☀️","Aditya-L1"],["🔴","Mangalyaan"],["🛰️","Gaganyaan"]],h:"Chandra means moon, and this was the third try."},
+{g:"Space",e:"🧐",q:"Which scientist gave India its space programme and has the Thumba centre named after him?",o:[["🛰️","Vikram Sarabhai"],["⚛️","Homi Bhabha"],["🚀","APJ Abdul Kalam"],["🔬","CV Raman"]],h:"He founded the organisation that later launched Chandrayaan."},
+{g:"Space",e:"💭",q:"Which astronaut stayed in orbit while the other two walked on the Moon?",o:[["🛰️","Michael Collins"],["🌕","Neil Armstrong"],["👨‍🚀","Buzz Aldrin"],["🚀","Alan Shepard"]],h:"Somebody had to fly the command module."},
 {g:"Cricket",e:"📝",q:"Which cricketer is fondly called the Master Blaster?",o:[["🏏","Sachin Tendulkar"],["🧢","Kapil Dev"],["🧤","MS Dhoni"],["👑","Virat Kohli"]],h:"He scored one hundred international centuries."},
 {g:"Cricket",e:"🔎",q:"Who captained India when it FIRST won the Cricket World Cup in 1983?",o:[["🏆","Kapil Dev"],["🏏","Sunil Gavaskar"],["🧤","MS Dhoni"],["🧢","Sourav Ganguly"]],h:"He lifted the cup on the Lord's balcony."},
 {g:"Cricket",e:"🧐",q:"Which Indian captain lifted the World Cup in 2011?",o:[["🧤","MS Dhoni"],["🏏","Virat Kohli"],["🧢","Rahul Dravid"],["🏆","Kapil Dev"]],h:"He was the wicketkeeper, and finished it with a six."},
@@ -2596,7 +2605,7 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
 {g:"Cricket",e:"📝",q:"Which Indian batsman is nicknamed the Hitman for his big scores?",o:[["🏏","Rohit Sharma"],["👑","Virat Kohli"],["🧤","Rishabh Pant"],["⭐","KL Rahul"]],h:"He has scored three double-centuries in one-day cricket."},
 {g:"Cricket",e:"🔎",q:"Which wall-like batsman was famous for batting for hours without getting out?",o:[["🧱","Rahul Dravid"],["🏏","Virender Sehwag"],["🧤","MS Dhoni"],["🧢","Yuvraj Singh"]],h:"His nickname was a part of a building."},
 {g:"Cricket",e:"🧐",q:"Which Indian batsman hit six sixes in one over at a T20 World Cup?",o:[["💥","Yuvraj Singh"],["🏏","Rohit Sharma"],["👑","Virat Kohli"],["🧤","MS Dhoni"]],h:"It happened in 2007, against England."},
-{g:"Cricket",e:"🤔",q:"In which country did cricket begin?",o:[["🏴󠁧󠁢󠁥󠁮󠁧󠁿","England"],["🇮🇳","India"],["🇦🇺","Australia"],["🇿🇦","South Africa"]],h:"The home of the game is a ground called Lord's."},
+{g:"Cricket",e:"🤔",q:"Which Indian was the FIRST to score a double century in a one-day match?",o:[["🏏","Sachin Tendulkar"],["💥","Virender Sehwag"],["🧤","Rohit Sharma"],["👑","Virat Kohli"]],h:"He did it against South Africa in 2010."},
 {g:"Sports",e:"💭",q:"Which Indian won an Olympic GOLD medal in javelin throw?",o:[["🎯","Neeraj Chopra"],["🥊","Mary Kom"],["🏸","PV Sindhu"],["🏃","Milkha Singh"]],h:"He throws a long spear further than anyone."},
 {g:"Sports",e:"🎓",q:"Which Indian boxer is a six-time world champion?",o:[["🥊","Mary Kom"],["🏸","Saina Nehwal"],["🎾","Sania Mirza"],["🏃","PT Usha"]],h:"She is from Manipur, and a film was made about her."},
 {g:"Sports",e:"📝",q:"Which Indian badminton player won an Olympic silver medal?",o:[["🏸","PV Sindhu"],["🎾","Sania Mirza"],["🥊","Mary Kom"],["🏃","Hima Das"]],h:"She is very tall, and comes from Hyderabad."},
@@ -2633,69 +2642,69 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
 {g:"Arts",e:"🔎",q:"Which Indian writer won the Nobel Prize for Literature?",o:[["✍️","Rabindranath Tagore"],["📖","Munshi Premchand"],["📜","RK Narayan"],["🖋️","Sarojini Naidu"]],h:"He wrote Gitanjali, and our national anthem."},
 {g:"Arts",e:"🧐",q:"Which Indian film director is famous for the film Pather Panchali?",o:[["🎬","Satyajit Ray"],["🎥","Raj Kapoor"],["📽️","Guru Dutt"],["🎞️","Bimal Roy"]],h:"He was from Bengal, and won an honorary Oscar."},
 {g:"Arts",e:"🤔",q:"Which Indian musician was famous for playing the shehnai?",o:[["🪈","Bismillah Khan"],["🥁","Zakir Hussain"],["🎸","Ravi Shankar"],["🎻","Amjad Ali Khan"]],h:"He played from the Red Fort on Independence Day."},
-{g:"Arts",e:"💭",q:"Which dance form comes from the state of Kerala and uses big painted faces?",o:[["🎭","Kathakali"],["💃","Bharatanatyam"],["🪘","Kathak"],["🕺","Odissi"]],h:"The dancers wear huge green make-up and headdresses."},
+{g:"Arts",e:"🎓",q:"Which Indian singer was famous for yodelling and also acted in films?",o:[["🎤","Kishore Kumar"],["🎶","Mohammed Rafi"],["🎵","Mukesh"],["🎼","Manna Dey"]],h:"He sang Mere Sapno Ki Rani."},
 {g:"Arts",e:"🎓",q:"Which Indian painter is famous for paintings of horses?",o:[["🎨","MF Husain"],["🖌️","Raja Ravi Varma"],["🖼️","Amrita Sher-Gil"],["✏️","Nandalal Bose"]],h:"He often walked about barefoot."},
 {g:"Arts",e:"📝",q:"Which Indian actor is known as the Shahenshah of Bollywood?",o:[["🎬","Amitabh Bachchan"],["🎥","Dilip Kumar"],["📽️","Shah Rukh Khan"],["🎞️","Dev Anand"]],h:"Famous for his deep voice, and for hosting a quiz show."},
 {g:"Arts",e:"🔎",q:"Who was the woman known as the Mother of the poor in Kolkata, who won the Nobel Peace Prize?",o:[["🕊️","Mother Teresa"],["👩‍⚕️","Florence Nightingale"],["🎤","Sarojini Naidu"],["👑","Rani Lakshmibai"]],h:"She wore a white sari with a blue border."},
-{g:"Space",e:"🧐",q:"Which Indian mission went to Mars on its very first try?",o:[["🔴","Mangalyaan"],["🌙","Chandrayaan-2"],["☀️","Aditya-L1"],["🛰️","Gaganyaan"]],h:"Mangal is the Hindi name for the red planet."},
-{g:"Space",e:"🤔",q:"What is the name of India's mission to study the Sun?",o:[["☀️","Aditya-L1"],["🌙","Chandrayaan-3"],["🔴","Mangalyaan"],["👨‍🚀","Gaganyaan"]],h:"Aditya is another name for the Sun."},
-{g:"Space",e:"💭",q:"What is the name of India's planned mission to send people into space?",o:[["👨‍🚀","Gaganyaan"],["🌙","Chandrayaan"],["🔴","Mangalyaan"],["☀️","Aditya"]],h:"Gagan means the sky."},
+{g:"Space",e:"🎓",q:"After which scientist is India's Sriharikota launch centre named?",o:[["🛰️","Satish Dhawan"],["🚀","Vikram Sarabhai"],["⚛️","Homi Bhabha"],["🔬","CV Raman"]],h:"He led ISRO after Sarabhai."},
+{g:"Space",e:"📝",q:"Who was the FIRST American woman to go into space?",o:[["👩‍🚀","Sally Ride"],["👩","Valentina Tereshkova"],["👩‍🔬","Kalpana Chawla"],["👩‍✈️","Sunita Williams"]],h:"She flew on the shuttle Challenger in 1983."},
+{g:"Space",e:"🔎",q:"Who was the FIRST American in space?",o:[["🚀","Alan Shepard"],["🌕","Neil Armstrong"],["👨‍🚀","Buzz Aldrin"],["🛰️","John Glenn"]],h:"He went up in 1961, soon after Gagarin."},
 {g:"Space",e:"🎓",q:"Which woman scientist was called the Rocket Woman of India for her work on Mangalyaan?",o:[["👩‍🔬","Ritu Karidhal"],["👩‍🚀","Kalpana Chawla"],["👩","Sunita Williams"],["👩‍✈️","Tessy Thomas"]],h:"She was the deputy operations director of the Mars mission."},
 {g:"Space",e:"📝",q:"Who was the Chairman of ISRO when Chandrayaan-3 landed on the Moon?",o:[["🛰️","S Somanath"],["🚀","K Sivan"],["⚛️","Homi Bhabha"],["🔭","Vikram Sarabhai"]],h:"He led ISRO from 2022."},
-{g:"Space",e:"🔎",q:"What was the name of the lander that touched down in Chandrayaan-3?",o:[["🛬","Vikram"],["🤖","Pragyan"],["🚀","Aryabhata"],["🛰️","Bhaskara"]],h:"Named after the father of India's space programme."},
-{g:"Space",e:"🧐",q:"What was India's very first satellite called?",o:[["🛰️","Aryabhata"],["🌙","Chandrayaan"],["🔴","Mangalyaan"],["📡","INSAT"]],h:"Named after an ancient Indian mathematician."},
+{g:"Space",e:"🧐",q:"Which Indian scientist is called the father of India's satellite programme?",o:[["🛰️","U R Rao"],["🚀","APJ Abdul Kalam"],["⚛️","Homi Bhabha"],["🔬","CV Raman"]],h:"He led the team that built Aryabhata."},
+{g:"Space",e:"🤔",q:"After which ancient Indian mathematician was our first satellite named?",o:[["📐","Aryabhata"],["🔢","Ramanujan"],["🧮","Bhaskara"],["➗","Brahmagupta"]],h:"He wrote about the Earth spinning, long ago."},
 {g:"Space",e:"🤔",q:"Which woman is known as the Missile Woman of India?",o:[["🚀","Tessy Thomas"],["👩‍🚀","Kalpana Chawla"],["👩‍🔬","Ritu Karidhal"],["👩","Sunita Williams"]],h:"She led the Agni missile project."},
 {g:"Space",e:"💭",q:"Which astronaut did Rakesh Sharma answer when asked how India looked from space?",o:[["🎩","Indira Gandhi"],["🌹","Jawaharlal Nehru"],["🧓","Mahatma Gandhi"],["🛡️","Sardar Patel"]],h:"The Prime Minister at the time, a woman."},
-{g:"Space",e:"🎓",q:"Which American space agency sent people to the Moon?",o:[["🚀","NASA"],["🛰️","ISRO"],["🌌","ESA"],["🔭","JAXA"]],h:"Four letters, and it is in the United States."},
+{g:"Space",e:"💭",q:"Who founded the rocket company SpaceX?",o:[["🚀","Elon Musk"],["🛰️","Jeff Bezos"],["💻","Bill Gates"],["📱","Steve Jobs"]],h:"He also makes electric cars."},
 {g:"Space",e:"📝",q:"Which Indian-origin astronaut sadly died when her shuttle broke up in 2003?",o:[["👩‍🚀","Kalpana Chawla"],["👩","Sunita Williams"],["👨‍🚀","Rakesh Sharma"],["👩‍🔬","Ritu Karidhal"]],h:"The shuttle was called Columbia."},
-{g:"Space",e:"🔎",q:"Where is India's main rocket launch centre?",o:[["🏝️","Sriharikota"],["🏙️","Bengaluru"],["🏔️","Dehradun"],["🌊","Kochi"]],h:"An island off the coast of Andhra Pradesh."},
-{g:"Space",e:"🧐",q:"Which telescope in space takes the most famous pictures of stars?",o:[["🔭","Hubble"],["🛰️","Aryabhata"],["🌙","Chandrayaan"],["📡","INSAT"]],h:"Named after an American astronomer."},
-{g:"Space",e:"🤔",q:"Which country was the first to land near the Moon's south pole?",o:[["🇮🇳","India"],["🇺🇸","United States"],["🇷🇺","Russia"],["🇨🇳","China"]],h:"It happened in August 2023, and the whole country celebrated."},
-{g:"Space",e:"💭",q:"What do we call the suit an astronaut wears in space?",o:[["👨‍🚀","A spacesuit"],["🥼","A lab coat"],["🦺","A life jacket"],["🧥","A raincoat"]],h:"It gives them air and keeps them safe."},
+{g:"Space",e:"🎓",q:"Which Indian Air Force pilot flew to the Space Station in 2025?",o:[["👨‍🚀","Shubhanshu Shukla"],["🚀","Rakesh Sharma"],["🛰️","S Somanath"],["👩‍🚀","Sunita Williams"]],h:"The second Indian ever to go to space, forty-one years after the first."},
+{g:"Space",e:"📝",q:"Which woman was the project director of the Chandrayaan-2 mission?",o:[["👩‍🔬","Muthayya Vanitha"],["👩‍🚀","Ritu Karidhal"],["👩","Tessy Thomas"],["👩‍✈️","Kalpana Chawla"]],h:"The first woman to lead an Indian Moon mission."},
+{g:"Space",e:"🔎",q:"Who was the project director of Chandrayaan-3, which landed on the Moon?",o:[["🛬","P Veeramuthuvel"],["🚀","K Sivan"],["🛰️","S Somanath"],["👩‍🔬","Ritu Karidhal"]],h:"He led the mission that finally landed softly."},
+{g:"Space",e:"🧐",q:"Which Indian rocket scientist developed the Vikas engine used by ISRO?",o:[["🚀","Nambi Narayanan"],["🛰️","U R Rao"],["⚛️","Homi Bhabha"],["🔬","Satish Dhawan"]],h:"A film was made about his life."},
 {g:"Cricket",e:"🎓",q:"Which Indian woman captained the team to the T20 World Cup final?",o:[["🧤","Harmanpreet Kaur"],["🏏","Mithali Raj"],["🎯","Jhulan Goswami"],["⭐","Smriti Mandhana"]],h:"She hit a famous 171 not out against Australia."},
 {g:"Cricket",e:"📝",q:"Which Indian woman opener is famous for her elegant left-handed batting?",o:[["⭐","Smriti Mandhana"],["🏏","Mithali Raj"],["🎯","Jhulan Goswami"],["🧤","Harmanpreet Kaur"]],h:"She bats left-handed and is from Sangli."},
 {g:"Cricket",e:"🔎",q:"Which captain led India to the very first T20 World Cup win in 2007?",o:[["🧤","MS Dhoni"],["🏏","Rahul Dravid"],["🧢","Sourav Ganguly"],["👑","Virat Kohli"]],h:"He was the young new captain that year."},
 {g:"Cricket",e:"🧐",q:"Which Indian spinner is famous for bowling with a big turning ball?",o:[["🌀","Anil Kumble"],["🏏","Kapil Dev"],["🧤","MS Dhoni"],["🧢","Zaheer Khan"]],h:"He once took all ten wickets in one innings."},
-{g:"Cricket",e:"🤔",q:"How many players are there in a cricket team on the field?",o:[["1️⃣1️⃣","Eleven"],["9️⃣","Nine"],["🔟","Ten"],["1️⃣2️⃣","Twelve"]],h:"One more than ten."},
-{g:"Cricket",e:"💭",q:"What do we call it when a batsman scores one hundred runs?",o:[["💯","A century"],["5️⃣0️⃣","A fifty"],["6️⃣","A six"],["4️⃣","A boundary"]],h:"The same word as one hundred years."},
+{g:"Cricket",e:"💭",q:"Which Indian captain has won the most Test matches for India?",o:[["👑","Virat Kohli"],["🧤","MS Dhoni"],["🧢","Sourav Ganguly"],["🏏","Sunil Gavaskar"]],h:"He captained India through their best years in Tests."},
+{g:"Cricket",e:"🎓",q:"Which Indian cricketer is nicknamed Captain Cool?",o:[["🧤","MS Dhoni"],["👑","Virat Kohli"],["🏏","Rohit Sharma"],["🧢","Sourav Ganguly"]],h:"He never looked worried, however close the match."},
 {g:"Cricket",e:"🎓",q:"Which Indian batsman was famous for hitting the very first ball for four?",o:[["💥","Virender Sehwag"],["🧱","Rahul Dravid"],["🏏","Sunil Gavaskar"],["🧤","MS Dhoni"]],h:"They called him the Nawab of Najafgarh."},
 {g:"Cricket",e:"📝",q:"Which Indian captain was known as Dada and made the team fearless abroad?",o:[["🧢","Sourav Ganguly"],["🧤","MS Dhoni"],["🏏","Sachin Tendulkar"],["👑","Virat Kohli"]],h:"Dada means elder brother in Bengali."},
-{g:"Cricket",e:"🔎",q:"What do we call the person who decides if a batsman is out?",o:[["☝️","The umpire"],["🧢","The captain"],["🧤","The wicketkeeper"],["📣","The commentator"]],h:"They raise one finger to give a decision."},
-{g:"Cricket",e:"🧐",q:"How many stumps and bails make one wicket?",o:[["🪵","Three stumps and two bails"],["🪵","Two stumps and three bails"],["🪵","Four stumps and one bail"],["🪵","Three stumps and three bails"]],h:"There is one more stump than there are bails."},
+{g:"Cricket",e:"📝",q:"Which former Indian batsman coached India to the T20 World Cup win in 2024?",o:[["🧱","Rahul Dravid"],["🧤","MS Dhoni"],["🧢","Sourav Ganguly"],["🏏","Sachin Tendulkar"]],h:"As a player they called him The Wall."},
+{g:"Cricket",e:"🔎",q:"Which Indian off-spinner was famous for a delivery called the doosra?",o:[["🎯","Harbhajan Singh"],["🌀","Anil Kumble"],["🏏","Ravichandran Ashwin"],["⚡","Zaheer Khan"]],h:"Doosra means the second one."},
 {g:"Cricket",e:"🤔",q:"Which Indian bowler took the most wickets for India in Test cricket?",o:[["🌀","Anil Kumble"],["🏏","Kapil Dev"],["⚡","Zaheer Khan"],["🎯","Harbhajan Singh"]],h:"A leg-spinner who wore glasses."},
-{g:"Cricket",e:"💭",q:"What is the trophy called that India and Australia play for in Test cricket?",o:[["🏆","Border-Gavaskar Trophy"],["🥇","Ashes"],["🏅","World Cup"],["🎖️","Champions Trophy"]],h:"Named after one great captain from each country."},
+{g:"Cricket",e:"🧐",q:"Which Indian fast bowler took a hat-trick at the 2019 World Cup?",o:[["⚡","Mohammed Shami"],["🎯","Jasprit Bumrah"],["🌀","Anil Kumble"],["🏏","Kapil Dev"]],h:"Three wickets in three balls, against Afghanistan."},
 {g:"Cricket",e:"🎓",q:"Which Indian all-rounder both batted well and bowled fast in the 1983 win?",o:[["🏆","Kapil Dev"],["🏏","Sunil Gavaskar"],["🧤","Syed Kirmani"],["🧢","Mohinder Amarnath"]],h:"He was also the captain that year."},
-{g:"Cricket",e:"📝",q:"What do we call six runs hit without the ball touching the ground?",o:[["6️⃣","A six"],["4️⃣","A four"],["💯","A century"],["1️⃣","A single"]],h:"The ball sails right over the boundary rope."},
-{g:"Cricket",e:"🔎",q:"Which Indian city has the famous cricket ground called Eden Gardens?",o:[["🌉","Kolkata"],["🏙️","Mumbai"],["🕌","Delhi"],["🌴","Chennai"]],h:"The city of the Howrah Bridge."},
-{g:"Sports",e:"🤔",q:"Which is India's national game as many people call it?",o:[["🏑","Hockey"],["🏏","Cricket"],["⚽","Football"],["🏸","Badminton"]],h:"India won eight Olympic golds in it."},
+{g:"Cricket",e:"🤔",q:"Which Indian holds the highest individual score in a one-day innings?",o:[["🏏","Rohit Sharma"],["👑","Virat Kohli"],["💥","Virender Sehwag"],["🧤","Sachin Tendulkar"]],h:"He made 264, which nobody has beaten."},
+{g:"Cricket",e:"💭",q:"Which Indian woman was the first cricketer to play 200 one-day matches?",o:[["🏏","Mithali Raj"],["🎯","Jhulan Goswami"],["🧤","Harmanpreet Kaur"],["⭐","Smriti Mandhana"]],h:"She captained India for many years."},
+{g:"Sports",e:"🎓",q:"Which Indian woman weightlifter won an Olympic silver medal in 2021?",o:[["🏋️","Mirabai Chanu"],["🥊","Mary Kom"],["🏸","PV Sindhu"],["🤼","Vinesh Phogat"]],h:"She is from Manipur, and lifts more than twice her own weight."},
 {g:"Sports",e:"💭",q:"Which Indian badminton player won the All England championship in 1980?",o:[["🏸","Prakash Padukone"],["🎾","Sania Mirza"],["🏑","Dhyan Chand"],["♟️","Viswanathan Anand"]],h:"His daughter is a famous film actor."},
 {g:"Sports",e:"🎓",q:"Which Indian wrestler won two Olympic medals?",o:[["🤼","Sushil Kumar"],["🥊","Vijender Singh"],["🎯","Abhinav Bindra"],["🏸","Saina Nehwal"]],h:"He wrestles on a mat, not in a ring."},
-{g:"Sports",e:"📝",q:"How many rings are there on the Olympic flag?",o:[["5️⃣","Five"],["4️⃣","Four"],["6️⃣","Six"],["3️⃣","Three"]],h:"One for each of the inhabited continents."},
+{g:"Sports",e:"📝",q:"Which Indian wrestler won a bronze medal at the Tokyo Olympics?",o:[["🤼","Bajrang Punia"],["🥊","Vijender Singh"],["🏋️","Mirabai Chanu"],["🎯","Neeraj Chopra"]],h:"He wrestles in the 65 kilogram class."},
 {g:"Sports",e:"🔎",q:"Which Indian sprinter from Assam won a world under-20 gold?",o:[["🏃","Hima Das"],["🏅","PT Usha"],["🥊","Mary Kom"],["🏸","Saina Nehwal"]],h:"People call her the Dhing Express."},
 {g:"Sports",e:"🧐",q:"Which Indian badminton player won an Olympic bronze in 2012?",o:[["🏸","Saina Nehwal"],["🎾","Sania Mirza"],["🥊","Mary Kom"],["🏃","PT Usha"]],h:"She was the first Indian woman to win an Olympic badminton medal."},
-{g:"Sports",e:"🤔",q:"In which sport would you find a googly and a yorker?",o:[["🏏","Cricket"],["🏑","Hockey"],["🏸","Badminton"],["⚽","Football"]],h:"Both are ways of bowling a ball."},
+{g:"Sports",e:"🔎",q:"Which Indian boxer won a bronze medal at the 2008 Olympics?",o:[["🥊","Vijender Singh"],["🤼","Sushil Kumar"],["🎯","Abhinav Bindra"],["🏸","Saina Nehwal"]],h:"India's first Olympic medal in boxing."},
 {g:"Sports",e:"💭",q:"Which Indian footballer captained the national team for many years?",o:[["⚽","Sunil Chhetri"],["🏑","Dhyan Chand"],["🏏","Virat Kohli"],["🏸","Lakshya Sen"]],h:"He has scored more international goals than almost anyone alive."},
-{g:"Sports",e:"🎓",q:"How often are the Summer Olympic Games held?",o:[["4️⃣","Every four years"],["1️⃣","Every year"],["2️⃣","Every two years"],["🔟","Every ten years"]],h:"The same gap as a leap year cycle."},
+{g:"Sports",e:"🧐",q:"Which Indian shooter won two bronze medals at the 2024 Paris Olympics?",o:[["🎯","Manu Bhaker"],["🏹","Deepika Kumari"],["🏸","PV Sindhu"],["🏋️","Mirabai Chanu"]],h:"The first Indian to win two medals at a single Olympics."},
 {g:"Sports",e:"📝",q:"Which Indian para-athlete won gold in javelin at the Paralympics?",o:[["🥇","Sumit Antil"],["🎯","Neeraj Chopra"],["🏸","Saina Nehwal"],["🥊","Mary Kom"]],h:"He throws javelin from a standing start with a prosthetic leg."},
 {g:"Sports",e:"🔎",q:"Which Indian shuttler won gold at the World Championships in 2019?",o:[["🏸","PV Sindhu"],["🎾","Sania Mirza"],["🏃","Hima Das"],["🥊","Mary Kom"]],h:"She already had an Olympic silver by then."},
-{g:"Sports",e:"🧐",q:"In chess, which piece can jump over the others?",o:[["🐴","The knight"],["♛","The queen"],["♜","The rook"],["♝","The bishop"]],h:"It moves in the shape of the letter L."},
-{g:"Sports",e:"🤔",q:"Which game is played on a board of 64 black and white squares?",o:[["♟️","Chess"],["🎲","Ludo"],["🀄","Carrom"],["🎯","Darts"]],h:"Eight rows of eight."},
+{g:"Sports",e:"🤔",q:"Which young Indian became World Chess Champion in 2024?",o:[["♟️","D Gukesh"],["🧠","Viswanathan Anand"],["♞","R Praggnanandhaa"],["🎯","Arjun Erigaisi"]],h:"The youngest ever to win the title, at just eighteen."},
+{g:"Sports",e:"💭",q:"Which Indian captained the hockey team to an Olympic bronze in 2021?",o:[["🏑","Manpreet Singh"],["🏏","Virat Kohli"],["⚽","Sunil Chhetri"],["🏸","Lakshya Sen"]],h:"India's first hockey medal in forty-one years."},
 {g:"Sports",e:"💭",q:"Which Indian city hosted the Commonwealth Games in 2010?",o:[["🕌","New Delhi"],["🏙️","Mumbai"],["🌉","Kolkata"],["🌴","Chennai"]],h:"Our capital city."},
-{g:"Freedom",e:"🎓",q:"On which date did India become free?",o:[["🇮🇳","15 August 1947"],["📜","26 January 1950"],["🗓️","2 October 1869"],["📅","15 August 1950"]],h:"We fly the flag and eat sweets on this day."},
-{g:"Freedom",e:"📝",q:"On which date did our Constitution come into force?",o:[["📜","26 January 1950"],["🇮🇳","15 August 1947"],["🗓️","2 October 1947"],["📅","26 January 1947"]],h:"We call that day Republic Day."},
+{g:"Freedom",e:"🎓",q:"Which leader gave the slogan Jai Jawan Jai Kisan?",o:[["🌾","Lal Bahadur Shastri"],["🌹","Jawaharlal Nehru"],["🧓","Mahatma Gandhi"],["🛡️","Sardar Patel"]],h:"India's second Prime Minister, a very small and very honest man."},
+{g:"Freedom",e:"📝",q:"Which Englishwoman became President of the Indian National Congress and fought for Home Rule?",o:[["🕊️","Annie Besant"],["👑","Rani Lakshmibai"],["🎤","Sarojini Naidu"],["📘","Kamala Nehru"]],h:"She started the Home Rule League with Tilak."},
 {g:"Freedom",e:"🔎",q:"Whose birthday do we celebrate as Gandhi Jayanti?",o:[["🧓","Mahatma Gandhi"],["🌹","Jawaharlal Nehru"],["🛡️","Sardar Patel"],["📘","Dr Ambedkar"]],h:"The second of October."},
 {g:"Freedom",e:"🧐",q:"What was Mahatma Gandhi's full name?",o:[["🧓","Mohandas Karamchand Gandhi"],["👤","Mohan Kumar Gandhi"],["👤","Mahesh Chandra Gandhi"],["👤","Madan Krishna Gandhi"]],h:"His first name was Mohandas."},
-{g:"Freedom",e:"🤔",q:"Which famous march did Gandhi lead to make salt from the sea?",o:[["🧂","The Dandi March"],["🚶","The Long March"],["🌊","The Sea March"],["🏔️","The Hill March"]],h:"Named after the seaside village where it ended."},
-{g:"Freedom",e:"💭",q:"Which army did Subhas Chandra Bose lead?",o:[["🎖️","The Indian National Army"],["⚔️","The Royal Army"],["🛡️","The Maratha Army"],["🏹","The Sikh Army"]],h:"Often called the INA, or Azad Hind Fauj."},
+{g:"Freedom",e:"🔎",q:"Which woman doctor led the Rani Jhansi Regiment in Subhas Bose's army?",o:[["🩺","Lakshmi Sahgal"],["🎤","Sarojini Naidu"],["👑","Rani Lakshmibai"],["🕊️","Annie Besant"]],h:"A doctor who became a captain in the INA."},
+{g:"Freedom",e:"🧐",q:"Which freedom fighter from the north-west was called the Frontier Gandhi?",o:[["🕊️","Khan Abdul Ghaffar Khan"],["⚔️","Bhagat Singh"],["🎖️","Subhas Chandra Bose"],["📢","Bal Gangadhar Tilak"]],h:"A Pathan leader who believed in non-violence."},
 {g:"Freedom",e:"❓",q:"Who was the first President of India?",o:[["📘","Dr Rajendra Prasad"],["🌹","Jawaharlal Nehru"],["🎓","S Radhakrishnan"],["🚀","APJ Abdul Kalam"]],h:"He led the meetings that wrote the Constitution."},
 {g:"Freedom",e:"📝",q:"Whose birthday do we celebrate as Teachers' Day?",o:[["🎓","Dr S Radhakrishnan"],["🌹","Jawaharlal Nehru"],["🧓","Mahatma Gandhi"],["📘","Dr Ambedkar"]],h:"He was a teacher before he became President."},
 {g:"Freedom",e:"🔎",q:"Which slogan did Gandhi give in 1942 asking the British to leave?",o:[["📢","Quit India"],["⚔️","Do or Die only"],["🇮🇳","Jai Hind"],["🕊️","Vande Mataram"]],h:"Two words, telling them to go."},
 {g:"Freedom",e:"🧐",q:"Who wrote the song Vande Mataram?",o:[["📜","Bankim Chandra Chatterjee"],["✍️","Rabindranath Tagore"],["🖋️","Sarojini Naidu"],["📖","Munshi Premchand"]],h:"It comes from his novel Anandamath."},
 {g:"Freedom",e:"🤔",q:"Which freedom fighter was called Punjab Kesari, the Lion of Punjab?",o:[["🦁","Lala Lajpat Rai"],["📢","Bal Gangadhar Tilak"],["⚔️","Bhagat Singh"],["🛡️","Sardar Patel"]],h:"He was one of the trio Lal, Bal and Pal."},
-{g:"Freedom",e:"💭",q:"What did Gandhi call the path of non-violence?",o:[["🕊️","Ahimsa"],["⚔️","Kranti"],["📢","Swadeshi"],["🛡️","Satyagraha only"]],h:"A means not, and himsa means harm."},
+{g:"Freedom",e:"🤔",q:"Which revolutionary threw a bomb in the Assembly along with Bhagat Singh?",o:[["💣","Batukeshwar Dutt"],["⚔️","Chandrashekhar Azad"],["🎖️","Rajguru"],["🔫","Sukhdev"]],h:"They shouted Inquilab Zindabad and did not run away."},
 {g:"Freedom",e:"🎓",q:"Which young woman fought the British alongside Rani Lakshmibai?",o:[["🗡️","Jhalkaribai"],["👑","Razia Sultan"],["🏹","Ahilyabai Holkar"],["⚔️","Chand Bibi"]],h:"She looked so like the queen that she took her place in battle."},
 {g:"Freedom",e:"📝",q:"Which garden saw a terrible massacre in Amritsar in 1919?",o:[["🌳","Jallianwala Bagh"],["🏛️","Shalimar Bagh"],["🌺","Mughal Gardens"],["🌿","Lodhi Gardens"]],h:"There is a memorial there with bullet marks on the walls."},
-{g:"Freedom",e:"🔎",q:"What is the Hindi phrase Gandhi used for self-rule?",o:[["🇮🇳","Swaraj"],["🕊️","Ahimsa"],["🧵","Khadi"],["📢","Satyagraha"]],h:"Swa means one's own, and raj means rule."},
+{g:"Freedom",e:"💭",q:"Which old woman was shot in Bengal while holding the tricolour and never let it fall?",o:[["🇮🇳","Matangini Hazra"],["👑","Rani Lakshmibai"],["🎤","Sarojini Naidu"],["🩺","Lakshmi Sahgal"]],h:"People called her Gandhi Buri, the old Gandhi lady."},
 {g:"Science",e:"🧐",q:"Which Indian-American scientist won a Nobel Prize for work on genes?",o:[["🧬","Har Gobind Khorana"],["🔬","CV Raman"],["⚛️","Homi Bhabha"],["🌱","JC Bose"]],h:"He helped work out the genetic code."},
 {g:"Science",e:"🤔",q:"Which Indian astrophysicist won a Nobel Prize for work on stars?",o:[["⭐","Subrahmanyan Chandrasekhar"],["🔬","CV Raman"],["🧬","Har Gobind Khorana"],["⚛️","Homi Bhabha"]],h:"A limit for dying stars carries his name."},
 {g:"Science",e:"💭",q:"Which Indian scientist led the Green Revolution that grew more food?",o:[["🌾","MS Swaminathan"],["🥛","Verghese Kurien"],["🔬","CV Raman"],["🌱","JC Bose"]],h:"He bred wheat that gave far bigger harvests."},
@@ -2712,19 +2721,19 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
 {g:"Science",e:"🤔",q:"Which two brothers built and flew the first aeroplane?",o:[["✈️","The Wright brothers"],["🚂","The Stephenson brothers"],["🚗","The Ford brothers"],["🚲","The Michaux brothers"]],h:"Orville and Wilbur, in America."},
 {g:"Science",e:"💭",q:"On whose birthday do we celebrate National Science Day in India?",o:[["🔬","CV Raman's discovery"],["⚛️","Homi Bhabha"],["🌱","JC Bose"],["🚀","APJ Abdul Kalam"]],h:"It marks the day he announced his effect, on 28 February."},
 {g:"Arts",e:"🎓",q:"Which Indian sitar player's daughter is also a famous musician?",o:[["🎸","Ravi Shankar"],["🪈","Bismillah Khan"],["🥁","Zakir Hussain"],["🎻","Amjad Ali Khan"]],h:"Anoushka carries on his music."},
-{g:"Arts",e:"🔎",q:"Which classical dance from North India is famous for fast spins?",o:[["🪘","Kathak"],["💃","Bharatanatyam"],["🎭","Kathakali"],["🕺","Odissi"]],h:"The name comes from katha, a story."},
+{g:"Arts",e:"📝",q:"Which Indian playback singer sang thousands of songs and is loved for Baharon Phool Barsao?",o:[["🎶","Mohammed Rafi"],["🎤","Kishore Kumar"],["🎵","Mukesh"],["🎼","Hemant Kumar"]],h:"He could sing in almost any voice asked of him."},
 {g:"Arts",e:"🧐",q:"Which Indian painter is famous for beautiful paintings of gods and queens?",o:[["🖌️","Raja Ravi Varma"],["🎨","MF Husain"],["🖼️","Amrita Sher-Gil"],["✏️","Jamini Roy"]],h:"He was from Kerala, and a prince."},
-{g:"Arts",e:"🤔",q:"Which instrument does a tabla player use?",o:[["🥁","A pair of drums"],["🎸","Strings"],["🪈","A pipe"],["🎹","Keys"]],h:"Two of them, played with the palms and fingers."},
-{g:"Arts",e:"💭",q:"Which instrument has many strings and is played by plucking, made famous by Ravi Shankar?",o:[["🎸","The sitar"],["🥁","The tabla"],["🪈","The flute"],["🎻","The sarod"]],h:"It has a long neck and a round gourd body."},
+{g:"Arts",e:"🔎",q:"Which Carnatic singer was the first musician to receive the Bharat Ratna?",o:[["🎵","MS Subbulakshmi"],["🎶","Lata Mangeshkar"],["🎤","Asha Bhosle"],["🎼","Bhimsen Joshi"]],h:"She sang at the United Nations in 1966."},
+{g:"Arts",e:"🧐",q:"Which dancer was the great master of Kathak in our time?",o:[["🪘","Birju Maharaj"],["💃","Rukmini Devi Arundale"],["🎭","Kelucharan Mohapatra"],["🕺","Uday Shankar"]],h:"He taught Kathak for films as well as the stage."},
 {g:"Arts",e:"🎓",q:"Which Indian flute player is world famous?",o:[["🪈","Hariprasad Chaurasia"],["🎸","Ravi Shankar"],["🥁","Zakir Hussain"],["🎻","Amjad Ali Khan"]],h:"He plays the bansuri, Krishna's instrument."},
 {g:"Arts",e:"📝",q:"Which Indian singer sang for films alongside her sister Lata?",o:[["🎤","Asha Bhosle"],["🎶","Shreya Ghoshal"],["🎵","Geeta Dutt"],["🎼","Alka Yagnik"]],h:"Two sisters, both legends of playback singing."},
 {g:"Arts",e:"🔎",q:"Which Indian music director won two Oscars for Slumdog Millionaire?",o:[["🎬","AR Rahman"],["🎸","Ravi Shankar"],["🥁","Zakir Hussain"],["🎤","Asha Bhosle"]],h:"From Chennai, and he wrote Jai Ho."},
-{g:"Arts",e:"🧐",q:"Which dance form comes from Odisha?",o:[["🕺","Odissi"],["💃","Bharatanatyam"],["🎭","Kathakali"],["🪘","Kathak"]],h:"The name sounds like the state it comes from."},
+{g:"Arts",e:"🤔",q:"Which dancer brought Bharatanatyam back to the stage and founded Kalakshetra?",o:[["💃","Rukmini Devi Arundale"],["🪘","Birju Maharaj"],["🎭","Kelucharan Mohapatra"],["🕺","Uday Shankar"]],h:"She started a famous dance school in Chennai."},
 {g:"Arts",e:"🤔",q:"Which Indian writer wrote stories about the town of Malgudi?",o:[["📜","RK Narayan"],["📖","Munshi Premchand"],["✍️","Rabindranath Tagore"],["🖋️","Ruskin Bond"]],h:"Malgudi Days was made into a television show."},
 {g:"Arts",e:"💭",q:"Which writer living in Mussoorie is loved for children's stories about the hills?",o:[["🖋️","Ruskin Bond"],["📜","RK Narayan"],["📖","Munshi Premchand"],["✍️","Rabindranath Tagore"]],h:"He wrote The Blue Umbrella."},
 {g:"Arts",e:"🎓",q:"Which Indian woman painter is famous for paintings of village women?",o:[["🖼️","Amrita Sher-Gil"],["🎨","MF Husain"],["🖌️","Raja Ravi Varma"],["✏️","Jamini Roy"]],h:"She died very young, but her paintings are treasures."},
-{g:"Arts",e:"📝",q:"Which Indian art form uses coloured powder on the floor at festivals?",o:[["🌸","Rangoli"],["🎨","Madhubani"],["🖼️","Warli"],["🪔","Kolam only"]],h:"Made fresh at the doorstep every morning."},
-{g:"Arts",e:"🔎",q:"Which folk painting style comes from Bihar and uses bright natural colours?",o:[["🎨","Madhubani"],["🖼️","Warli"],["🌸","Rangoli"],["✏️","Pattachitra"]],h:"Named after a town in Bihar."}
+{g:"Arts",e:"💭",q:"Which artist decorated the original handwritten copy of our Constitution?",o:[["✏️","Nandalal Bose"],["🎨","MF Husain"],["🖌️","Raja Ravi Varma"],["🖼️","Amrita Sher-Gil"]],h:"He painted the borders of every page."},
+{g:"Arts",e:"🎓",q:"Which Indian classical singer was famous for Hindustani khayal and the song Mile Sur Mera Tumhara?",o:[["🎼","Bhimsen Joshi"],["🎵","MS Subbulakshmi"],["🎶","Lata Mangeshkar"],["🎤","Kishore Kumar"]],h:"A great voice of the Kirana gharana."}
 ]}]);
 
 
@@ -3333,7 +3342,7 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
   var pickMode = "mock";
   function openPick(mode){
     pickMode = mode;
-    renderPicker(); renderPaperButtons(); paintLen(); paintPickMode();
+    renderPicker(); renderPaperButtons(); renderSyllabusRow(); paintLen(); paintPickMode(); paintSyllabus();
     show("pick"); paintModeBar("pick");
   }
   function paintPickMode(){
@@ -3367,6 +3376,70 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
     });
   }
 
+  /* ---------- SYLLABUS PRESETS ----------
+     One tap ticks exactly the subjects a given paper draws from. The lists
+     come from PAPERS, the same data the mock papers are built from, so the
+     preset can never drift from the real syllabus. */
+  var PAPER_ICON = { IGKO:"🏅", IMO:"🔢", ISO:"🔬", ICSO:"💻", IEO:"🔤" };
+
+  function subjectsOfPaper(key){
+    var want = {};
+    (PAPERS[key] || { secs:[] }).secs.forEach(function(sec){
+      sec.from.forEach(function(nm){ want[nm] = true; });
+    });
+    return want;
+  }
+  function applySyllabus(key){
+    var want = subjectsOfPaper(key);
+    picked = BANK.map(function(c){ return !!want[c.name]; });
+    savePrefs(); renderPicker(); paintSyllabus(); sfxTap();
+  }
+  /* which preset, if any, the current tick-list exactly matches */
+  function currentSyllabus(){
+    var keys = Object.keys(PAPERS);
+    for(var k=0;k<keys.length;k++){
+      var want = subjectsOfPaper(keys[k]), same = true;
+      for(var i=0;i<BANK.length;i++){
+        if(!!picked[i] !== !!want[BANK[i].name]){ same = false; break; }
+      }
+      if(same) return keys[k];
+    }
+    return null;
+  }
+  function renderSyllabusRow(){
+    var row = $("syllabus-row"); row.innerHTML = "";
+    Object.keys(PAPERS).forEach(function(k){
+      var b = document.createElement("button");
+      b.className = "sticker chip";
+      b.id = "syl-" + k;
+      b.textContent = (PAPER_ICON[k] || "🏅") + " " + k;
+      b.addEventListener("click", function(){ applySyllabus(k); });
+      row.appendChild(b);
+    });
+    var all = document.createElement("button");
+    all.className = "sticker chip";
+    all.id = "syl-ALL";
+    all.textContent = "🌈 Everything";
+    all.addEventListener("click", function(){
+      picked = BANK.map(function(){ return true; });
+      savePrefs(); renderPicker(); paintSyllabus(); sfxTap();
+    });
+    row.appendChild(all);
+  }
+  function paintSyllabus(){
+    var cur = currentSyllabus();
+    var n = 0; picked.forEach(function(p){ if(p) n++; });
+    var everything = (n === BANK.length);
+    Object.keys(PAPERS).forEach(function(k){
+      var b = $("syl-" + k); if(b) b.classList.toggle("off", cur !== k);
+    });
+    var a = $("syl-ALL"); if(a) a.classList.toggle("off", !everything);
+    $("mix-count").textContent = everything
+      ? "All " + BANK.length + " subjects"
+      : (cur ? cur + " syllabus · " + n + " subjects"
+             : n + " of " + BANK.length + " subjects chosen");
+  }
+
   function renderPicker(){
     var g=$("pickgrid"); g.innerHTML="";
     BANK.forEach(function(cat,i){
@@ -3376,7 +3449,7 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
                   '<span>'+cat.emoji+" "+cat.name+'</span>';
       b.setAttribute("aria-pressed", picked[i]?"true":"false");
       b.addEventListener("click", function(){
-        picked[i]=!picked[i]; savePrefs(); sfxTap(); renderPicker();
+        picked[i]=!picked[i]; savePrefs(); sfxTap(); renderPicker(); paintSyllabus();
       });
       g.appendChild(b);
     });
@@ -3752,10 +3825,10 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
 
   $("pick-back").addEventListener("click", function(){ sfxTap(); goHome(); });
   $("pick-all").addEventListener("click", function(){
-    picked=BANK.map(function(){ return true; }); savePrefs(); sfxTap(); renderPicker();
+    picked=BANK.map(function(){ return true; }); savePrefs(); sfxTap(); renderPicker(); paintSyllabus();
   });
   $("pick-none").addEventListener("click", function(){
-    picked=BANK.map(function(){ return false; }); savePrefs(); sfxTap(); renderPicker();
+    picked=BANK.map(function(){ return false; }); savePrefs(); sfxTap(); renderPicker(); paintSyllabus();
   });
   function paintLen(){
     $("len-10").classList.toggle("off", paperLen !== 10);
@@ -4162,6 +4235,14 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
       paintStop(!!busy && !$("scr-quiz").hidden);
     }catch(e){}
   }, 350);
+
+  $("mix-toggle").addEventListener("click", function(){
+    sfxTap();
+    var d = $("mix-detail"), openNow = d.hidden;
+    d.hidden = !openNow;
+    $("mix-toggle").setAttribute("aria-expanded", openNow ? "true" : "false");
+    $("mix-toggle").textContent = openNow ? "✅ Done choosing" : "🔧 Choose subjects myself";
+  });
 
   $("pick-swap").addEventListener("click", function(){
     sfxTap(); pickMode = (pickMode === "mock") ? "mix" : "mock"; paintPickMode();

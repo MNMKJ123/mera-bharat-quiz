@@ -7,14 +7,14 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
 /* ---------------- SPACE ---------------- */
 {g:"Space",e:"🧐",q:"Who was the FIRST Indian to travel into space?",o:[["👨‍🚀","Rakesh Sharma"],["👩‍🚀","Kalpana Chawla"],["🧑‍🔬","Vikram Sarabhai"],["👨‍🏫","Homi Bhabha"]],h:"He flew in 1984, and told the Prime Minister India looked 'saare jahan se achha'."},
 {g:"Space",e:"🤔",q:"Who was the FIRST woman of Indian origin to go to space?",o:[["👩‍🚀","Kalpana Chawla"],["👩","Sunita Williams"],["👩‍🔬","Tessy Thomas"],["👩‍✈️","Ritu Karidhal"]],h:"She was born in Karnal, Haryana."},
-{g:"Space",e:"💭",q:"Which Indian mission helped prove there is water on the Moon?",o:[["🌑","Chandrayaan-1"],["🔴","Mangalyaan"],["☀️","Aditya-L1"],["🛰️","Gaganyaan"]],h:"India's very first mission to the Moon, back in 2008."},
+{g:"Space",e:"🤔",q:"Who was the SECOND person to walk on the Moon?",o:[["👨‍🚀","Buzz Aldrin"],["🌕","Neil Armstrong"],["🛰️","Michael Collins"],["🚀","Yuri Gagarin"]],h:"He stepped out just after Armstrong."},
 {g:"Space",e:"🎓",q:"Who was the FIRST human ever to go into space?",o:[["🚀","Yuri Gagarin"],["🌕","Neil Armstrong"],["👨‍🚀","Rakesh Sharma"],["👩‍🚀","Valentina Tereshkova"]],h:"A Russian, and he went up in 1961."},
 {g:"Space",e:"📝",q:"Which Indian scientist is called the Father of the Indian Space Programme?",o:[["🛰️","Vikram Sarabhai"],["⚛️","Homi Bhabha"],["🚀","APJ Abdul Kalam"],["🔬","CV Raman"]],h:"India's spaceport at Thumba is named after him."},
 {g:"Space",e:"🔎",q:"Which President of India was known as the Missile Man?",o:[["🚀","APJ Abdul Kalam"],["🕊️","Jawaharlal Nehru"],["📘","Dr Rajendra Prasad"],["🎓","S Radhakrishnan"]],h:"He was a rocket scientist long before he was President."},
 {g:"Space",e:"🧐",q:"Which Indian woman astronaut has spent a very long time on the Space Station?",o:[["👩‍🚀","Sunita Williams"],["👩","Kalpana Chawla"],["👩‍🔬","Ritu Karidhal"],["👩‍✈️","Mary Kom"]],h:"She even ran a marathon while in orbit."},
 {g:"Space",e:"🤔",q:"Who was the FIRST woman in the world to go to space?",o:[["👩‍🚀","Valentina Tereshkova"],["👩","Sally Ride"],["👩‍🔬","Kalpana Chawla"],["👩‍✈️","Sunita Williams"]],h:"A Russian, and she flew in 1963."},
-{g:"Space",e:"💭",q:"What is the name of India's space agency?",o:[["🛰️","ISRO"],["🚀","NASA"],["🌌","ESA"],["🔭","DRDO"]],h:"Four letters, and it launched Chandrayaan."},
-{g:"Space",e:"🎓",q:"Which Indian mission landed near the Moon's south pole in 2023?",o:[["🌙","Chandrayaan-3"],["☀️","Aditya-L1"],["🔴","Mangalyaan"],["🛰️","Gaganyaan"]],h:"Chandra means moon, and this was the third try."},
+{g:"Space",e:"🧐",q:"Which scientist gave India its space programme and has the Thumba centre named after him?",o:[["🛰️","Vikram Sarabhai"],["⚛️","Homi Bhabha"],["🚀","APJ Abdul Kalam"],["🔬","CV Raman"]],h:"He founded the organisation that later launched Chandrayaan."},
+{g:"Space",e:"💭",q:"Which astronaut stayed in orbit while the other two walked on the Moon?",o:[["🛰️","Michael Collins"],["🌕","Neil Armstrong"],["👨‍🚀","Buzz Aldrin"],["🚀","Alan Shepard"]],h:"Somebody had to fly the command module."},
 
 /* ---------------- CRICKET ---------------- */
 {g:"Cricket",e:"📝",q:"Which cricketer is fondly called the Master Blaster?",o:[["🏏","Sachin Tendulkar"],["🧢","Kapil Dev"],["🧤","MS Dhoni"],["👑","Virat Kohli"]],h:"He scored one hundred international centuries."},
@@ -26,7 +26,7 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
 {g:"Cricket",e:"📝",q:"Which Indian batsman is nicknamed the Hitman for his big scores?",o:[["🏏","Rohit Sharma"],["👑","Virat Kohli"],["🧤","Rishabh Pant"],["⭐","KL Rahul"]],h:"He has scored three double-centuries in one-day cricket."},
 {g:"Cricket",e:"🔎",q:"Which wall-like batsman was famous for batting for hours without getting out?",o:[["🧱","Rahul Dravid"],["🏏","Virender Sehwag"],["🧤","MS Dhoni"],["🧢","Yuvraj Singh"]],h:"His nickname was a part of a building."},
 {g:"Cricket",e:"🧐",q:"Which Indian batsman hit six sixes in one over at a T20 World Cup?",o:[["💥","Yuvraj Singh"],["🏏","Rohit Sharma"],["👑","Virat Kohli"],["🧤","MS Dhoni"]],h:"It happened in 2007, against England."},
-{g:"Cricket",e:"🤔",q:"In which country did cricket begin?",o:[["🏴󠁧󠁢󠁥󠁮󠁧󠁿","England"],["🇮🇳","India"],["🇦🇺","Australia"],["🇿🇦","South Africa"]],h:"The home of the game is a ground called Lord's."},
+{g:"Cricket",e:"🤔",q:"Which Indian was the FIRST to score a double century in a one-day match?",o:[["🏏","Sachin Tendulkar"],["💥","Virender Sehwag"],["🧤","Rohit Sharma"],["👑","Virat Kohli"]],h:"He did it against South Africa in 2010."},
 
 /* ---------------- SPORTS ---------------- */
 {g:"Sports",e:"💭",q:"Which Indian won an Olympic GOLD medal in javelin throw?",o:[["🎯","Neeraj Chopra"],["🥊","Mary Kom"],["🏸","PV Sindhu"],["🏃","Milkha Singh"]],h:"He throws a long spear further than anyone."},
@@ -71,7 +71,7 @@ name:"Famous People", deva:"मशहूर लोग", emoji:"🌟", color:"fam
 {g:"Arts",e:"🔎",q:"Which Indian writer won the Nobel Prize for Literature?",o:[["✍️","Rabindranath Tagore"],["📖","Munshi Premchand"],["📜","RK Narayan"],["🖋️","Sarojini Naidu"]],h:"He wrote Gitanjali, and our national anthem."},
 {g:"Arts",e:"🧐",q:"Which Indian film director is famous for the film Pather Panchali?",o:[["🎬","Satyajit Ray"],["🎥","Raj Kapoor"],["📽️","Guru Dutt"],["🎞️","Bimal Roy"]],h:"He was from Bengal, and won an honorary Oscar."},
 {g:"Arts",e:"🤔",q:"Which Indian musician was famous for playing the shehnai?",o:[["🪈","Bismillah Khan"],["🥁","Zakir Hussain"],["🎸","Ravi Shankar"],["🎻","Amjad Ali Khan"]],h:"He played from the Red Fort on Independence Day."},
-{g:"Arts",e:"💭",q:"Which dance form comes from the state of Kerala and uses big painted faces?",o:[["🎭","Kathakali"],["💃","Bharatanatyam"],["🪘","Kathak"],["🕺","Odissi"]],h:"The dancers wear huge green make-up and headdresses."},
+{g:"Arts",e:"🎓",q:"Which Indian singer was famous for yodelling and also acted in films?",o:[["🎤","Kishore Kumar"],["🎶","Mohammed Rafi"],["🎵","Mukesh"],["🎼","Manna Dey"]],h:"He sang Mere Sapno Ki Rani."},
 {g:"Arts",e:"🎓",q:"Which Indian painter is famous for paintings of horses?",o:[["🎨","MF Husain"],["🖌️","Raja Ravi Varma"],["🖼️","Amrita Sher-Gil"],["✏️","Nandalal Bose"]],h:"He often walked about barefoot."},
 {g:"Arts",e:"📝",q:"Which Indian actor is known as the Shahenshah of Bollywood?",o:[["🎬","Amitabh Bachchan"],["🎥","Dilip Kumar"],["📽️","Shah Rukh Khan"],["🎞️","Dev Anand"]],h:"Famous for his deep voice, and for hosting a quiz show."},
 {g:"Arts",e:"🔎",q:"Who was the woman known as the Mother of the poor in Kolkata, who won the Nobel Peace Prize?",o:[["🕊️","Mother Teresa"],["👩‍⚕️","Florence Nightingale"],["🎤","Sarojini Naidu"],["👑","Rani Lakshmibai"]],h:"She wore a white sari with a blue border."}
