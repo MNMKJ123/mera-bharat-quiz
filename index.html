@@ -142,6 +142,19 @@
     font-family:"Baloo 2",sans-serif; font-weight:700; font-size:14px; line-height:1.2; }
   .paperbtn b{ display:block; font-size:17px; }
   .paperbtn span{ display:block; font-size:12px; color:var(--ink-soft); font-weight:500; }
+  .papers{ grid-template-columns:1fr; }
+  .paperbtn{ display:flex; align-items:center; gap:11px; }
+  .paperbtn .pface{ flex:0 0 auto; width:44px; height:44px; border-radius:13px;
+    display:grid; place-items:center; font-size:23px; background:var(--mango); }
+  .paperbtn .pmeta{ flex:1 1 auto; min-width:0; }
+  .paperbtn .pgo{ flex:0 0 auto; font-size:19px; }
+
+  .cog{ flex:0 0 auto !important; width:46px; padding:11px 0 !important; }
+  .voicenote{ width:100%; margin:2px 0 0; font-size:12.5px; line-height:1.35;
+    font-weight:600; color:var(--ink-soft); text-align:center; }
+  .swapmode{ width:100%; margin-top:2px; padding:10px; font-size:14px;
+    background:transparent; box-shadow:none; color:var(--ink-soft);
+    font-family:"Baloo 2",sans-serif; font-weight:700; }
   .pickitem{ display:flex; align-items:center; gap:8px; padding:10px 9px;
     background:var(--surface); text-align:left; font-size:13.5px;
     font-family:"Baloo 2",sans-serif; font-weight:700; line-height:1.15; }
@@ -272,16 +285,20 @@
     <div class="modeswitch">
       <button class="sticker on" id="mode-play">🎮 Play</button>
       <button class="sticker" id="mode-learn">📖 Learn</button>
+      <button class="sticker cog" id="mode-set" aria-expanded="false" aria-controls="settings-row" aria-label="Settings">⚙️</button>
     </div>
 
-    <div class="settings">
+    <div class="settings" id="settings-row" hidden>
       <button class="sticker chip" id="btn-mute">🔊 Sound</button>
       <button class="sticker chip" id="btn-auto">🗣️ Auto-read</button>
       <button class="sticker chip" id="btn-voice">🎙️ Voice</button>
+      <button class="sticker chip" id="btn-testvoice">▶️ Test voice</button>
+      <button class="sticker chip" id="btn-rate">🐢 Speed</button>
       <button class="sticker chip" id="btn-len">🔢 10 per game</button>
       <button class="sticker chip" id="btn-talk">🗨️ Hinglish</button>
       <button class="sticker chip" id="btn-tutor">👩‍🏫 Tutor on</button>
       <button class="sticker chip" id="btn-reset">♻️ Reset stars</button>
+      <p class="voicenote" id="voicenote" hidden></p>
     </div>
 
     <div class="setlist" id="setlist"></div>
@@ -289,19 +306,28 @@
   </section>
 
   <section class="screen pick" id="scr-pick" hidden>
-    <h2 class="picktitle">🏅 Olympiad Practice</h2>
-    <p class="picksub">Sit a real paper, or build your own mix.</p>
-    <div class="papers" id="papers"></div>
-    <p class="picksub" style="margin-top:6px">Or pick subjects for your own mix:</p>
-    <div class="settings">
-      <button class="sticker chip" id="len-10">⚡ Quick 10</button>
-      <button class="sticker chip" id="len-35">📝 Full paper 35</button>
+    <h2 class="picktitle" id="pick-title">📝 Mock Test</h2>
+    <p class="picksub" id="pick-sub">Choose a paper. 35 questions, just like the real exam.</p>
+
+    <div id="mock-part">
+      <div class="papers" id="papers"></div>
     </div>
-    <div class="settings">
-      <button class="sticker chip" id="pick-all">✅ Select all</button>
-      <button class="sticker chip" id="pick-none">⬜ Clear all</button>
+
+    <div id="mix-part">
+      <p class="picksub" id="mix-lead">Pick the subjects you want:</p>
+      <div class="settings">
+        <button class="sticker chip" id="len-10">⚡ Quick 10</button>
+        <button class="sticker chip" id="len-35">📝 Full paper 35</button>
+      </div>
+      <div class="settings">
+        <button class="sticker chip" id="pick-all">✅ Select all</button>
+        <button class="sticker chip" id="pick-none">⬜ Clear all</button>
+      </div>
+      <div class="pickgrid" id="pickgrid"></div>
     </div>
-    <div class="pickgrid" id="pickgrid"></div>
+
+    <button class="sticker swapmode" id="pick-swap">🎯 …or build your own mix</button>
+
     <div class="lbar" style="margin-top:4px">
       <button class="sticker" id="pick-back">🏠 Back</button>
       <button class="sticker go" id="pick-start">▶️ Start</button>
@@ -2443,15 +2469,18 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
   var locked = false, timer = null;
   var muted = false, autoRead = true, voiceIdx = 0, resetArmed = false, paperLen = 10;
   var GAME_LENGTHS = [10,15,20,25,30], gameLen = 10;
+  /* Speaking speed. Default 0.76 is 0.8x of the old 0.95. */
+  var RATES = [0.62,0.69,0.76,0.85,0.95], rateIdx = 2;
   /* which language the tutoring voice speaks; questions stay English */
   var TALK = ["english","hinglish","hindi"], talk = "hinglish", tutor = true;
-  var best = {}, picked = [];
+  var best = {}, picked = [], paperBest = {};   /* paperBest: "IGKO" -> best marks out of 40 */
 
   function totalQuestions(){ var n=0; for(var i=0;i<BANK.length;i++) n+=BANK[i].qs.length; return n; }
 
   function loadPrefs(){
     try{
       var b = localStorage.getItem("mbq.best"); if(b) best = JSON.parse(b) || {};
+      var pb = localStorage.getItem("mbq.paperbest"); if(pb) paperBest = JSON.parse(pb) || {};
       muted    = localStorage.getItem("mbq.muted") === "1";
       autoRead = localStorage.getItem("mbq.auto")  !== "0";
       voiceIdx = parseInt(localStorage.getItem("mbq.voice") || "0", 10) || 0;
@@ -2461,9 +2490,11 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
       var tk = localStorage.getItem("mbq.talk");
       talk = TALK.indexOf(tk) >= 0 ? tk : "hinglish";
       tutor = localStorage.getItem("mbq.tutor") !== "0";
+      var ri = parseInt(localStorage.getItem("mbq.rate") || "2", 10);
+      rateIdx = (ri >= 0 && ri < RATES.length) ? ri : 2;
       var p = localStorage.getItem("mbq.picked");
       picked = p ? JSON.parse(p) : null;
-    }catch(e){ best = {}; picked = null; }
+    }catch(e){ best = {}; paperBest = {}; picked = null; }
     if(!picked || picked.length !== BANK.length){
       picked = BANK.map(function(){ return true; });
     }
@@ -2471,11 +2502,13 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
   function savePrefs(){
     try{
       localStorage.setItem("mbq.best", JSON.stringify(best));
+      localStorage.setItem("mbq.paperbest", JSON.stringify(paperBest));
       localStorage.setItem("mbq.muted", muted ? "1" : "0");
       localStorage.setItem("mbq.auto", autoRead ? "1" : "0");
       localStorage.setItem("mbq.voice", String(voiceIdx));
       localStorage.setItem("mbq.len", String(paperLen));
       localStorage.setItem("mbq.gamelen", String(gameLen));
+      localStorage.setItem("mbq.rate", String(rateIdx));
       localStorage.setItem("mbq.talk", talk);
       localStorage.setItem("mbq.tutor", tutor ? "1" : "0");
       localStorage.setItem("mbq.picked", JSON.stringify(picked));
@@ -2493,7 +2526,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
   var PAPERS = {
     IGKO: { name:"IGKO", full:"General Knowledge", secs:[
       { n:"General Awareness", q:20, from:["Our India","World Around Us","Animals & Birds","Plants & Food","Places & Monuments","Festivals & Culture","Earth & Nature","Sports & Fun","Science","Space","Computer","Stories & Rhymes","Maths","People & Helpers"] },
-      { n:"Current Affairs",   q:5,  from:["World Around Us","Our India","Gadgets & Tech"] },
+      { n:"Current Affairs",   q:5,  from:["World Around Us","Our India"] },
       { n:"Life Skills",       q:5,  from:["Life Skills"] },
       { n:"Achievers",         q:5,  from:["Life Skills","Picture Puzzles","Science"] } ]},
     IMO: { name:"IMO", full:"Mathematics", secs:[
@@ -2626,31 +2659,59 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
     }
   }catch(e){}
   function hush(){ try{ window.speechSynthesis.cancel(); }catch(e){} }
+
+  /* Builds one utterance. withVoice=false leaves .voice unset, which is the
+     fallback that still speaks when a stale voice object silently fails. */
+  function utter(p, withVoice){
+    var u = new SpeechSynthesisUtterance(p);
+    /* Devanagari in the line means it wants the Hindi voice */
+    var hindi = /[\u0900-\u097F]/.test(p);
+    var use = withVoice ? (hindi ? (voiceForHindi() || currentVoice()) : currentVoice()) : null;
+    if(use){ u.voice=use; u.lang=use.lang; } else u.lang = hindi ? "hi-IN" : "en-IN";
+    /* Hindi stays a shade slower than English, as it always was. */
+    u.rate = RATES[rateIdx] * (hindi ? 0.93 : 1);
+    u.pitch = 1.0;                  /* 1.0 is the natural pitch */
+    u.volume = 1;
+    return u;
+  }
+
   function say(parts){
     try{
-      if(!("speechSynthesis" in window)) return;
+      if(muted) return;                               /* \uD83D\uDD0A is the master switch */
+      if(!("speechSynthesis" in window)){ voiceTrouble("This browser has no voice. Try Chrome."); return; }
       var ss = window.speechSynthesis;
       ss.cancel();
-      var v = currentVoice();
       /* iOS drops a speak() that follows cancel() too closely */
       setTimeout(function(){
         try{
+          var started = false, first = true;
           parts.forEach(function(p){
             if(!p) return;
-            var u = new SpeechSynthesisUtterance(p);
-            /* Devanagari in the line means it wants the Hindi voice */
-            var hindi = /[\u0900-\u097F]/.test(p);
-            var use = hindi ? (voiceForHindi() || v) : v;
-            if(use){ u.voice=use; u.lang=use.lang; } else u.lang = hindi ? "hi-IN" : "en-IN";
-            u.rate = hindi ? 0.88 : 0.95;   /* nearer normal speech */
-            u.pitch = 1.0;                  /* 1.0 is the natural pitch */
-            u.volume = 1;
+            var u = utter(p, true);
+            if(first){
+              first = false;
+              u.onstart = function(){ started = true; voiceOK(); };
+              /* Nothing began: the pinned voice failed. Say it again plainly. */
+              setTimeout(function(){
+                if(started || muted) return;
+                try{
+                  ss.cancel();
+                  var r = utter(p, false);
+                  r.onstart = voiceOK;
+                  r.onerror = function(){ voiceTrouble("Voice is blocked here. Open the app in Chrome, and turn the phone's silent switch off."); };
+                  ss.speak(r);
+                }catch(e){}
+              }, 900);
+            }
             ss.speak(u);
           });
         }catch(e){}
       }, 70);
     }catch(e){}
   }
+
+  function voiceOK(){ var n=$("voicenote"); if(n){ n.hidden = true; } }
+  function voiceTrouble(msg){ var n=$("voicenote"); if(n){ n.textContent = "\uD83D\uDD07 " + msg; n.hidden = false; } }
   /* iOS will not speak or play sound until the user has interacted once.
      The first tap anywhere unlocks both for the rest of the session. */
   var mediaUnlocked = false;
@@ -2803,9 +2864,12 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
 
     if(!learning){
       var n=0; picked.forEach(function(p){ if(p) n++; });
-      list.appendChild(card({ olympiad:true, emoji:"🏅", name:"Olympiad Practice",
-        sub:"Mixed paper · "+(paperLen===35?35:gameLen)+" questions · "+n+" of "+BANK.length+" subjects",
-        go:function(){ renderPicker(); renderPaperButtons(); paintLen(); show("pick"); } }));
+      list.appendChild(card({ olympiad:true, emoji:"📝", name:"Mock Test",
+        sub:"Sit a real SOF paper · IGKO, IMO, ISO, ICSO, IEO · 35 questions",
+        go:function(){ openPick("mock"); } }));
+      list.appendChild(card({ olympiad:true, emoji:"🎯", name:"Practice Mix",
+        sub:"Your own mix · "+(paperLen===35?35:gameLen)+" questions · "+n+" of "+BANK.length+" subjects",
+        go:function(){ openPick("mix"); } }));
       var lbl=document.createElement("div");
       lbl.className="sectionlabel"; lbl.textContent="Pick a subject";
       list.appendChild(lbl);
@@ -2831,14 +2895,39 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
       : "Tap 🎙️ until you find the nicest voice · 💡 gives a hint in the game";
   }
 
-  /* ---------- OLYMPIAD SUBJECT PICKER ---------- */
+  /* ---------- OLYMPIAD: MOCK TEST + PRACTICE MIX ---------- */
+  var pickMode = "mock";
+  function openPick(mode){
+    pickMode = mode;
+    renderPicker(); renderPaperButtons(); paintLen(); paintPickMode();
+    show("pick");
+  }
+  function paintPickMode(){
+    var mock = pickMode === "mock";
+    $("mock-part").hidden = !mock;
+    $("mix-part").hidden  =  mock;
+    $("pick-start").hidden = mock;     /* a paper starts from its own button */
+    $("pick-title").textContent = mock ? "📝 Mock Test" : "🎯 Practice Mix";
+    $("pick-sub").textContent = mock
+      ? "Choose a paper. 35 questions, just like the real exam."
+      : "Pick any subjects you like, then press Start.";
+    $("pick-swap").textContent = mock ? "🎯 …or build your own mix" : "📝 …or sit a full mock test";
+  }
+
   function renderPaperButtons(){
     var g = $("papers"); g.innerHTML = "";
     Object.keys(PAPERS).forEach(function(k){
       var p = PAPERS[k];
       var b = document.createElement("button");
       b.className = "sticker paperbtn";
-      b.innerHTML = "<b>🏅 " + p.name + "</b><span>" + p.full + " &middot; 35 questions</span>";
+      var secs = p.secs.map(function(s){ return s.n + " " + s.q; }).join(" · ");
+      var face = { IGKO:"🏅", IMO:"🔢", ISO:"🔬", ICSO:"💻", IEO:"🔤" }[k] || "🏅";
+      var pb = paperBest[k];
+      b.innerHTML = '<span class="pface" aria-hidden="true">' + face + '</span>' +
+        '<span class="pmeta"><b>' + p.name + ' &middot; ' + p.full + '</b>' +
+        '<span>' + secs + '</span></span>' +
+        '<span class="pgo">' + (pb == null ? "▶️" : "<b>" + pb + "</b>") + '</span>';
+      b.setAttribute("aria-label", p.name + ", " + p.full + ", 35 questions");
       b.addEventListener("click", function(){ sfxTap(); startPaper(k); });
       g.appendChild(b);
     });
@@ -3027,6 +3116,26 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
     if(state.bestStreak>=3) note.push("🔥 Best run: "+state.bestStreak+" in a row!");
     if(state.skipped) note.push("⏭️ "+state.skipped+" skipped");
     if(state.hints) note.push("💡 "+state.hints+" hint"+(state.hints>1?"s":"")+" used");
+
+    /* A mock paper is marked the way SOF marks it: Achievers carry 2 marks. */
+    if(state.paper && state.secOf){
+      var got=0, outOf=0, perSec={};
+      for(var m=0;m<T;m++){
+        var sec = state.secOf[m] || "", w = (sec === "Achievers") ? 2 : 1;
+        outOf += w;
+        if(!perSec[sec]) perSec[sec] = { got:0, of:0 };
+        perSec[sec].of++;
+        if(state.marks[m]===true){ got += w; perSec[sec].got++; }
+      }
+      var pk = state.paper;
+      if(paperBest[pk]==null || got>paperBest[pk]) paperBest[pk]=got;
+      savePrefs();
+      $("r-score").textContent = PAPERS[pk].name + ": " + got + " marks out of " + outOf;
+      var bits=[];
+      for(var sn in perSec) if(perSec.hasOwnProperty(sn)) bits.push(sn+" "+perSec[sn].got+"/"+perSec[sn].of);
+      note.unshift(bits.join("  ·  "));
+    }
+
     $("r-note").textContent = note.length ? note.join("  ·  ") : "The next set will be all different ones!";
 
     var st=$("r-stars"); st.innerHTML="";
@@ -3134,6 +3243,18 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
   $("mode-play").addEventListener("click", function(){ sfxTap(); setMode("play"); });
   $("mode-learn").addEventListener("click", function(){ sfxTap(); setMode("learn"); });
 
+  $("pick-swap").addEventListener("click", function(){
+    sfxTap(); pickMode = (pickMode === "mock") ? "mix" : "mock"; paintPickMode();
+  });
+
+  $("mode-set").addEventListener("click", function(){
+    sfxTap();
+    var row = $("settings-row"), openNow = row.hidden;
+    row.hidden = !openNow;
+    $("mode-set").setAttribute("aria-expanded", openNow ? "true" : "false");
+    $("mode-set").classList.toggle("on", openNow);
+  });
+
   function paintMute(){ var b=$("btn-mute"); b.textContent=muted?"🔇 Sound":"🔊 Sound"; b.classList.toggle("off",muted); }
   function paintAuto(){ var b=$("btn-auto"); b.textContent=autoRead?"🗣️ Auto-read":"🤫 Auto-read"; b.classList.toggle("off",!autoRead); }
   function paintGameLen(){
@@ -3169,7 +3290,23 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
     b.classList.toggle("warn", resetArmed);
   }
 
-  $("btn-mute").addEventListener("click", function(){ muted=!muted; savePrefs(); paintMute(); if(!muted) sfxTap(); });
+  $("btn-mute").addEventListener("click", function(){
+    muted=!muted; savePrefs(); paintMute();
+    if(muted) hush(); else sfxTap();      /* the chip silences the voice as well */
+  });
+
+  function paintRate(){ $("btn-rate").textContent = "🐢 Speed " + RATES[rateIdx].toFixed(2); }
+  $("btn-rate").addEventListener("click", function(){
+    rateIdx = (rateIdx + 1) % RATES.length; savePrefs(); paintRate(); sfxTap();
+    say(["This is how fast I will speak."]);
+  });
+
+  $("btn-testvoice").addEventListener("click", function(){
+    unlockMedia(); sfxTap();
+    if(muted){ voiceTrouble("Sound is off. Tap 🔇 Sound to switch it back on."); return; }
+    voiceTrouble("Listening for the voice…");
+    say(["Hello! I am your quiz didi. Can you hear me?"]);
+  });
   $("btn-auto").addEventListener("click", function(){
     autoRead=!autoRead; savePrefs(); paintAuto(); sfxTap();
     if(autoRead) say(["Auto reading is on."]);
@@ -3187,7 +3324,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
       setTimeout(function(){ if(resetArmed){ resetArmed=false; paintReset(); } }, 4000);
       return;
     }
-    best={}; resetArmed=false; savePrefs(); paintReset(); renderHome();
+    best={}; paperBest={}; resetArmed=false; savePrefs(); paintReset(); renderHome();
     sfxMagic(); praise("All fresh!");
     say(["All stars cleared. Let us start again!"]);
   });
@@ -3208,7 +3345,7 @@ name:"People & Helpers", deva:"लोग और मददगार", emoji:"👨
 
   /* ---------- BOOT ---------- */
   function boot(data){
-    loadPrefs(); paintMute(); paintAuto(); paintVoice(); paintReset(); paintGameLen(); paintTalk(); paintTutor(); setMode("play");
+    loadPrefs(); paintMute(); paintAuto(); paintVoice(); paintRate(); paintReset(); paintGameLen(); paintTalk(); paintTutor(); setMode("play");
     if(data && data.view==="quiz" && data.deck && data.deck.length){
       state.catIdx=data.catIdx;
       state.total=data.total||data.deck.length;
