@@ -40,6 +40,25 @@ this app is written from scratch against the published syllabus.
 | **Choose the correct spelling** | IEO | Four spellings, one right |
 | **Complete a conversation** | IEO | Two speakers, choose the natural reply |
 
+## More formats, from the 2015-16 combined NSO/IMO/IEO booklet
+
+Most question text there is inside images, but the answer options are readable
+and reveal these formats:
+
+| Format | Seen in | Notes |
+|---|---|---|
+| **Tens and ones arithmetic** | IMO Achievers | "8 tens minus 40 ones", "2 tens plus 18 ones" |
+| **Place value T/O columns** | IMO Achievers | Tens and Ones written as a small table |
+| **Which expression equals this?** | IMO | four sums, pick the one that matches |
+| **Fill the missing letters** | IEO | B A L L _ O _ O _ N style |
+| **Unscramble** | IEO and NSO | appears in science too, not only English |
+| **Heaviest / lightest** | NSO LR | comparison by weight, with "cannot be determined" |
+| **Eldest / youngest** | IMO | comparison by age |
+| **Which items apply?** | NSO Achievers | options are sets: "1, 2, 3" / "4, 5" / "all of them" |
+| **Money word problem** | IMO Everyday | cost of one, find cost of several |
+| **Distance in metres** | IMO Everyday | 20 m / 30 m / 40 m / 50 m |
+| **"Cannot be determined"** as an option | NSO | a real distractor children fall for |
+
 ## Formats that need drawn artwork (SVG)
 
 | Format | Seen in |
