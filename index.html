@@ -137,6 +137,11 @@
   .picktitle{ font-family:"Baloo 2",sans-serif; font-weight:800; font-size:23px; margin:0; text-align:center; }
   .picksub{ text-align:center; font-size:13px; color:var(--ink-soft); margin:0; }
   .pickgrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:9px; }
+  .papers{ display:grid; grid-template-columns:repeat(2,1fr); gap:9px; }
+  .paperbtn{ padding:11px 9px; background:var(--surface); text-align:left;
+    font-family:"Baloo 2",sans-serif; font-weight:700; font-size:14px; line-height:1.2; }
+  .paperbtn b{ display:block; font-size:17px; }
+  .paperbtn span{ display:block; font-size:12px; color:var(--ink-soft); font-weight:500; }
   .pickitem{ display:flex; align-items:center; gap:8px; padding:10px 9px;
     background:var(--surface); text-align:left; font-size:13.5px;
     font-family:"Baloo 2",sans-serif; font-weight:700; line-height:1.15; }
@@ -170,14 +175,14 @@
     align-items:center; justify-content:center; gap:8px; text-align:center;
     background:var(--surface); border:3px solid var(--line); border-radius:24px;
     box-shadow:0 5px 0 var(--line); padding:14px 13px; }
-  .qemoji{ font-size:clamp(38px,11vw,54px); line-height:1; }
+  .qemoji{ font-size:clamp(44px,13vw,62px); line-height:1; }
   .qemoji svg, .lemoji svg{ width:100%; max-width:290px; height:auto; display:block; margin:0 auto; }
   .opt .oe svg{ width:100%; max-width:72px; height:auto; display:block; margin:0 auto; }
   .lans .big svg{ width:100%; max-width:120px; height:auto; display:block; margin:0 auto; }
   .qtext{ font-family:"Baloo 2",sans-serif; font-weight:700;
-    font-size:clamp(18px,5vw,23px); line-height:1.25; margin:0; text-wrap:balance; }
+    font-size:clamp(21px,6vw,27px); line-height:1.28; margin:0; text-wrap:balance; }
   .qtools{ display:flex; gap:7px; flex-wrap:wrap; justify-content:center; margin-top:2px; }
-  .tool{ padding:7px 13px; font-size:13.5px; background:var(--surface-2);
+  .tool{ padding:8px 14px; font-size:14px; background:var(--surface-2);
     border-width:2.5px; box-shadow:0 3px 0 var(--line); border-radius:999px; }
   .tool:active:not(:disabled){ transform:translateY(2px); box-shadow:0 1px 0 var(--line); }
   .tool.hint{ background:var(--mango); color:#2A1B4D; }
@@ -185,16 +190,19 @@
     border:3px dashed var(--line); border-radius:16px; padding:9px 12px;
     max-width:100%; animation:pop .35s ease; text-wrap:balance; }
 
-  .opts{ flex:0 0 auto; display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
-  .opt{ min-height:88px; padding:9px 7px; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; gap:5px; background:var(--surface); }
-  .opt .oe{ font-size:27px; line-height:1; }
-  .opt .ot{ font-family:"Baloo 2",sans-serif; font-weight:700; font-size:16px; line-height:1.15; text-wrap:balance; }
+  .opts{ flex:0 0 auto; display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+  .opt{ min-height:98px; padding:10px 8px; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:6px; background:var(--surface);
+    border-width:4px; box-shadow:0 6px 0 var(--line); }
+  .opt .oe{ font-size:30px; line-height:1; }
+  .opt .ot{ font-family:"Baloo 2",sans-serif; font-weight:800; font-size:18px;
+    line-height:1.2; text-wrap:balance; letter-spacing:.005em; }
   .opt:disabled{ color:var(--ink); }
   .opt.gone{ opacity:.18; }
   .opt.right{ background:var(--good); color:var(--on-good); animation:pop .4s ease; }
   .opt.wrong{ background:var(--bad); color:var(--on-bad); animation:shake .4s ease; }
-  .opt.dim{ opacity:.45; }
+  .opt.dim{ opacity:.4; }
+  .opt:not(:disabled):active{ background:var(--surface-2); }
   @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.09)}100%{transform:scale(1)}}
   @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 
@@ -271,6 +279,8 @@
       <button class="sticker chip" id="btn-auto">🗣️ Auto-read</button>
       <button class="sticker chip" id="btn-voice">🎙️ Voice</button>
       <button class="sticker chip" id="btn-len">🔢 10 per game</button>
+      <button class="sticker chip" id="btn-talk">🗨️ Hinglish</button>
+      <button class="sticker chip" id="btn-tutor">👩‍🏫 Tutor on</button>
       <button class="sticker chip" id="btn-reset">♻️ Reset stars</button>
     </div>
 
@@ -280,7 +290,9 @@
 
   <section class="screen pick" id="scr-pick" hidden>
     <h2 class="picktitle">🏅 Olympiad Practice</h2>
-    <p class="picksub">Choose the subjects for this paper. 10 questions will be picked from them.</p>
+    <p class="picksub">Sit a real paper, or build your own mix.</p>
+    <div class="papers" id="papers"></div>
+    <p class="picksub" style="margin-top:6px">Or pick subjects for your own mix:</p>
     <div class="settings">
       <button class="sticker chip" id="len-10">⚡ Quick 10</button>
       <button class="sticker chip" id="len-35">📝 Full paper 35</button>
@@ -2045,6 +2057,8 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
   var locked = false, timer = null;
   var muted = false, autoRead = true, voiceIdx = 0, resetArmed = false, paperLen = 10;
   var GAME_LENGTHS = [10,15,20,25,30], gameLen = 10;
+  /* which language the tutoring voice speaks; questions stay English */
+  var TALK = ["english","hinglish","hindi"], talk = "hinglish", tutor = true;
   var best = {}, picked = [];
 
   function totalQuestions(){ var n=0; for(var i=0;i<BANK.length;i++) n+=BANK[i].qs.length; return n; }
@@ -2058,6 +2072,9 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
       paperLen = parseInt(localStorage.getItem("mbq.len") || "10", 10) === 35 ? 35 : 10;
       var gl = parseInt(localStorage.getItem("mbq.gamelen") || "10", 10);
       gameLen = GAME_LENGTHS.indexOf(gl) >= 0 ? gl : 10;
+      var tk = localStorage.getItem("mbq.talk");
+      talk = TALK.indexOf(tk) >= 0 ? tk : "hinglish";
+      tutor = localStorage.getItem("mbq.tutor") !== "0";
       var p = localStorage.getItem("mbq.picked");
       picked = p ? JSON.parse(p) : null;
     }catch(e){ best = {}; picked = null; }
@@ -2073,6 +2090,8 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
       localStorage.setItem("mbq.voice", String(voiceIdx));
       localStorage.setItem("mbq.len", String(paperLen));
       localStorage.setItem("mbq.gamelen", String(gameLen));
+      localStorage.setItem("mbq.talk", talk);
+      localStorage.setItem("mbq.tutor", tutor ? "1" : "0");
       localStorage.setItem("mbq.picked", JSON.stringify(picked));
     }catch(e){}
   }
@@ -2081,6 +2100,57 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
     a = a.slice();
     for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; }
     return a;
+  }
+
+  /* The five real papers. Each section names the subjects it may draw from,
+     and how many questions it takes, exactly as SOF lays the paper out. */
+  var PAPERS = {
+    IGKO: { name:"IGKO", full:"General Knowledge", secs:[
+      { n:"General Awareness", q:20, from:["Our India","World Around Us","Animals & Birds","Plants & Food","Places & Monuments","Festivals & Culture","Earth & Nature","Sports & Fun","Science","Space","Computer","Stories & Rhymes","Maths"] },
+      { n:"Current Affairs",   q:5,  from:["World Around Us","Our India","Gadgets & Tech"] },
+      { n:"Life Skills",       q:5,  from:["Life Skills"] },
+      { n:"Achievers",         q:5,  from:["Life Skills","Picture Puzzles","Science"] } ]},
+    IMO: { name:"IMO", full:"Mathematics", secs:[
+      { n:"Logical Reasoning",      q:10, from:["Logical Reasoning","Picture Puzzles"] },
+      { n:"Mathematical Reasoning", q:10, from:["Maths"] },
+      { n:"Everyday Mathematics",   q:10, from:["Maths","Picture Puzzles"] },
+      { n:"Achievers",              q:5,  from:["Maths","Picture Puzzles"] } ]},
+    ISO: { name:"ISO", full:"Science", secs:[
+      { n:"Logical Reasoning", q:5,  from:["Logical Reasoning","Picture Puzzles"] },
+      { n:"Science",           q:25, from:["Science","Animals & Birds","Plants & Food","Body & Good Habits","Earth & Nature","Space"] },
+      { n:"Achievers",         q:5,  from:["Science","Earth & Nature"] } ]},
+    ICSO:{ name:"ICSO", full:"Computer Science", secs:[
+      { n:"Logical Reasoning",      q:5,  from:["Logical Reasoning","Picture Puzzles"] },
+      { n:"Computer Science",       q:20, from:["Computer"] },
+      { n:"Information Technology", q:5,  from:["Gadgets & Tech"] },
+      { n:"Achievers",              q:5,  from:["Computer","Gadgets & Tech"] } ]},
+    IEO: { name:"IEO", full:"English", secs:[
+      { n:"Word and Structure Knowledge", q:15, from:["English Words"] },
+      { n:"Reading",                      q:10, from:["English Reading"] },
+      { n:"Spoken and Written Expression",q:5,  from:["English Reading","English Words"] },
+      { n:"Achievers",                    q:5,  from:["English Words","English Reading"] } ]},
+  };
+
+  function poolFor(names){
+    var out = [];
+    names.forEach(function(nm){
+      var c = BANK.filter(function(x){ return x.name === nm; })[0];
+      if(c) out = out.concat(c.qs);
+    });
+    return out;
+  }
+  /* Build a paper in its real order: section by section, no shuffling across
+     sections, because the real paper does not shuffle them either. */
+  function drawPaper(key){
+    var p = PAPERS[key], deck = [], marks = [];
+    if(!p) return { deck:[], marks:[] };
+    p.secs.forEach(function(sec){
+      var pool = shuffle(poolFor(sec.from)), taken = 0;
+      for(var i=0; i<pool.length && taken<sec.q; i++){
+        if(deck.indexOf(pool[i]) === -1){ deck.push(pool[i]); marks.push(sec.n); taken++; }
+      }
+    });
+    return { deck:deck, marks:marks };
   }
 
   function drawFromTopic(i, n){
@@ -2145,6 +2215,16 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
     paintVoice();
   }
   function currentVoice(){ return VOICES.length ? VOICES[voiceIdx % VOICES.length] : null; }
+
+  /* Hindi lines need a Hindi voice; English and Hinglish both read best on an
+     Indian English voice, which pronounces Hinglish words sensibly. */
+  function voiceForHindi(){
+    for(var i=0;i<VOICES.length;i++){
+      var l=(VOICES[i].lang||"").toLowerCase();
+      if(l.indexOf("hi")===0) return VOICES[i];
+    }
+    return null;
+  }
   function paintVoice(){
     var b=$("btn-voice"), v=currentVoice();
     if(!VOICES.length){ b.textContent="🎙️ Voice"; return; }
@@ -2172,8 +2252,13 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
           parts.forEach(function(p){
             if(!p) return;
             var u = new SpeechSynthesisUtterance(p);
-            if(v){ u.voice=v; u.lang=v.lang; } else u.lang="en-IN";
-            u.rate=0.9; u.pitch=1.1; u.volume=1;
+            /* Devanagari in the line means it wants the Hindi voice */
+            var hindi = /[\u0900-\u097F]/.test(p);
+            var use = hindi ? (voiceForHindi() || v) : v;
+            if(use){ u.voice=use; u.lang=use.lang; } else u.lang = hindi ? "hi-IN" : "en-IN";
+            u.rate = hindi ? 0.88 : 0.95;   /* nearer normal speech */
+            u.pitch = 1.0;                  /* 1.0 is the natural pitch */
+            u.volume = 1;
             ss.speak(u);
           });
         }catch(e){}
@@ -2245,6 +2330,19 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
 
   /* ---------- PRAISE ---------- */
   var CHEERS=["Shabaash!","Wah wah!","Zabardast!","Kya baat!","Superb!","Bahut badhiya!","Ekdum sahi!","Brilliant!","Mast!","Perfect!"];
+  /* spoken lines, one set per language */
+  var LINES = {
+    english:  { right:"That is correct. Well done!", wrong:"Not quite. Here is the right answer.",
+                hint:"Here is a clue.", start:"Let us begin. Listen carefully.",
+                done:"Well done. You have finished." },
+    hinglish: { right:"Bilkul sahi! Well done!", wrong:"Arre, thoda galat. Yeh dekho sahi answer.",
+                hint:"Ek clue suno.", start:"Chalo shuru karte hain. Dhyan se suno.",
+                done:"Shabaash! Ho gaya." },
+    hindi:    { right:"बिलकुल सही! शाबाश!", wrong:"थोड़ा ग़लत। यह देखो सही उत्तर।",
+                hint:"एक संकेत सुनो।", start:"चलो शुरू करते हैं। ध्यान से सुनो।",
+                done:"शाबाश! पूरा हो गया।" }
+  };
+  function line(k){ return (LINES[talk] || LINES.english)[k]; }
   var STREAKS=["On fire!","Hat-trick!","Unstoppable!","Chauka!","Chhakka!"];
   function praise(t,high){
     var el=$("praise"); el.textContent=t; el.classList.remove("go");
@@ -2321,7 +2419,7 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
       var n=0; picked.forEach(function(p){ if(p) n++; });
       list.appendChild(card({ olympiad:true, emoji:"🏅", name:"Olympiad Practice",
         sub:"Mixed paper · "+(paperLen===35?35:gameLen)+" questions · "+n+" of "+BANK.length+" subjects",
-        go:function(){ renderPicker(); paintLen(); show("pick"); } }));
+        go:function(){ renderPicker(); renderPaperButtons(); paintLen(); show("pick"); } }));
       var lbl=document.createElement("div");
       lbl.className="sectionlabel"; lbl.textContent="Pick a subject";
       list.appendChild(lbl);
@@ -2348,6 +2446,18 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
   }
 
   /* ---------- OLYMPIAD SUBJECT PICKER ---------- */
+  function renderPaperButtons(){
+    var g = $("papers"); g.innerHTML = "";
+    Object.keys(PAPERS).forEach(function(k){
+      var p = PAPERS[k];
+      var b = document.createElement("button");
+      b.className = "sticker paperbtn";
+      b.innerHTML = "<b>🏅 " + p.name + "</b><span>" + p.full + " &middot; 35 questions</span>";
+      b.addEventListener("click", function(){ sfxTap(); startPaper(k); });
+      g.appendChild(b);
+    });
+  }
+
   function renderPicker(){
     var g=$("pickgrid"); g.innerHTML="";
     BANK.forEach(function(cat,i){
@@ -2364,10 +2474,25 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
   }
 
   /* ---------- QUIZ ---------- */
+  function startPaper(key){
+    clearTimeout(timer); hush();
+    var built = drawPaper(key);
+    if(!built.deck.length) return;
+    state.catIdx = -1; state.qIdx = 0; state.score = 0; state.skipped = 0; state.hints = 0;
+    state.streak = 0; state.bestStreak = 0; state.marks = [];
+    state.deck = built.deck;
+    state.total = built.deck.length;
+    state.paper = key;
+    state.secOf = built.marks;
+    $("q-setname").textContent = "🏅 " + PAPERS[key].name + " paper";
+    show("quiz"); renderQuestion();
+    say([line("start")]);
+  }
+
   function startGame(i, len){
     clearTimeout(timer); hush();
     state.catIdx=i; state.qIdx=0; state.score=0; state.skipped=0; state.hints=0;
-    state.streak=0; state.bestStreak=0; state.marks=[];
+    state.streak=0; state.bestStreak=0; state.marks=[]; state.paper=null; state.secOf=null;
     var want = (i===-1) ? (len || (paperLen===35 ? 35 : gameLen)) : gameLen;
     state.total = want;
     state.deck = (i===-1) ? drawMixed(want) : drawFromTopic(i, want);
@@ -2400,6 +2525,9 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
     var q=state.deck[state.qIdx];
     if(!q){ finish(); return; }
     $("q-score").textContent=state.score;
+    if(state.paper && state.secOf && state.secOf[state.qIdx]){
+      $("q-setname").textContent = PAPERS[state.paper].name + " \u00b7 " + state.secOf[state.qIdx];
+    }
     if(q.f){ $("q-emoji").innerHTML = svgFor(q.f); } else { $("q-emoji").textContent = q.e; }
     $("q-text").textContent=q.q;
     $("hintbox").hidden=true;
@@ -2434,7 +2562,7 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
     var wrong=[], all=$("opts").querySelectorAll(".opt");
     for(var i=0;i<all.length;i++) if(all[i].dataset.correct==="0") wrong.push(all[i]);
     shuffle(wrong).slice(0,2).forEach(function(b){ b.classList.add("gone"); b.disabled=true; });
-    say([q.h]);
+    say([line("hint"), q.h]);
   }
 
   function skipQuestion(){
@@ -2468,9 +2596,15 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
       burst(30+state.streak*8, window.innerHeight*0.55);
       praise(state.streak>=3 ? STREAKS[Math.floor(Math.random()*STREAKS.length)]
                              : CHEERS[Math.floor(Math.random()*CHEERS.length)]);
+      if(tutor) say([line("right")]);
     } else {
       state.streak=0; state.marks[state.qIdx]=false;
       btn.classList.add("wrong"); sfxWrong();
+      if(tutor){
+        var right = null, all2 = $("opts").querySelectorAll(".opt");
+        for(var k=0;k<all2.length;k++) if(all2[k].dataset.correct==="1") right = all2[k];
+        say([line("wrong"), right ? right.querySelector(".ot").textContent : ""]);
+      }
     }
     paintStreak();
     for(var i=0;i<all.length;i++){
@@ -2625,6 +2759,24 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
     savePrefs(); paintGameLen(); renderHome(); sfxTap();
   });
 
+  function paintTalk(){
+    var names={english:"🗨️ English",hinglish:"🗨️ Hinglish",hindi:"🗨️ हिंदी"};
+    $("btn-talk").textContent = names[talk] || names.hinglish;
+  }
+  $("btn-talk").addEventListener("click", function(){
+    talk = TALK[(TALK.indexOf(talk)+1) % TALK.length];
+    savePrefs(); paintTalk(); sfxTap(); say([line("start")]);
+  });
+  function paintTutor(){
+    var b=$("btn-tutor");
+    b.textContent = tutor ? "👩‍🏫 Tutor on" : "🤫 Tutor off";
+    b.classList.toggle("off", !tutor);
+  }
+  $("btn-tutor").addEventListener("click", function(){
+    tutor = !tutor; savePrefs(); paintTutor(); sfxTap();
+    if(tutor) say([line("start")]);
+  });
+
   function paintReset(){
     var b=$("btn-reset");
     b.textContent = resetArmed ? "⚠️ Tap again!" : "♻️ Reset stars";
@@ -2670,7 +2822,7 @@ name:"Picture Puzzles", deva:"चित्र पहेली", emoji:"🖼️",
 
   /* ---------- BOOT ---------- */
   function boot(data){
-    loadPrefs(); paintMute(); paintAuto(); paintVoice(); paintReset(); paintGameLen(); setMode("play");
+    loadPrefs(); paintMute(); paintAuto(); paintVoice(); paintReset(); paintGameLen(); paintTalk(); paintTutor(); setMode("play");
     if(data && data.view==="quiz" && data.deck && data.deck.length){
       state.catIdx=data.catIdx;
       state.total=data.total||data.deck.length;
