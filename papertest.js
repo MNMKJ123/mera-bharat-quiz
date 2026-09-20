@@ -62,6 +62,19 @@ Object.keys(PAPERS).forEach((key) => {
   stats[key] = st;
 });
 
+/* which subjects actually reach each paper, and how often */
+const whichSubjects = {};
+Object.keys(PAPERS).forEach((key) => {
+  const tally = {};
+  for (let r = 0; r < 60; r++) {
+    drawPaper(key).deck.forEach((q) => {
+      const owner = BANK.find((c) => c.qs.indexOf(q) >= 0);
+      if (owner) tally[owner.name] = (tally[owner.name] || 0) + 1;
+    });
+  }
+  whichSubjects[key] = tally;
+});
+
 console.log("runs per paper: " + RUNS + "\n");
 let bad = 0;
 Object.keys(stats).forEach((k) => {
@@ -77,6 +90,16 @@ Object.keys(stats).forEach((k) => {
   console.log(line);
   bad += s.short + s.dup + s.badSec + s.marksWrong;
 });
+if (process.argv.indexOf("--subjects") >= 0) {
+  console.log("\nsubject mix over 60 draws of each paper:");
+  Object.keys(whichSubjects).forEach((k) => {
+    const t = whichSubjects[k];
+    const rows = Object.keys(t).sort((a, b) => t[b] - t[a])
+      .map((nm) => nm + " " + t[nm]);
+    console.log("  " + k + ": " + rows.join(", "));
+  });
+}
+
 if (fails.length) { console.log("\nexamples:"); fails.forEach((f) => console.log("  " + f)); }
 console.log("\n" + (bad ? "FAILURES: " + bad : "all papers valid"));
 process.exitCode = bad ? 1 : 0;
